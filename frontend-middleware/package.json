@@ -1,0 +1,14 @@
+{
+  "author": "Geert Pasteels <geert.pasteels@gmail.com>",
+  "name": "jungles-middleware",
+  "description": "Middleware to generate the front-end of Jungles",
+  "keywords": [ "jungles", "middleware", "front-end"],
+  "version": "1.0.0",
+  "dependencies": {
+    "kwery": "1.0.0"
+  },
+  "devDependencies": {
+    "express-recorder": "~1.0.0",
+    "sinon": "~1.4.2"
+  }
+}

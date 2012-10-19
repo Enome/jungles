@@ -1,0 +1,8 @@
+{
+  "author": "Geert Pasteels <geert.pasteels@gmail.com>",
+  "name": "jungles-helpers",
+  "description": "Helpers for Jungles",
+  "version": "1.0.0",
+  "keywords": [ "jungles", "helpers" ],
+  "dependencies": {}
+}

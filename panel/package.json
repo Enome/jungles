@@ -1,0 +1,17 @@
+{
+  "author": "Geert Pasteels <geert.pasteels@gmail.com>",
+  "name": "jungles-panel",
+  "description": "Admin panel for Jungles",
+  "version": "1.0.0",
+  "keywords": [
+    "jungles",
+    "cms"
+  ],
+  "dependencies": {
+    "stylus": "~0.30.1",
+    "jade": "~0.27.6",
+    "browserify": "~1.16.1",
+    "express": "~3.0.0rc5"
+  },
+  "devDependencies": {}
+}

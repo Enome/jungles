@@ -1,0 +1,21 @@
+{
+  "author": "Geert Pasteels <geert.pasteels@gmail.com>",
+  "name": "jungles-auth-persona",
+  "description": "Authentication app that uses Mozilla Persona. Can be mounted onto an express.js app.",
+  "version": "1.0.1",
+  "keywords": [
+    "jungles",
+    "authentication",
+    "Persona",
+    "BrowserId"
+  ],
+  "dependencies": {
+    "express": "~3.0.0rc1",
+    "jade": "~0.27.0",
+    "jungles-middleware-general": "0.0.1"
+  },
+  "devDependencies": {
+    "sinon": "~1.4.2",
+    "express-recorder": "~1.0.0"
+  }
+}

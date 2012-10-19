@@ -1,0 +1,13 @@
+<h1>
+  <a ng-show='!is_root' ng-click='back()'>back</a>
+  {{current.name}}
+</h1>
+
+<div ng-repeat='type in types' ng-controller='TypeCtrl' ng-click='create(type, current.path)' class='type'>
+  + {{type}}
+</div>
+
+<div ng-repeat='instance in instances' class='instance' ng-controller='InstanceCtrl' ng-click='select(instance)' ng-dblclick='edit(instance)' ng-class='instance.class'>
+  {{instance.name}}
+  <a ng-show='instance.children.length' ng-click='show(instance); $event.stopPropagation()'>&rarr;</a> 
+</div>

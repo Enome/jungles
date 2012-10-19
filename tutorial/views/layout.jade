@@ -1,0 +1,29 @@
+!!! 5
+html
+  head
+    link(href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,600', rel='stylesheet', type='text/css')
+    link(rel='stylesheet', href='/normalize.css')
+    link(rel='stylesheet', href='/styles.css')
+    link(rel='icon', type='image/ico', href='/favicon.ico')
+
+    title 
+      block title
+        | Jungles
+
+  body
+    nav.language
+      !{navigation(tree, 0, 0, current)}
+
+    .page
+      header
+        a(href=getRoot(tree, current).path, title='Welcome to the Jungles').logo J
+
+        h1!=prettyTitle(getRoot(tree, current).title)
+
+        nav
+          !{navigation(getRoot(tree, current).children, 0, 0, current)}
+
+      .content
+        block content
+      
+      footer Powered by <a href='http://github.com/Enome/jungles'>Jungles</a>

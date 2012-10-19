@@ -1,0 +1,136 @@
+body {
+  font-family: 'Open Sans';
+  font-weight: 300;
+  background: #f5f5f5;
+}
+h1,
+h2,
+h3 {
+  font-weight: 300;
+  padding: 0;
+  margin: 0;
+}
+a {
+  text-decoration: none;
+  color: #000;
+}
+.page h1 {
+  background-color: #c30;
+  color: #fff;
+  padding: 15px 20px;
+  font-size: 1.5em;
+}
+.page h1 a {
+  color: #fff;
+  background: #ae2c00;
+  border: 1px solid #9d2700;
+  display: inline-block;
+  font-size: 14px;
+  padding: 3px 8px;
+  margin-right: 5px;
+}
+.page h1 a:hover {
+  background: #9d2700;
+}
+.page .instance,
+.page .type,
+.page form {
+  display: block;
+  text-decoration: none;
+  color: #000;
+  border-bottom: 1px solid #ebebeb;
+  background: #fff;
+  padding: 15px 20px;
+}
+.page .instance,
+.page .type {
+  cursor: pointer;
+}
+.page .instance:hover,
+.page .type:hover {
+  background: #f9f9f9;
+}
+.page .instance.selected,
+.page .type.selected {
+  background: #f2f2f2;
+}
+.page .instance {
+  position: relative;
+}
+.page .instance a {
+  position: absolute;
+  right: 20px;
+  top: 13px;
+  border: 1px solid #ebebeb;
+  display: inline-block;
+  font-size: 0.9em;
+  padding: 3px 8px;
+  background: #fff;
+  font-family: arial;
+}
+.page .instance a:hover {
+  background: #808080;
+  color: #fff;
+}
+.page .type {
+  font-weight: 700;
+}
+.errors,
+.errors ul {
+  color: #c30;
+  padding: 0;
+  margin: 0;
+  overflow: auto;
+  list-style-type: none;
+}
+.errors {
+  font-weight: 700;
+}
+.errors li {
+  border-bottom: 1px #eed3d7 solid;
+  background: #fcefef;
+  color: #b94a48;
+  padding: 15px 20px 13px;
+}
+.errors li span {
+  font-weight: 300;
+}
+form fieldset {
+  padding: 0;
+  border: 0;
+  margin-bottom: 20px;
+}
+form fieldset legend {
+  font-weight: bold;
+  padding-bottom: 10px;
+}
+form label {
+  display: block;
+}
+form input,
+form textarea {
+  padding: 3px 5px;
+  display: block;
+  font-family: 'Open Sans';
+  width: 100%;
+  border: 1px solid #c0c0c0;
+}
+.actions {
+  background: #3a3a3a;
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+}
+.actions .buttons {
+  padding: 20px;
+  text-align: center;
+}
+.actions .buttons button {
+  background: none;
+  color: #c0c0c0;
+  border: none 0;
+  margin-right: 5px;
+}
+.actions .buttons button:hover {
+  color: #c30;
+}

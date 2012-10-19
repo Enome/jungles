@@ -1,0 +1,14 @@
+{
+  "author": "Geert Pasteels <geert.pasteels@gmail.com>",
+  "name": "jungles-middleware-general",
+  "description": "Reusable route middleware for express.js",
+  "version": "0.1.0",
+  "keywords": [
+    "jungles",
+    "middleware",
+    "general"
+  ],
+  "dependencies": {
+    "express-recorder": "~1.0.0"
+  }
+}

@@ -1,0 +1,24 @@
+var directives = require('./directives');
+var controllers = require('./controllers');
+
+var forms = function (app) {
+  app.directive('compileHtml', directives.compileHtml);
+  app.controller('CreateFormCtrl', controllers.CreateFormCtrl);
+  app.controller('EditFormCtrl', controllers.EditFormCtrl);
+
+  app.config(function ($routeProvider) {
+
+    $routeProvider.when('/instances/new/:type/:parent', {
+      controller: 'CreateFormCtrl',
+      templateUrl: 'partials/form.html'
+    });
+
+    $routeProvider.when('/instances/edit/:path', {
+      controller: 'EditFormCtrl',
+      templateUrl: 'partials/form.html'
+    });
+
+  });
+};
+
+module.exports = forms;

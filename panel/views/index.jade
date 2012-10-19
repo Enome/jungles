@@ -1,0 +1,20 @@
+!!! 5
+html(ng-app='jungles')
+  head
+    link(href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800', rel='stylesheet', type='text/css')
+    link(rel='stylesheet', href='/jungles/css/normalize.css')
+    link(rel='stylesheet', href='/jungles/stylus/style.css')
+    link(rel='icon', type='image/ico', href='/jungles/favicon.ico')
+
+  body(ng-controller='PageCtrl', document-click='deselect($event)')
+    input#ResourceUrl(type='hidden', value=resource_url)
+
+    div.page(ng-view)
+
+    .actions(ng-controller='InstancesActionCtrl', ng-show='buttons.length')
+      .buttons
+        button(ng-repeat='button in buttons', ng-click='button.click()') {{button.name}}
+
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js')
+    script(src=base_url + '/javascript/angular.js')
+    script(src=base_url + '/javascript/panel.js')

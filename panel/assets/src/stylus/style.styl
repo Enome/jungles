@@ -1,0 +1,135 @@
+first  = #CC3300
+second = #38AFFF
+third  = #EBEBEB
+
+body
+  font-family: 'Open Sans'
+  font-weight: 300
+  background: whitesmoke
+
+h1, h2, h3
+  font-weight: 300
+  padding: 0
+  margin: 0
+
+a
+  text-decoration: none
+  color: black
+
+.page
+  h1
+    background-color: first
+    color: white
+    padding: 15px 20px
+    font-size: 1.5em
+
+    a
+      color: white
+      background: #AE2C00
+      border: 1px solid #9D2700
+      display: inline-block
+      font-size: 14px
+      padding: 3px 8px
+      margin-right: 5px
+
+      &:hover
+        background: #9D2700
+
+
+  .instance, .type, form
+    display: block
+    text-decoration: none
+    color: black
+    border-bottom: 1px solid third
+    background: white
+    padding: 15px 20px
+
+  .instance, .type
+    cursor: pointer
+
+    &:hover
+      background: #f9f9f9
+
+    &.selected
+      background: #f2f2f2
+
+
+  .instance
+    position: relative
+
+    a
+      position: absolute
+      right: 20px
+      top: 13px
+      border: 1px solid third
+      display: inline-block
+      font-size: .9em
+      padding: 3px 8px
+      background: white
+      font-family: arial
+
+      &:hover
+        background: gray
+        color: white
+
+  .type
+    font-weight: 700
+
+.errors, .errors ul
+  color: first
+  padding: 0
+  margin: 0
+  overflow: auto
+  list-style-type: none
+
+.errors
+  font-weight: 700
+
+  li
+    border-bottom: 1px #EED3D7 solid
+    background: #fcefef
+    color: #B94A48
+    padding: 15px 20px 13px
+
+    span
+      font-weight: 300
+
+form
+  fieldset
+    padding: 0
+    border: 0
+    margin-bottom: 20px
+
+    legend
+      font-weight: bold
+      padding-bottom: 10px
+
+  label
+    display: block
+
+  input, textarea
+    padding: 3px 5px
+    display: block
+    font-family: 'Open Sans'
+    width: 100%
+    border: 1px solid silver
+
+
+.actions
+  background: #3a3a3a
+  position: absolute
+  width: 100%
+  bottom: 0
+
+  .buttons
+    padding: 20px
+    text-align: center
+
+    button
+      background: none
+      color: silver
+      border: none 0
+      margin-right: 5px
+
+      &:hover
+        color: first

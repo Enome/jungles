@@ -1,0 +1,36 @@
+<h1>{{title}}</h1>
+
+<ul ng-controller='ErrorCtrl' class='errors' ng-show='errors.length'>
+  <li ng-repeat='error in errors'>
+    {{error.name}}: <span>{{error.errors}}</span>
+  </li>
+</ul>
+
+<form name='form' novalidate>
+
+  <input type='hidden' ng-model='data.type' />
+  <input type='hidden' ng-model='data.parent' />
+  <input type='hidden' ng-model='data.path' />
+
+  <fieldset>
+
+    <legend>Default</legend>
+
+    <div>
+      <label for='id_name'>Name:</label>
+      <input id='id_name' type='text' ng-model='data.name' required autofocus />
+    </div>
+
+    <div>
+      <label for='id_order'>Order:</label>
+      <input id='id_order' type='number' ng-model='data.order' step='1' required />
+    </div>
+
+  </fieldset>
+
+  <div compile-html='extra'></div>
+
+  <button ng-click='submit(data)' ng-disabled='form.$invalid'>Save</button>
+  <button ng-click='cancel()'>Cancel</button>
+
+</form>

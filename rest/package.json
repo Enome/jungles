@@ -1,0 +1,23 @@
+{
+  "author": "Geert Pasteels <geert.pasteels@gmail.com>",
+  "name": "jungles-rest",
+  "description": "Rest layer of Jungles",
+  "version": "1.0.0",
+  "keywords": [
+    "jungles",
+    "rest"
+  ],
+  "dependencies": {
+    "kwery": "1.2.0",
+    "node-uuid": "~1.3.3",
+    "underscore": "~1.3.3",
+    "jungles-validation": "~1.0.0",
+    "jungles-validators": "~1.1.0",
+    "jungles-middleware-general": "~0.1.0",
+    "express": "~3.0.0rc5"
+  },
+  "devDependencies": {
+    "express-recorder": "~1.0.0",
+    "sinon": "~1.4.2"
+  }
+}

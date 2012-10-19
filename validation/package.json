@@ -1,0 +1,8 @@
+{
+  "author": "Geert Pasteels <geert.pasteels@gmail.com>",
+  "name": "jungles-validation",
+  "description": "Validation module for jungles",
+  "version": "1.0.0",
+  "keywords": [ "jungles", "validation" ],
+  "dependencies": { "async": "~0.1.22" }
+}
