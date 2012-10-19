@@ -2,6 +2,10 @@
 
 In this repo you find the building blocks to create a CMS. This is meant for developers that know Node.js and Express.js. Knowing angular.js helps to customize the backend admin panel.
 
+## Want to help out?
+
+If you want to help out you can mostly find me in #jungles on freenode (ping pickels) or create an issue here on Github.
+
 ## Modules
 
 - Rest: This is an Express.js application you can mount which gives you a rest API for your front-end.
