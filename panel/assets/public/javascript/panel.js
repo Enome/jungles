@@ -2401,6 +2401,10 @@ require.define("/client/forms/controllers.js",function(require,module,exports,__
       $window.history.back();
     };
 
+    // Title
+
+    $scope.title = 'new: ' + $scope.data.type;
+
   },
 
   EditFormCtrl: function ($scope, $routeParams, $window, instances, forms, general, _) {
