@@ -2,7 +2,7 @@
 
 In this repo you find the building blocks to create a CMS. This is meant for developers that know Node.js and Express.js. Knowing angular.js helps to customize the backend admin panel.
 
-# Modules
+## Modules
 
 - Rest: This is an Express.js application you can mount which gives you a rest API for your front-end.
 - Data memory: This is a data layer for your rest service which stores your data in memory.

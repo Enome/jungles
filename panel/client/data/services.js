@@ -30,7 +30,7 @@ var instances = function ($http, $window, general, events, _) {
 
     remove: function (instance) {
 
-      var result = $http.delete('/jungles/instances/' + instance.path);
+      var result = $http.delete(general.resource_url('/instances/' + instance.path));
       var ee = new EventEmitter();
 
       result.success(function (data, status, headers, config) {

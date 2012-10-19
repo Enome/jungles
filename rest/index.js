@@ -19,7 +19,7 @@ var jungles_rest = {
   init: function (options) {
     core.data = options.data;
     core.types = { find: kwery.flat.bind(null, options.types) };
-    return { app: app, core: core };
+    return app;
   }
 
 };

@@ -7,6 +7,8 @@ html(ng-app='jungles')
     link(rel='icon', type='image/ico', href='/jungles/favicon.ico')
 
   body(ng-controller='PageCtrl', document-click='deselect($event)')
+    base(href=base_url + '/')
+
     input#ResourceUrl(type='hidden', value=resource_url)
 
     div.page(ng-view)
