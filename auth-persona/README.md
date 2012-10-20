@@ -7,7 +7,7 @@ Mozilla Persona Authentication app for Express.js. This app is developed for Jun
 ```js
 var auth = require('jungles-authentication-persona');
 var app = express(); // Your app
-app.mount(auth.init('/admin*'));
+app.use(auth.init('/admin*'));
 ```
 
 This will redirect to the /login if session.user is undefined and the user visits /admin*. If you need multiple urls you can pass an array.
