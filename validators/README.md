@@ -50,6 +50,7 @@ Normal object.
 ## Current validators and sanitizers
 
 - required
+- integer
 - string
 
 More will be added as we move forward.
