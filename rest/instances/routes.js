@@ -8,6 +8,7 @@ module.exports = {
   init: function (app) {
 
     app.get('/instances',
+            instances.defaultQuery,
             instances.find(function () { return this.req.query; }),
             instances.addChildTypes,
             general.send(function () { return this.res.locals.instances; }));

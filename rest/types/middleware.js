@@ -13,15 +13,18 @@ module.exports = {
     if (_schema) { schema = _schema; }
   },
 
+  defaultQuery: function (req, res, next) {
+    if (Object.keys(req.query).length === 0) {
+      req.query = { name: '.*' };
+    }
+    next();
+  },
+
   find: function (query) {
     
     return function (req, res, next) {
 
       var q = query.call({ req: req, res: res });
-
-      if (Object.keys(q).length === 0) {
-        q = { name: '.*' };
-      }
 
       var result = core.types.find(q);
 

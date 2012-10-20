@@ -6,6 +6,7 @@ var routes = {
   init: function (app) {
 
     app.get('/types',
+            middleware.defaultQuery,
             middleware.find(function () { return this.req.query; }),
             general.send(function () { return this.res.locals.types; }));
 

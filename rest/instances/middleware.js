@@ -8,15 +8,18 @@ module.exports = {
     if (_core) { core = _core; }
   },
 
+  defaultQuery: function (req, res, next) {
+    if (Object.keys(req.query).length === 0) {
+      req.query = { path: '.*' };
+    }
+    next();
+  },
+
   find: function (query) {
     
     return function (req, res, next) {
 
       var q = query.call({ req: req, res: res });
-
-      if (Object.keys(q).length === 0) {
-        q = { path: '.*' };
-      }
 
       var result = core.data.find(q);
 
@@ -54,6 +57,7 @@ module.exports = {
   remove: function (req, res, next) {
 
     var result = core.data.remove({ path: req.params.path });
+
     result.success(function () {
       next();
     });

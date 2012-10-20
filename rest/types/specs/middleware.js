@@ -4,9 +4,24 @@ var sinon = require('sinon');
 
 describe('Types Middleware', function () {
 
+  describe('defaultQuery', function () {
+
+    it('sets req.query to default if it has no properties', function (done) {
+
+      var req = { query: {} };
+
+      middleware.defaultQuery(req, {}, function () {
+        req.should.eql({ query: { name: '.*' } });
+        done();
+      });
+      
+    });
+
+  });
+
   describe('find', function () {
 
-    describe('one', function () {
+    describe('many', function () {
 
       it('sets the local type', function (done) {
         

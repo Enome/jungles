@@ -13,7 +13,7 @@ var controllers = {
       $scope.instances = _.reject($scope.instances, function (i) {
         return instance.path === i.path;
       });
-    });
+e   });
 
     events.on('instances: deselect all', function (e, instance) {
       $scope.instances.length = 0;

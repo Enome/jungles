@@ -4,6 +4,21 @@ var middleware = require('../middleware');
 
 describe('Instances Middleware', function () {
 
+  describe('defaultQuery', function () {
+
+    it('sets req.query to default if it has no properties', function (done) {
+
+      var req = { query: {} };
+
+      middleware.defaultQuery(req, {}, function () {
+        req.should.eql({ query: { path: '.*' } });
+        done();
+      });
+      
+    });
+
+  });
+
   describe('find', function () {
 
     it('sets response to instances', function (done) {
@@ -49,9 +64,9 @@ describe('Instances Middleware', function () {
 
   });
 
-  describe('save', function () {
+  describe('create', function () {
 
-    it('calls nexts and sets the saved object', function (done) {
+    it('calls nexts and sets the created object', function (done) {
 
       var response = {
         user: 'Enome'
@@ -62,7 +77,7 @@ describe('Instances Middleware', function () {
       };
 
       var core = {
-        data: { save: sinon.stub().returns(result) }
+        data: { create: sinon.stub().returns(result) }
       };
 
       middleware.inject(core);
@@ -71,12 +86,55 @@ describe('Instances Middleware', function () {
         locals: { data: '__data__' }
       };
 
-      recorder(middleware.save, state, function (result) {
+      recorder(middleware.create, state, function (result) {
 
         result.eql({
           next: true,
           locals: { response: { user: 'Enome' }, data: '__data__' }
         });
+        
+        //Extra
+        core.data.create.args.should.eql([['__data__']]);
+
+        done();
+
+      });
+
+    });
+
+  });
+
+  describe('update', function () {
+
+    it('calls nexts and sets the updated object', function (done) {
+
+      var response = {
+        user: 'Enome'
+      };
+
+      var result = {
+        success: sinon.stub().yields(response)
+      };
+
+      var core = {
+        data: { update: sinon.stub().returns(result) }
+      };
+
+      middleware.inject(core);
+
+      var state = {
+        locals: { data: '__data__' }
+      };
+
+      recorder(middleware.update, state, function (result) {
+
+        result.eql({
+          next: true,
+          locals: { response: { user: 'Enome' }, data: '__data__' }
+        });
+
+        // Extra
+        core.data.update.args.should.eql([[ '__data__' ]]);
 
         done();
 
@@ -105,7 +163,7 @@ describe('Instances Middleware', function () {
       // Setup middleware
 
       var state = {
-        params: { id: 'someid' }
+        params: { path: 'somepath' }
       };
 
       // Record
@@ -116,7 +174,7 @@ describe('Instances Middleware', function () {
 
         // Extra: verify remove
 
-        core.data.remove.args.should.eql([[ { id: 'someid' } ]]);
+        core.data.remove.args.should.eql([[ { path: 'somepath' } ]]);
         done();
 
       });
