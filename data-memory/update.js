@@ -4,8 +4,6 @@ var slug = require('slug');
 
 var update = function (db, data) {
 
-  console.log(data);
-
   return {
 
     success: function (callback) {
@@ -24,11 +22,10 @@ var update = function (db, data) {
         var base_path = old_path.replace(/\/[^\/]+$/, '');
         var base_sort = old_sort.slice(0, old_sort.length - 1);
 
-
         // Add new last part
         
         response.path = (base_path + '/' + slug(response.name.toLowerCase())).replace('//', '/');
-        base_sort[base_sort.length] = response.order ? parseInt(response.order) : response.sort[response.sort.length - 1];
+        base_sort[base_sort.length] = response.order ? parseInt(response.order, 10) : response.sort[response.sort.length - 1];
         response.sort = base_sort;
 
         // Don't save order
@@ -37,7 +34,7 @@ var update = function (db, data) {
 
         // Update children
         
-        var result = kwery(db, { path: new RegExp(old_path + '.*') });
+        var result = kwery(db, { path: new RegExp(old_path + '/.*') });
 
         result.many(function (many) {
 

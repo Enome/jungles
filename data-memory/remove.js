@@ -22,8 +22,6 @@ module.exports = function (db, query) {
           }
         });
 
-        console.log(db);
-
         callback();
 
       });

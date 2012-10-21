@@ -1,8 +1,23 @@
 # Jungles Data
 
-All data access layers should have this API.
+If you are thinking of creating your own data layer for jungles you can use this module to test it.
 
-## Find
+```js
+var data = require('your-dal');
+var test = require('jungles-data');
+
+test(data);
+```
+
+You need mocha and should to run the test.
+
+```sh
+mocha test.js -r should
+```
+
+## API
+
+### Find
 
 ```js
 var result = data.find(<query object>); // Info query object at bottom
@@ -26,7 +41,7 @@ result.error(function (error) {
 });
 ```
 
-## Remove
+### Remove
 
 ```js
 var result = data.remove(<query object>);
@@ -34,7 +49,7 @@ result.success(function () { });
 result.error(function (error) { });
 ```
 
-## Create
+### Create
 
 ```js
 var result = data.save({ name: 'products', order: 0 });
@@ -71,7 +86,7 @@ result.error(function (error) { });
 ]
 ```
 
-## Tree
+### Tree
 
 ```js
 var result = data.tree(<query object>); 
@@ -110,7 +125,7 @@ result.error(function (error) { });
 }
 ```
 
-## Query object
+### Query object
 
 ```js
 { id: 5} 
