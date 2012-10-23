@@ -25,9 +25,10 @@ var create = function (db, data) {
         base_sort[base_sort.length] = data.order;
         data.sort = base_sort;
 
-        delete data.order;
+        db.push(JSON.parse(JSON.stringify(data)));
 
-        db.push(data);
+        delete data.sort;
+
         callback(data);
                         
       });

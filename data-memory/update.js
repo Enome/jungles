@@ -28,9 +28,9 @@ var update = function (db, data) {
         base_sort[base_sort.length] = response.order ? parseInt(response.order, 10) : response.sort[response.sort.length - 1];
         response.sort = base_sort;
 
-        // Don't save order
+        // Make a copy for output
 
-        delete response.order;
+        var copy = JSON.parse(JSON.stringify(response));
 
         // Update children
         
@@ -40,10 +40,11 @@ var update = function (db, data) {
 
           many.forEach(function (instance) {
             instance.path = instance.path.replace(new RegExp('^' + old_path), response.path);
-            instance.sort = base_sort.concat([instance.sort[instance.sort.length - 1]]);
+            instance.sort[response.sort.length - 1] = response.order;
           });
 
-          callback(response);
+          delete copy.sort;
+          callback(copy);
 
         });
 

@@ -52,7 +52,6 @@ var controllers = {
       // Data
 
       $scope.data = current;
-      $scope.data.order = parseInt($scope.data.sort[0], 10);
 
       // Title
       

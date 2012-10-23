@@ -1,6 +1,6 @@
 # General Middleware
 
-General middleware written for Jungles but can be used for an Express.js app.
+General middleware written for Jungles but can be used with any Express.js app.
 
 # Render
 

@@ -3,5 +3,9 @@
   "name": "jungles-data",
   "description": "Test your jungles-data layer with this tool",
   "version": "1.0.0",
-  "dependencies": { "eql": "0.0.5" }
+  "dependencies": {
+    "eql": "0.0.5",
+    "mocha": "~1.6.0",
+    "should": "~1.2.0"
+  }
 }

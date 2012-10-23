@@ -6,13 +6,7 @@ If you are thinking of creating your own data layer for jungles you can use this
 var data = require('your-dal');
 var test = require('jungles-data');
 
-test(data);
-```
-
-You need mocha and should to run the test.
-
-```sh
-mocha test.js -r should
+test(data, true); // true=bail on first fail
 ```
 
 ## API
@@ -128,9 +122,9 @@ result.error(function (error) { });
 ### Query object
 
 ```js
-{ id: 5} 
-{ path: /.*/ } 
-{ path: '.*' }
-{ path: /.*/, id: 5 } 
+{ id: 5} // Integer
+{ name: 'home' } // String
+{ path: /.*/ }  // Regex
+{ path: /.*/, id: 5 } // Both
 ```
 

@@ -1,5 +1,7 @@
 # Jungles Errors
 
+Middleware for dealing with errors.
+
 ```js
 require('jungles-errors').init(app);
 ```

@@ -1,7 +1,7 @@
 var kwery = require('kwery');
 var each = require('underscore').each;
 var EventEmitter = require('events').EventEmitter;
-var extend = require('underscore').extend;
+var utils = require('./utils');
 
 module.exports = function (db, query_object) {
 
@@ -28,7 +28,7 @@ module.exports = function (db, query_object) {
 
   var ee = new EventEmitter();
 
-  var query = 'SELECT * FROM instances WHERE ' + conditionals.join(' and ') + 'ORDER BY sort';
+  var query = 'SELECT * FROM instances WHERE ' + conditionals.join(' and ') + ' ORDER BY sort';
 
   process.nextTick(function () {
 
@@ -38,21 +38,7 @@ module.exports = function (db, query_object) {
         return ee.emit('error', err);
       }
 
-      var rows = [];
-
-      result.rows.forEach(function (val) {
-
-        if (val.data) {
-          var data = JSON.parse(val.data);
-          extend(val, data);
-          delete val.data;
-        }
-
-        val.arrange = val.sort[val.sort.length - 1];
-
-        rows.push(val);
-
-      });
+      var rows = utils.createInstances(result);
 
       ee.emit('many', rows);
 

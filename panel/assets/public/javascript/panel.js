@@ -2430,7 +2430,6 @@ require.define("/client/forms/controllers.js",function(require,module,exports,__
       // Data
 
       $scope.data = current;
-      $scope.data.order = parseInt($scope.data.sort[0], 10);
 
       // Title
       
@@ -2620,7 +2619,7 @@ require.define("/client/actions/controllers.js",function(require,module,exports,
       $scope.instances = _.reject($scope.instances, function (i) {
         return instance.path === i.path;
       });
-    });
+e   });
 
     events.on('instances: deselect all', function (e, instance) {
       $scope.instances.length = 0;
