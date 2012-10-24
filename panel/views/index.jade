@@ -2,9 +2,10 @@
 html(ng-app='jungles')
   head
     link(href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800', rel='stylesheet', type='text/css')
-    link(rel='stylesheet', href='/jungles/css/normalize.css')
-    link(rel='stylesheet', href='/jungles/stylus/style.css')
-    link(rel='icon', type='image/ico', href='/jungles/favicon.ico')
+    link(rel='stylesheet', href=base_url + '/css/normalize.css')
+    link(rel='stylesheet', href=base_url + '/stylus/style.css')
+    link(rel='stylesheet', href=base_url + '/custom/css')
+    link(rel='icon', type='image/ico', href=base_url + '/favicon.ico')
 
   body(ng-controller='PageCtrl', document-click='deselect($event)')
     base(href=base_url + '/')
@@ -20,3 +21,4 @@ html(ng-app='jungles')
     script(src='//ajax.googleapis.com/ajax/libs/jquery/1.8.1/jquery.min.js')
     script(src=base_url + '/javascript/angular.js')
     script(src=base_url + '/javascript/panel.js')
+    script(src=base_url + '/custom/javascript')

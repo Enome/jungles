@@ -1,9 +1,9 @@
-var controllers = require('./controllers');
-var directives = require('./directives');
+var browserify = require('browserify');
+var b = browserify();
+b.addEntry(__dirname + '/client/index.js');
 
-var upload = function (app) {
-  app.controller('UploadCtrl', controllers.UploadCtrl);
-  app.directive('upload', directives.upload);
+var upload = function (callback) {
+  callback(null, { javascript: b.bundle() });
 };
 
 module.exports = upload;

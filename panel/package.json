@@ -12,7 +12,8 @@
     "jade": "~0.27.6",
     "browserify": "~1.16.1",
     "express": "~3.0.0rc5",
-    "underscore": "~1.4.2"
+    "underscore": "~1.4.2",
+    "async": "~0.1.22"
   },
   "devDependencies": {}
 }

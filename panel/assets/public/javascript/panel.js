@@ -2711,6 +2711,7 @@ module.exports = controllers;
 });
 
 require.define("/client/index.js",function(require,module,exports,__dirname,__filename,process){var jungles = angular.module('jungles', []);
+window.jungles = jungles;
 
 require('./data')(jungles);
 require('./events')(jungles);

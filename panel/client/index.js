@@ -1,4 +1,5 @@
 var jungles = angular.module('jungles', []);
+window.jungles = jungles;
 
 require('./data')(jungles);
 require('./events')(jungles);

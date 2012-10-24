@@ -1,7 +1,7 @@
 var express = require('express');
 var stylus = require('stylus');
 
-module.exports = function (url) {
+module.exports = function (options) {
 
   // App
 
@@ -16,7 +16,7 @@ module.exports = function (url) {
 
   app.use(function (req, res, next) {
     res.locals.base_url = app.path();
-    res.locals.resource_url = url;
+    res.locals.resource_url = options.url;
     next();
   });
 
@@ -30,11 +30,7 @@ module.exports = function (url) {
   app.use(express.static(__dirname + '/assets/public'));
   app.use('/partials', express.static(__dirname + '/client/partials'));
 
-
-  // Helpers
-
-  //require('./instances/helpers').init(app);
-
+  require('./customize').init(app, options.customize);
 
   // Routes
 
