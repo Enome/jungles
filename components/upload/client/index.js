@@ -1,11 +1,7 @@
 var controllers = require('./controllers');
 var directives = require('./directives');
 
-var upload = function (app) {
-  app.controller('UploadCtrl', controllers.UploadCtrl);
-  app.directive('upload', directives.upload);
-};
+var app = window.jungles;
 
-alert('test');
-
-module.exports = upload;
+app.controller('UploadCtrl', controllers.UploadCtrl);
+app.directive('upload', directives.upload);

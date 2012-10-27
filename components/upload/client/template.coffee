@@ -1,10 +1,10 @@
 template = """
-<div ng-controller='UploadCtrl'>
+<div class='upload'>
   <input type='file' multiple onchange='angular.element(this).scope().upload(this)' />
 
-  <div ng-repeat='image in images'>
-    <img ng-src='{{image.src}}' width='80' height='80' />
-    <button>x</button>
+  <div class='file' ng-repeat='file in current'>
+    <img ng-src='{{url}}/{{file}}' width='80' height='80' />
+    <button ng-click='remove(file)'>x</button>
   </div>
 </div>
 """

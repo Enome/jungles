@@ -2,6 +2,7 @@ var validators = require('../src/validators');
 var required = validators.required;
 var string = validators.string;
 var integer = validators.integer;
+var array = validators.array;
 
 describe('Validators', function () {
 
@@ -17,7 +18,7 @@ describe('Validators', function () {
   describe('Valid', function () {
 
     beforeEach(function () {
-      data = { name: 'Geert', age: 18 };
+      data = { name: 'Geert', age: 18, files: [ 'me.jpg', 'soon.png' ] };
     });
 
     describe('Required', function () {
@@ -52,13 +53,29 @@ describe('Validators', function () {
 
     });
 
+    describe('Array', function () {
+
+      it('adds no error when the value is an array and sanitizes the array', function (done) {
+
+        var validator = array();
+
+        validator(data, 'files', errors, sanitize, function () {
+          sanitize.should.eql({ files: [ 'me.jpg', 'soon.png' ] });
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
+    });
+
   });
 
   describe('Invalid', function () {
 
     beforeEach(function () {
 
-      data = { name: ' ', age: 'abc' };
+      data = { name: ' ', age: 'abc', files: 15 };
 
     });
 
@@ -91,6 +108,22 @@ describe('Validators', function () {
       });
 
     });
+
+    describe('Array', function () {
+
+      it('adds an error when the value isnt an array', function (done) {
+
+        var validator = array();
+
+        validator(data, 'files', errors, sanitize, function () {
+          errors.should.eql({files: ['Not an array']});
+          done();
+        });
+
+      });
+
+    });
+
 
   });
 

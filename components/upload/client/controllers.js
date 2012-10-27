@@ -1,13 +1,18 @@
 var controllers = {
   
-  UploadCtrl: function ($scope) {
+  UploadCtrl: function ($scope, $http, _) {
 
-    $scope.images = [];
     $scope.files = [];
 
     $scope.upload = function (element) {
       $scope.$apply(function ($scope) {
         $scope.files = element.files;
+      });
+    };
+
+    $scope.remove = function (file) {
+      $scope.current = _.reject($scope.current, function (f) {
+        return file === f;
       });
     };
 
@@ -17,16 +22,19 @@ var controllers = {
 
         var current = $scope.files[i];
         var reader = new FileReader();
-
-        reader.onload = (function (file) {
-          return function (e) {
-            $scope.$apply(function ($scope) {
-              $scope.images.push({ name: file.name, src: e.target.result });
-            });
-          }
-        }(current));
-
         reader.readAsDataURL(current);
+
+        reader.onload = function (e) {
+          var result = $http.post($scope.url + '/' + current.name, { file : e.target.result });
+
+          result.success(function (data, status, headers, config) { 
+            if (typeof $scope.current === 'undefined') {
+              $scope.current = [];
+            }
+            $scope.current.push(data.file);
+          });
+        }
+
       }
 
     }, true);

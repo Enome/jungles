@@ -30,7 +30,11 @@ module.exports = function (options) {
   app.use(express.static(__dirname + '/assets/public'));
   app.use('/partials', express.static(__dirname + '/client/partials'));
 
-  require('./customize').init(app, options.customize);
+  // Customize
+
+  if (typeof options.customize !== 'undefined') {
+    require('./customize').init(app, options.customize);
+  }
 
   // Routes
 

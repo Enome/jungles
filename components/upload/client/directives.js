@@ -1,19 +1,23 @@
 var template = require('./template');
 
-    var directives = {
+var directives = {
 
-      upload: function ($compile) {
+  upload: function ($compile) {
 
-        return {
-          restrict: 'E',
-          link: function (scope, element, attr) {
-            scope.url = element.attr('url');
-            element.html($compile(template)(scope));
-          }
-        };
-
+    return {
+      restrict: 'E',
+      controller: 'UploadCtrl',
+      template: template,
+      scope: {
+        current: '=ngModel',
+      },
+      link: function (scope, element, attr) {
+        scope.url = attr.url;
       }
-
     };
+
+  }
+
+};
 
 module.exports = directives;

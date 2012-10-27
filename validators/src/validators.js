@@ -43,7 +43,21 @@ var validators = {
       callback();
     };
 
-  }
+  },
+
+  array: function (msg) {
+
+    return function (data, key, errors, sanitized, callback) {
+      try {
+        check(data[key], msg).isArray();
+        sanitized[key] = data[key];
+      } catch (e) {
+        utils.pushValue(errors, key, e.message);
+      }
+      callback();
+    };
+
+  },
 
 };
 
