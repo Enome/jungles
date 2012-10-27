@@ -1,6 +1,8 @@
 first  = #CC3300
 second = #38AFFF
 third  = #EBEBEB
+fourth = #3a3a3a
+height = 60px
 
 body
   font-family: 'Open Sans'
@@ -16,64 +18,64 @@ a
   text-decoration: none
   color: black
 
+row()
+  padding-left: 20px
+  border-bottom: 1px solid third
+  height: height
+  line-height: height
+  display: block
+  background: white
+
+selectable()
+  cursor: pointer
+
+  &.selected
+    background: #f2f2f2
+
 .page
+  margin-bottom: height
+
+  h1, .type, .instance
+    font-size: 1.35em
+    row()
+
   h1
     background-color: first
     color: white
-    padding: 15px 20px
-    font-size: 1.5em
 
-    a
+    .button
+      background-color: #a52900
+      border-color: first
       color: white
-      background: #AE2C00
-      border: 1px solid #9D2700
-      display: inline-block
-      font-size: 14px
-      padding: 3px 8px
-      margin-right: 5px
 
       &:hover
-        background: #9D2700
-
-
-  .instance, .type, form
-    display: block
-    text-decoration: none
-    color: black
-    border-bottom: 1px solid third
-    background: white
-    padding: 15px 20px
-
-  .instance, .type
-    cursor: pointer
-
-    &:hover
-      background: #f9f9f9
-
-    &.selected
-      background: #f2f2f2
-
-
-  .instance
-    position: relative
-
-    a
-      position: absolute
-      right: 20px
-      top: 13px
-      border: 1px solid third
-      display: inline-block
-      font-size: .9em
-      padding: 3px 8px
-      background: white
-      font-family: arial
-
-      &:hover
-        background: gray
+        border-color: #a52900
+        background-color: first
         color: white
 
+
+  .type, .instance
+    selectable()
+
   .type
-    font-weight: 700
+    font-weight: 500
+    background: #f9f9f9
+
+  .button
+    position: absolute
+    right: 0
+    height: height
+    width: height - 2px
+    text-align: center
+    display: inline-block
+    border-left: 1px solid third
+    background: white
+    color: fourth
+    font-weight: 300
+
+    &:hover
+      background: third
+      color: fourth
 
 .errors, .errors ul
   color: first
@@ -95,6 +97,10 @@ a
       font-weight: 300
 
 form
+  padding: 15px 20px
+  border-bottom: 1px solid third
+  background: white
+
   fieldset
     padding: 0
     border: 0
@@ -111,27 +117,39 @@ form
     padding: 3px 5px
     display: block
     font-family: 'Open Sans'
-    width: 100%
     border: 1px solid silver
+    width: 100%
 
   textarea
     height: 10em
 
+
 .actions
-  background: #3a3a3a
-  position: absolute
+  height: height / 2
+  background: fourth
+  position: fixed
   width: 100%
   bottom: 0
+  left: 0
 
   .buttons
-    padding: 20px
     text-align: center
 
     button
+      line-height: height
       background: none
       color: silver
       border: none 0
-      margin-right: 5px
+      border-right: 1px solid #444444
+      padding: 0 25px
+      display: inline-block
+      margin-left: -4px
 
       &:hover
-        color: first
+        background: #444444
+
+      &:first-child
+        border-left: 1px solid #444444
+
+      &:disabled
+        color: #444444

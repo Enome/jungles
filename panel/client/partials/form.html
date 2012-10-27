@@ -18,7 +18,7 @@
 
     <div>
       <label for='id_name'>Name:</label>
-      <input id='id_name' type='text' ng-model='data.name' required autofocus />
+      <input id='id_name' type='text' ng-model='data.name' required />
     </div>
 
     <div>
@@ -30,7 +30,11 @@
 
   <div compile-html='extra'></div>
 
-  <button ng-click='submit(data)' ng-disabled='form.$invalid'>Save</button>
-  <button ng-click='cancel()'>Cancel</button>
+  <div class='actions'>
+    <div class='buttons'>
+      <button ng-click='submit(data)' ng-disabled='form.$invalid'>Save</button>
+      <button ng-click='cancel()'>Cancel</button>
+    </div>
+  </div>
 
 </form>
