@@ -1,5 +1,21 @@
 # Jungles Components
 
-Coming soon.
+Angular.js components for jungles-panel.
 
-Idea is to have angular components for the control panel. File upload will be the first one.
+## Upload
+
+```jade
+upload(url='/files', ng-model='data.files')
+```
+
+### url
+
+The component will post a base64 encode file to this url. The response should be:
+
+```js
+{ file: filename }
+```
+
+### ng-model
+
+An array that holds filenames.
