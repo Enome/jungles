@@ -2,8 +2,6 @@ var controllers = {
   
   UploadCtrl: function ($scope, $http, _) {
 
-    $scope.files = [];
-
     $scope.upload = function (element) {
       $scope.$apply(function ($scope) {
         $scope.files = element.files;
@@ -16,9 +14,13 @@ var controllers = {
       });
     };
 
-    $scope.$watch('files', function () {
+    $scope.$watch('files', function (value) {
       
-      for (var i = 0; i < $scope.files.length; i += 1) {
+      if (typeof value === 'undefined') {
+        return;
+      }
+
+      for (var i = 0; i < value.length; i += 1) {
 
         var current = $scope.files[i];
         var reader = new FileReader();

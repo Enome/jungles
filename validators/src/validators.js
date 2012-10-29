@@ -49,8 +49,10 @@ var validators = {
 
     return function (data, key, errors, sanitized, callback) {
       try {
-        check(data[key], msg).isArray();
-        sanitized[key] = data[key];
+        if (typeof data[key] !== 'undefined') {
+          check(data[key], msg).isArray();
+          sanitized[key] = data[key];
+        }
       } catch (e) {
         utils.pushValue(errors, key, e.message);
       }

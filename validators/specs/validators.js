@@ -67,6 +67,18 @@ describe('Validators', function () {
 
       });
 
+      it('adds no error when the value is undefined', function (done) {
+
+        var validator = array();
+
+        validator(data, 'names', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
     });
 
   });
