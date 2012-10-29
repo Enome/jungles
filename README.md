@@ -6,6 +6,10 @@ In this repo you find the building blocks to create a CMS. This is meant for dev
 
 If you want to help out you can mostly find me in #jungles on freenode (ping pickels) or create an issue here on Github.
 
+## Want to get started?
+
+In the examples directory you can find examples to get your started. Most modules have their own readme if you want more information.
+
 ## Modules
 
 - **auth-persona:** This is a Express.js app you can mount that adds Mozilla persona authentication.
