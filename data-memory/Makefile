@@ -1,2 +1,2 @@
 test:
-	@mocha ./test.js -R spec --require should
+	@node ./test.js

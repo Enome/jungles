@@ -1,5 +1,5 @@
 var test = require('jungles-data');
-var data = require('../index')({
+var data = require('./index')({
   user: 'jungles_test',
   password: '1234',
   database: 'jungles_test',

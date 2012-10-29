@@ -284,6 +284,58 @@ describe('Find >', function () {
 
 });
 
+describe('Tree', function () {
+
+  it('returns a tree from all the matching nodes', function (done) {
+    
+    var result = data.tree({ path: /.*/ });
+
+    var util = require('util');
+    result.success(function (response) {
+
+      var expected = [
+        {
+          path: '/home',
+          order: 1,
+          name: 'home',
+          type: 'page',
+          body: 'This is the body'
+        },
+        {
+          path: '/items',
+          order: 2,
+          name: 'items',
+          type: 'products',
+          children: [
+            {
+              path: '/items/skateboard',
+              order: 1,
+              name: 'skateboard',
+              type: 'product',
+              children: [
+                {
+                  path: '/items/skateboard/yellow',
+                  material: 'plastic',
+                  order: 0,
+                  name: 'yellow',
+                  type: 'wheel'
+                }
+              ]
+            }
+          ],
+        }
+      ];
+
+      eql(response, expected);
+
+      done();
+
+    });
+
+  });
+
+});
+
 describe('Remove >', function () {
 
   it('removes one instance', function (done) {
