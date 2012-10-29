@@ -10,7 +10,13 @@ upload(url='/files', ng-model='data.files')
 
 ### url
 
-The component will post a base64 encode file to this url. The response should be:
+The component will post a data url encode file to this url. The body of the request should be:
+
+```js
+{ file: 'DataUrl' }
+```
+
+ The response should be:
 
 ```js
 { file: filename }
