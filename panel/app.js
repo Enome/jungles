@@ -32,9 +32,7 @@ module.exports = function (options) {
 
   // Customize
 
-  if (typeof options.customize !== 'undefined') {
-    require('./customize').init(app, options.customize);
-  }
+  require('./customize').init(app, options.customize);
 
   // Routes
 

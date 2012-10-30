@@ -5,6 +5,9 @@ var functions = {
 
   javascript: function (callbacks, callback) {
 
+    if (typeof callbacks === 'undefined') {
+      return callback('');
+    }
 
     if (typeof functions._js === 'undefined') {
 
@@ -34,6 +37,10 @@ var functions = {
 
   css: function (callbacks, callback) {
 
+    if (typeof callbacks === 'undefined') {
+      return callback('');
+    }
+
     if (typeof functions._css === 'undefined') {
 
       functions._css = '';
@@ -62,6 +69,10 @@ var functions = {
 
 
   html: function (callbacks, callback) {
+
+    if (typeof callbacks === 'undefined') {
+      return callback({});
+    }
 
     if (typeof functions._html === 'undefined') {
 

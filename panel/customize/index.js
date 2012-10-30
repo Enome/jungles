@@ -25,6 +25,12 @@ var customize = {
     app.get('/custom/html/:name', function (req, res, next) {
 
       functions.html(callbacks, function (html) {
+        var current = html[req.params.name];
+
+        if (typeof current === 'undefined') {
+          return next({ type: 'http', error: 404 });
+        }
+
         res.send(html[req.params.name]);
       });
 
