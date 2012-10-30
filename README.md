@@ -8,7 +8,15 @@ If you want to help out you can mostly find me in #jungles on freenode (ping pic
 
 ## Want to get started?
 
-In the examples directory you can find examples to get your started. Most modules have their own readme if you want more information.
+### Quick start
+
+```sh
+git clone git://github.com/Enome/jungles-getting-started.git && cd jungles-getting-started && npm install && node app.js
+```
+
+### Tutorial
+
+Checkout the [getting started](http://github.com/Enome/jungles-getting-started) tutorial.
 
 ## Modules
 
