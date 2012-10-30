@@ -1,8 +1,6 @@
-var directives = require('./directives');
 var controllers = require('./controllers');
 
 var forms = function (app) {
-  app.directive('compileHtml', directives.compileHtml);
   app.controller('CreateFormCtrl', controllers.CreateFormCtrl);
   app.controller('EditFormCtrl', controllers.EditFormCtrl);
 

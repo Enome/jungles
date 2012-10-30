@@ -474,7 +474,6 @@ require.define("/client/data/index.js",function(require,module,exports,__dirname
 var data = function (app) {
   app.factory('instances', services.instances);
   app.factory('types', services.types);
-  app.factory('forms', services.forms);
 };
 
 module.exports = data;
@@ -554,24 +553,9 @@ var types = function ($http, general) {
 
 };
 
-var forms = function ($http, general) {
-  
-  return {
-    
-    get: function (name, callback) {
-      var url = general.resource_url('/types/' + name + '/form');
-      var result = $http.get(url);
-      result.success(callback);
-    }
-
-  };
-
-};
-
 module.exports = {
   instances: instances,
-  types: types,
-  forms: forms
+  types: types
 };
 });
 
@@ -2329,11 +2313,9 @@ require.define("/client/general/controllers.js",function(require,module,exports,
 module.exports = controllers;
 });
 
-require.define("/client/forms/index.js",function(require,module,exports,__dirname,__filename,process){var directives = require('./directives');
-var controllers = require('./controllers');
+require.define("/client/forms/index.js",function(require,module,exports,__dirname,__filename,process){var controllers = require('./controllers');
 
 var forms = function (app) {
-  app.directive('compileHtml', directives.compileHtml);
   app.controller('CreateFormCtrl', controllers.CreateFormCtrl);
   app.controller('EditFormCtrl', controllers.EditFormCtrl);
 
@@ -2355,41 +2337,18 @@ var forms = function (app) {
 module.exports = forms;
 });
 
-require.define("/client/forms/directives.js",function(require,module,exports,__dirname,__filename,process){var directives = {
-  
-  compileHtml: function ($compile) {
-
-    return function (scope, element, attr) {
-      scope.$watch(attr.compileHtml, function (value) {
-        if (value) {
-          element.html($compile(value)(scope));
-        } else {
-          element.html('');
-        }
-      });
-    };
-
-  }
-
-};
-
-module.exports = directives;
-});
-
 require.define("/client/forms/controllers.js",function(require,module,exports,__dirname,__filename,process){var controllers = {
 
-  CreateFormCtrl: function ($scope, $routeParams, $window, forms, instances, general, _) {
+  CreateFormCtrl: function ($scope, $routeParams, $window, instances, general, _) {
 
     $scope.data = {
       type: $routeParams.type,
       parent: general.path.decode($routeParams.parent)
     };
     
-    // Get Form
+    // Get Form Url
 
-    forms.get($routeParams.type, function (form) {
-      $scope.extra = form;
-    });
+    $scope.form_url = general.resource_url('/types/' + $scope.data.type + '/form');
 
     // create
 
@@ -2407,18 +2366,14 @@ require.define("/client/forms/controllers.js",function(require,module,exports,__
 
   },
 
-  EditFormCtrl: function ($scope, $routeParams, $window, instances, forms, general, _) {
+  EditFormCtrl: function ($scope, $routeParams, $window, instances, general, _) {
 
     var path = general.path.decode($routeParams.path);
     
-    // Get Form
+    // Get Form Url
 
     $scope.$watch('data.type', function (type) {
-      if (type) {
-        forms.get(type, function (form) {
-          $scope.extra = form;
-        });
-      }
+      $scope.form_url = general.resource_url('/types/' + type + '/form');
     });
 
     // Get current instance

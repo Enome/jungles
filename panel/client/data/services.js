@@ -72,22 +72,7 @@ var types = function ($http, general) {
 
 };
 
-var forms = function ($http, general) {
-  
-  return {
-    
-    get: function (name, callback) {
-      var url = general.resource_url('/types/' + name + '/form');
-      var result = $http.get(url);
-      result.success(callback);
-    }
-
-  };
-
-};
-
 module.exports = {
   instances: instances,
-  types: types,
-  forms: forms
+  types: types
 };

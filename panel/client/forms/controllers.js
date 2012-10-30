@@ -1,17 +1,15 @@
 var controllers = {
 
-  CreateFormCtrl: function ($scope, $routeParams, $window, forms, instances, general, _) {
+  CreateFormCtrl: function ($scope, $routeParams, $window, instances, general, _) {
 
     $scope.data = {
       type: $routeParams.type,
       parent: general.path.decode($routeParams.parent)
     };
     
-    // Get Form
+    // Get Form Url
 
-    forms.get($routeParams.type, function (form) {
-      $scope.extra = form;
-    });
+    $scope.form_url = general.resource_url('/types/' + $scope.data.type + '/form');
 
     // create
 
@@ -29,18 +27,14 @@ var controllers = {
 
   },
 
-  EditFormCtrl: function ($scope, $routeParams, $window, instances, forms, general, _) {
+  EditFormCtrl: function ($scope, $routeParams, $window, instances, general, _) {
 
     var path = general.path.decode($routeParams.path);
     
-    // Get Form
+    // Get Form Url
 
     $scope.$watch('data.type', function (type) {
-      if (type) {
-        forms.get(type, function (form) {
-          $scope.extra = form;
-        });
-      }
+      $scope.form_url = general.resource_url('/types/' + type + '/form');
     });
 
     // Get current instance
