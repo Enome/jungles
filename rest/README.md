@@ -65,6 +65,13 @@ Initialize the rest layer with the data and types.
 var rest = require('jungles-rest').init({ data: data, types: types });
 ```
 
+This returns an Express.js app. You can find the data later and types at:
+
+```js
+rest.core.data;
+rest.core.types;
+```
+
 ## Mount
 
 Last we'll mount it to our base application.

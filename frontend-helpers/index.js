@@ -1,6 +1,23 @@
+var kwery = require('kwery');
+
 var helpers = {
 
   init: function (app) {
+
+    app.locals.getRoot = function (tree, current) {
+
+      var root = current.path.split('/')[1];
+      var result = kwery.tree(tree, { path: '/' + root });
+
+      var root;
+
+      result.one(function (response) {
+        root = response; // This works cause kwery isn't async.
+      });
+
+      return root;
+
+    };
   
     app.locals.navigation = function (nodes, start, end, current) {
 
