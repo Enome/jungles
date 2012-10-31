@@ -11,7 +11,7 @@ var controllers = {
       });
     });
 
-    instances.get({ path: '/[^/]+' }, function (data) {
+    instances.get({ path: /^\/[^\/]+$/ }, function (data) {
       $scope.instances = data;
     });
     
@@ -40,7 +40,7 @@ var controllers = {
 
     // Children
 
-    var instances_query = { path: path + '/[^/]+$' };
+    var instances_query = { path: new RegExp(path + '/[^/]+$') };
 
     instances.get(instances_query, function (data) {
       $scope.instances = data;

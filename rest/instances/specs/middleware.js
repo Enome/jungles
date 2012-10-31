@@ -11,10 +11,31 @@ describe('Instances Middleware', function () {
       var req = { query: {} };
 
       middleware.defaultQuery(req, {}, function () {
-        req.should.eql({ query: { path: '.*' } });
+        req.should.eql({ query: { path: /.*/ } });
         done();
       });
       
+    });
+
+  });
+
+  describe('queryToRegex', function () {
+    
+    it('converts the properties of the query object to regexes', function (done) {
+
+      var req = {
+        query: {
+          path: 'regex-/.*/',
+          name: 'test',
+          id: 15
+        }
+      };
+
+      middleware.queryToRegex(req, {}, function () {
+        req.should.eql({ query: { path: /.*/, name: 'test', id: 15 } });
+        done();
+      });
+
     });
 
   });

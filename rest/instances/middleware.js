@@ -10,8 +10,19 @@ module.exports = {
 
   defaultQuery: function (req, res, next) {
     if (Object.keys(req.query).length === 0) {
-      req.query = { path: '.*' };
+      req.query = { path: /.*/ };
     }
+    next();
+  },
+
+  queryToRegex: function (req, res, next) {
+
+    each(req.query, function (value, key) {
+      if (value.toString().indexOf('regex-') === 0) {
+        req.query[key] = new RegExp(value.replace(/^regex-\/|\/$/g, ''));
+      }
+    });
+
     next();
   },
 

@@ -20,6 +20,12 @@ var instances = function ($http, $window, general, events, _) {
   return {
 
     get: function (query, callback) {
+      _.each(query, function (value, key) {
+        if (value instanceof RegExp) {
+          query[key] = 'regex-' + value.toString();
+        }
+      });
+
       var url = general.resource_url('/instances?' + qs.stringify(query));
       var result = $http.get(url);
       result.success(callback);

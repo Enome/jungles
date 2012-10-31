@@ -501,6 +501,12 @@ var instances = function ($http, $window, general, events, _) {
   return {
 
     get: function (query, callback) {
+      _.each(query, function (value, key) {
+        if (value instanceof RegExp) {
+          query[key] = 'regex-' + value.toString();
+        }
+      });
+
       var url = general.resource_url('/instances?' + qs.stringify(query));
       var result = $http.get(url);
       result.success(callback);
@@ -2373,7 +2379,9 @@ require.define("/client/forms/controllers.js",function(require,module,exports,__
     // Get Form Url
 
     $scope.$watch('data.type', function (type) {
-      $scope.form_url = general.resource_url('/types/' + type + '/form');
+      if (typeof type !== 'undefined') {
+        $scope.form_url = general.resource_url('/types/' + type + '/form');
+      }
     });
 
     // Get current instance
@@ -2450,7 +2458,7 @@ require.define("/client/instances/controllers.js",function(require,module,export
       });
     });
 
-    instances.get({ path: '/[^/]+' }, function (data) {
+    instances.get({ path: /^\/[^\/]+$/ }, function (data) {
       $scope.instances = data;
     });
     
@@ -2479,7 +2487,7 @@ require.define("/client/instances/controllers.js",function(require,module,export
 
     // Children
 
-    var instances_query = { path: path + '/[^/]+$' };
+    var instances_query = { path: new RegExp(path + '/[^/]+$') };
 
     instances.get(instances_query, function (data) {
       $scope.instances = data;

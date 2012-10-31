@@ -34,7 +34,9 @@ var controllers = {
     // Get Form Url
 
     $scope.$watch('data.type', function (type) {
-      $scope.form_url = general.resource_url('/types/' + type + '/form');
+      if (typeof type !== 'undefined') {
+        $scope.form_url = general.resource_url('/types/' + type + '/form');
+      }
     });
 
     // Get current instance
