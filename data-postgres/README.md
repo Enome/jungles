@@ -15,7 +15,7 @@ data.setup(); // Creates table called instances
 
 ## API
 
-[Data API](http://github.com/Enome/jungles-data)
+[Data API](https://github.com/Enome/jungles/tree/master/data)
 
 ## Postgres specific
 
