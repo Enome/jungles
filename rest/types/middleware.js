@@ -29,13 +29,16 @@ module.exports = {
       var result = core.types.find(q);
 
       result.many(function (response) {
-        res.locals.types = response;
-        return next();
+        if (response.length !== 0) {
+          res.locals.types = response;
+          return next();
+        }
       });
 
       result.empty(function () {
-        next({ type: 'http', error: 404 });
+        return next({ type: 'types', error: 'No types were found.' });
       });
+
 
     };
 

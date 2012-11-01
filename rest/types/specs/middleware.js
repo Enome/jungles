@@ -72,7 +72,7 @@ describe('Types Middleware', function () {
 
     describe('empty', function () {
 
-      it('calls next with an http 404 error', function (done) {
+      it('calls next with a types not found error', function (done) {
         
         // Setup dependencies
 
@@ -102,7 +102,7 @@ describe('Types Middleware', function () {
         recorder(handler, state, function (result) {
 
           result.eql({
-            next: { type: 'http', error: 404 }
+            next: { type: 'types', error: 'No types were found.' }
           });
 
           done();
