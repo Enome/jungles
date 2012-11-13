@@ -3,7 +3,6 @@ var pg = require('pg');
 module.exports = function (settings) {
 
   var client = new pg.Client(settings);
-
   client.connect();
 
   return {

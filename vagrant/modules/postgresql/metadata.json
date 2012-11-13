@@ -1,0 +1,123 @@
+{
+  "summary": "Install and configure the Postgresql database system",
+  "description": "Postgresql is a database system which is broadly compatible with SQL\n\t\tstandards. You can setup users and configure databases using this module.\n",
+  "source": "UNKNOWN",
+  "project_page": "https://github.com/akumria/puppet-postgresql",
+  "checksums": {
+    "manifests/params.pp": "fe7e5d6a232172630a8ff4e891f70e5f",
+    "lib/puppet/type/pg_database.rb": "596b1c8e967be54434aa26eb99d412df",
+    "lib/puppet/provider/pg_user/default.rb": "875f70ab605346fe61e52a1dac3ffffb",
+    "GPL-3": "d32239bcb673463ab874e80d47fae504",
+    "templates/pg_hba.conf.erb": "a19a80cb84a14ea258e9b538b1c651fb",
+    "manifests/init.pp": "e8be71fe639f789dfc5a003316ae884f",
+    "templates/postgresql.conf.erb": "0d255486392e9752db4ea1fb3c302b5a",
+    "Modulefile": "d566434ba6a0e181ffcb2f209be8627f",
+    "lib/puppet/provider/pg_user/debian_postgresql.rb": "c88c7e34673768666bddc637409a70d0",
+    "README.md": "737d4b509c7feb8e215ed3c4ad7966b5",
+    "lib/puppet/provider/pg_database/debian_postgresql.rb": "abbeb9ace4953c56479d46cf947bcdf7",
+    "manifests/db.pp": "fb7012dd2157d6dc338db1f8e701bd86",
+    "manifests/server.pp": "766c54b958824badda83972d5f9ae8c6",
+    "lib/puppet/type/pg_user.rb": "412679151269bb891459d6203d0c428b",
+    "lib/puppet/provider/pg_database/default.rb": "5a2ddb62870a4e85d1b16662f8d9f212"
+  },
+  "author": "akumria",
+  "types": [
+    {
+      "providers": [
+        {
+          "name": "debian_postgresql",
+          "doc": "Manage databases for a postgres database cluster\n\nRequired binaries: `psql`, `su`.  Default for `operatingsystem` == `debian, ubuntu`."
+        },
+        {
+          "name": "default",
+          "doc": "A default pg_database provider which just fails."
+        }
+      ],
+      "properties": [
+        {
+          "name": "ensure",
+          "doc": "The basic property that the resource should be in.  Valid values are `present`, `absent`."
+        }
+      ],
+      "name": "pg_database",
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The name of the database."
+        },
+        {
+          "name": "owner",
+          "doc": "The owner of the database"
+        },
+        {
+          "name": "encoding",
+          "doc": "The character set encoding to use for the database"
+        },
+        {
+          "name": "locale",
+          "doc": "The locale to use for collation. Typical values include 'C' or 'en_US.UTF-8' or other specifiers"
+        }
+      ],
+      "doc": "Manage Postgresql databases."
+    },
+    {
+      "providers": [
+        {
+          "name": "debian_postgresql",
+          "doc": "Manage users for a postgres database cluster\n\nRequired binaries: `psql`, `su`.  Default for `operatingsystem` == `debian, ubuntu`."
+        },
+        {
+          "name": "default",
+          "doc": "A default pg_user provider which just fails."
+        }
+      ],
+      "properties": [
+        {
+          "name": "ensure",
+          "doc": "The basic property that the resource should be in.  Valid values are `present`, `absent`."
+        }
+      ],
+      "name": "pg_user",
+      "parameters": [
+        {
+          "name": "name",
+          "doc": "The name of the user/role"
+        },
+        {
+          "name": "password",
+          "doc": "The password for the user/role"
+        },
+        {
+          "name": "createdb",
+          "doc": "Is the user allowed to create databases."
+        },
+        {
+          "name": "inherit",
+          "doc": "Inherit privileges of roles this user/role is a member of."
+        },
+        {
+          "name": "login",
+          "doc": "Can the user/role/ login?"
+        },
+        {
+          "name": "createrole",
+          "doc": "Can the user/role create other users/roles?"
+        },
+        {
+          "name": "superuser",
+          "doc": "Is the user/role a superuser?"
+        }
+      ],
+      "doc": "Manage a Postgresql database user/role."
+    }
+  ],
+  "license": "GNU General Public License, Version 3+",
+  "name": "akumria-postgresql",
+  "version": "1.1.0",
+  "dependencies": [
+    {
+      "version_requirement": ">= 2.3.1",
+      "name": "puppetlabs/stdlib"
+    }
+  ]
+}
