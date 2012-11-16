@@ -14,6 +14,7 @@ var update = function (db, data) {
       var query = db.query('select * from instances where path = $1', [data.path], function (err, result) {
 
         var instance = result.rows[0];
+        delete instance.data;
         var row = extend({}, instance, data);
 
         // Path
