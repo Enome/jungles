@@ -12,7 +12,7 @@
 require.paths = [];
 require.modules = {};
 require.cache = {};
-require.extensions = [".js",".coffee"];
+require.extensions = [".js",".coffee",".json"];
 
 require._core = {
     'assert': true,
@@ -139,10 +139,13 @@ require.alias = function (from, to) {
 
 (function () {
     var process = {};
+    var global = typeof window !== 'undefined' ? window : {};
+    var definedProcess = false;
     
     require.define = function (filename, fn) {
-        if (require.modules.__browserify_process) {
+        if (!definedProcess && require.modules.__browserify_process) {
             process = require.modules.__browserify_process();
+            definedProcess = true;
         }
         
         var dirname = require._core[filename]
@@ -183,7 +186,8 @@ require.alias = function (from, to) {
                 module_.exports,
                 dirname,
                 filename,
-                process
+                process,
+                global
             );
             module_.loaded = true;
             return module_.exports;
@@ -192,7 +196,7 @@ require.alias = function (from, to) {
 })();
 
 
-require.define("path",function(require,module,exports,__dirname,__filename,process){function filter (xs, fn) {
+require.define("path",function(require,module,exports,__dirname,__filename,process,global){function filter (xs, fn) {
     var res = [];
     for (var i = 0; i < xs.length; i++) {
         if (fn(xs[i], i, xs)) res.push(xs[i]);
@@ -326,17 +330,24 @@ exports.basename = function(path, ext) {
 exports.extname = function(path) {
   return splitPathRe.exec(path)[3] || '';
 };
+
 });
 
-require.define("__browserify_process",function(require,module,exports,__dirname,__filename,process){var process = module.exports = {};
+require.define("__browserify_process",function(require,module,exports,__dirname,__filename,process,global){var process = module.exports = {};
 
 process.nextTick = (function () {
-    var queue = [];
+    var canSetImmediate = typeof window !== 'undefined'
+        && window.setImmediate;
     var canPost = typeof window !== 'undefined'
         && window.postMessage && window.addEventListener
     ;
-    
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
     if (canPost) {
+        var queue = [];
         window.addEventListener('message', function (ev) {
             if (ev.source === window && ev.data === 'browserify-tick') {
                 ev.stopPropagation();
@@ -346,14 +357,15 @@ process.nextTick = (function () {
                 }
             }
         }, true);
-    }
-    
-    return function (fn) {
-        if (canPost) {
+
+        return function nextTick(fn) {
             queue.push(fn);
             window.postMessage('browserify-tick', '*');
-        }
-        else setTimeout(fn, 0);
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
     };
 })();
 
@@ -376,100 +388,10 @@ process.binding = function (name) {
         cwd = path.resolve(dir, cwd);
     };
 })();
+
 });
 
-require.define("vm",function(require,module,exports,__dirname,__filename,process){module.exports = require("vm-browserify")});
-
-require.define("/node_modules/vm-browserify/package.json",function(require,module,exports,__dirname,__filename,process){module.exports = {"main":"index.js"}});
-
-require.define("/node_modules/vm-browserify/index.js",function(require,module,exports,__dirname,__filename,process){var Object_keys = function (obj) {
-    if (Object.keys) return Object.keys(obj)
-    else {
-        var res = [];
-        for (var key in obj) res.push(key)
-        return res;
-    }
-};
-
-var forEach = function (xs, fn) {
-    if (xs.forEach) return xs.forEach(fn)
-    else for (var i = 0; i < xs.length; i++) {
-        fn(xs[i], i, xs);
-    }
-};
-
-var Script = exports.Script = function NodeScript (code) {
-    if (!(this instanceof Script)) return new Script(code);
-    this.code = code;
-};
-
-Script.prototype.runInNewContext = function (context) {
-    if (!context) context = {};
-    
-    var iframe = document.createElement('iframe');
-    if (!iframe.style) iframe.style = {};
-    iframe.style.display = 'none';
-    
-    document.body.appendChild(iframe);
-    
-    var win = iframe.contentWindow;
-    
-    forEach(Object_keys(context), function (key) {
-        win[key] = context[key];
-    });
-     
-    if (!win.eval && win.execScript) {
-        // win.eval() magically appears when this is called in IE:
-        win.execScript('null');
-    }
-    
-    var res = win.eval(this.code);
-    
-    forEach(Object_keys(win), function (key) {
-        context[key] = win[key];
-    });
-    
-    document.body.removeChild(iframe);
-    
-    return res;
-};
-
-Script.prototype.runInThisContext = function () {
-    return eval(this.code); // maybe...
-};
-
-Script.prototype.runInContext = function (context) {
-    // seems to be just runInNewContext on magical context objects which are
-    // otherwise indistinguishable from objects except plain old objects
-    // for the parameter segfaults node
-    return this.runInNewContext(context);
-};
-
-forEach(Object_keys(Script.prototype), function (name) {
-    exports[name] = Script[name] = function (code) {
-        var s = Script(code);
-        return s[name].apply(s, [].slice.call(arguments, 1));
-    };
-});
-
-exports.createScript = function (code) {
-    return exports.Script(code);
-};
-
-exports.createContext = Script.createContext = function (context) {
-    // not really sure what this one does
-    // seems to just make a shallow copy
-    var copy = {};
-    if(typeof context === 'object') {
-        forEach(Object_keys(context), function (key) {
-            copy[key] = context[key];
-        });
-    }
-    return copy;
-};
-});
-
-require.define("/client/data/index.js",function(require,module,exports,__dirname,__filename,process){var services = require('./services');
+require.define("/client/data/index.js",function(require,module,exports,__dirname,__filename,process,global){var services = require('./services');
 
 var data = function (app) {
   app.factory('instances', services.instances);
@@ -477,9 +399,10 @@ var data = function (app) {
 };
 
 module.exports = data;
+
 });
 
-require.define("/client/data/services.js",function(require,module,exports,__dirname,__filename,process){var _ = require('underscore');
+require.define("/client/data/services.js",function(require,module,exports,__dirname,__filename,process,global){var _ = require('underscore');
 var qs = require('querystring');
 var EventEmitter = require('events').EventEmitter;
 
@@ -493,7 +416,6 @@ var instances = function ($http, $window, general, events, _) {
       if (data.errors) {
         return events.emit('errors', data.errors);
       }
-      $window.history.back();
     });
 
   };
@@ -563,11 +485,13 @@ module.exports = {
   instances: instances,
   types: types
 };
+
 });
 
-require.define("/node_modules/underscore/package.json",function(require,module,exports,__dirname,__filename,process){module.exports = {"main":"underscore.js"}});
+require.define("/node_modules/underscore/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"underscore.js"}
+});
 
-require.define("/node_modules/underscore/underscore.js",function(require,module,exports,__dirname,__filename,process){//     Underscore.js 1.4.2
+require.define("/node_modules/underscore/underscore.js",function(require,module,exports,__dirname,__filename,process,global){//     Underscore.js 1.4.2
 //     http://underscorejs.org
 //     (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
 //     Underscore may be freely distributed under the MIT license.
@@ -1767,9 +1691,10 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   });
 
 }).call(this);
+
 });
 
-require.define("querystring",function(require,module,exports,__dirname,__filename,process){var isArray = typeof Array.isArray === 'function'
+require.define("querystring",function(require,module,exports,__dirname,__filename,process,global){var isArray = typeof Array.isArray === 'function'
     ? Array.isArray
     : function (xs) {
         return Object.prototype.toString.call(xs) === '[object Array]'
@@ -2019,9 +1944,10 @@ function lastBraceInKey(str) {
     if ('=' == c && !brace) return i;
   }
 }
+
 });
 
-require.define("events",function(require,module,exports,__dirname,__filename,process){if (!process.EventEmitter) process.EventEmitter = function () {};
+require.define("events",function(require,module,exports,__dirname,__filename,process,global){if (!process.EventEmitter) process.EventEmitter = function () {};
 
 var EventEmitter = exports.EventEmitter = process.EventEmitter;
 var isArray = typeof Array.isArray === 'function'
@@ -2192,18 +2118,20 @@ EventEmitter.prototype.listeners = function(type) {
   }
   return this._events[type];
 };
+
 });
 
-require.define("/client/events/index.js",function(require,module,exports,__dirname,__filename,process){var services = require('./services');
+require.define("/client/events/index.js",function(require,module,exports,__dirname,__filename,process,global){var services = require('./services');
 
 var events = function (app) {
   app.factory('events', services.events);
 };
 
 module.exports = events;
+
 });
 
-require.define("/client/events/services.js",function(require,module,exports,__dirname,__filename,process){var events = function ($rootScope) {
+require.define("/client/events/services.js",function(require,module,exports,__dirname,__filename,process,global){var events = function ($rootScope) {
 
   return {
 
@@ -2220,9 +2148,10 @@ require.define("/client/events/services.js",function(require,module,exports,__di
 };
 
 module.exports = { events: events };
+
 });
 
-require.define("/client/general/index.js",function(require,module,exports,__dirname,__filename,process){var services = require('./services');
+require.define("/client/general/index.js",function(require,module,exports,__dirname,__filename,process,global){var services = require('./services');
 var directives = require('./directives');
 var controllers = require('./controllers');
 
@@ -2234,9 +2163,10 @@ var general = function (app) {
 };
 
 module.exports = general;
+
 });
 
-require.define("/client/general/services.js",function(require,module,exports,__dirname,__filename,process){var services = function ($document) {
+require.define("/client/general/services.js",function(require,module,exports,__dirname,__filename,process,global){var services = function ($document) {
 
   var s = {
     resource_url: function (url) {
@@ -2272,9 +2202,10 @@ require.define("/client/general/services.js",function(require,module,exports,__d
 };
 
 module.exports = services;
+
 });
 
-require.define("/client/general/directives.js",function(require,module,exports,__dirname,__filename,process){var directives = {
+require.define("/client/general/directives.js",function(require,module,exports,__dirname,__filename,process,global){var directives = {
 
   documentClick: function ($document, $parse) {
 
@@ -2300,9 +2231,10 @@ require.define("/client/general/directives.js",function(require,module,exports,_
 };
 
 module.exports = directives;
+
 });
 
-require.define("/client/general/controllers.js",function(require,module,exports,__dirname,__filename,process){var controllers = {
+require.define("/client/general/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
 
   PageCtrl: function ($scope, $window, events) {
 
@@ -2317,9 +2249,10 @@ require.define("/client/general/controllers.js",function(require,module,exports,
 };
 
 module.exports = controllers;
+
 });
 
-require.define("/client/forms/index.js",function(require,module,exports,__dirname,__filename,process){var controllers = require('./controllers');
+require.define("/client/forms/index.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = require('./controllers');
 
 var forms = function (app) {
   app.controller('CreateFormCtrl', controllers.CreateFormCtrl);
@@ -2341,9 +2274,10 @@ var forms = function (app) {
 };
 
 module.exports = forms;
+
 });
 
-require.define("/client/forms/controllers.js",function(require,module,exports,__dirname,__filename,process){var controllers = {
+require.define("/client/forms/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
 
   CreateFormCtrl: function ($scope, $routeParams, $window, instances, general, _) {
 
@@ -2415,9 +2349,10 @@ require.define("/client/forms/controllers.js",function(require,module,exports,__
 };
 
 module.exports = controllers;
+
 });
 
-require.define("/client/instances/index.js",function(require,module,exports,__dirname,__filename,process){var controllers = require('./controllers');
+require.define("/client/instances/index.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = require('./controllers');
 
 var types = function (app) {
 
@@ -2443,9 +2378,10 @@ var types = function (app) {
 };
 
 module.exports = types;
+
 });
 
-require.define("/client/instances/controllers.js",function(require,module,exports,__dirname,__filename,process){var controllers = {
+require.define("/client/instances/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
 
   RootCtrl: function ($scope, $routeParams, types, instances, events, _) {
 
@@ -2556,18 +2492,20 @@ require.define("/client/instances/controllers.js",function(require,module,export
 };
 
 module.exports = controllers;
+
 });
 
-require.define("/client/actions/index.js",function(require,module,exports,__dirname,__filename,process){var controllers = require('./controllers');
+require.define("/client/actions/index.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = require('./controllers');
 
 var actions = function (app) {
   app.controller('InstancesActionCtrl', controllers.InstancesActionCtrl);
 };
 
 module.exports = actions;
+
 });
 
-require.define("/client/actions/controllers.js",function(require,module,exports,__dirname,__filename,process){var controllers = {
+require.define("/client/actions/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
 
   InstancesActionCtrl: function ($scope, $location, instances, events, general, _) {
 
@@ -2640,9 +2578,10 @@ e   });
 };
 
 module.exports = controllers;
+
 });
 
-require.define("/client/errors/index.js",function(require,module,exports,__dirname,__filename,process){var controllers = require('./controllers');
+require.define("/client/errors/index.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = require('./controllers');
 
 var errors = function (app) {
 
@@ -2651,9 +2590,10 @@ var errors = function (app) {
 };
 
 module.exports = errors;
+
 });
 
-require.define("/client/errors/controllers.js",function(require,module,exports,__dirname,__filename,process){var controllers = {
+require.define("/client/errors/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
 
   ErrorCtrl: function ($scope, events, _) {
 
@@ -2671,9 +2611,10 @@ require.define("/client/errors/controllers.js",function(require,module,exports,_
 };
 
 module.exports = controllers;
+
 });
 
-require.define("/client/index.js",function(require,module,exports,__dirname,__filename,process){var jungles = angular.module('jungles', []);
+require.define("/client/index.js",function(require,module,exports,__dirname,__filename,process,global){var jungles = angular.module('jungles', []);
 window.jungles = jungles;
 
 require('./data')(jungles);
@@ -2683,6 +2624,7 @@ require('./forms')(jungles);
 require('./instances')(jungles);
 require('./actions')(jungles);
 require('./errors')(jungles);
+
 });
 require("/client/index.js");
 })();

@@ -12,7 +12,6 @@ var instances = function ($http, $window, general, events, _) {
       if (data.errors) {
         return events.emit('errors', data.errors);
       }
-      $window.history.back();
     });
 
   };
