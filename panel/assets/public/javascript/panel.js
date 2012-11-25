@@ -416,6 +416,15 @@ var instances = function ($http, $window, general, events, _) {
       if (data.errors) {
         return events.emit('errors', data.errors);
       }
+
+      if (type === 'post') {
+        return $window.history.back();
+      }
+
+      var alert = {};
+      alert[data.name] = [ 'was saved' ];
+      events.emit('warnings', alert);
+
     });
 
   };
@@ -1956,6 +1965,13 @@ var isArray = typeof Array.isArray === 'function'
         return Object.prototype.toString.call(xs) === '[object Array]'
     }
 ;
+function indexOf (xs, x) {
+    if (xs.indexOf) return xs.indexOf(x);
+    for (var i = 0; i < xs.length; i++) {
+        if (x === xs[i]) return i;
+    }
+    return -1;
+}
 
 // By default EventEmitters will print a warning if more than
 // 10 listeners are added to it. This is a useful default which
@@ -2092,7 +2108,7 @@ EventEmitter.prototype.removeListener = function(type, listener) {
   var list = this._events[type];
 
   if (isArray(list)) {
-    var i = list.indexOf(listener);
+    var i = indexOf(list, listener);
     if (i < 0) return this;
     list.splice(i, 1);
     if (list.length == 0)
@@ -2581,30 +2597,44 @@ module.exports = controllers;
 
 });
 
-require.define("/client/errors/index.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = require('./controllers');
+require.define("/client/alerts/index.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = require('./controllers');
 
-var errors = function (app) {
+var alerts = function (app) {
 
-  app.controller('ErrorCtrl', controllers.ErrorCtrl);
+  app.controller('AlertsCtrl', controllers.AlertsCtrl);
 
 };
 
-module.exports = errors;
+module.exports = alerts;
 
 });
 
-require.define("/client/errors/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
+require.define("/client/alerts/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
 
-  ErrorCtrl: function ($scope, events, _) {
+  AlertsCtrl: function ($scope, events, _) {
 
-    $scope.errors = [];
+    var setEvents = function (event) {
 
-    events.on('errors', function (e, errors) {
-      $scope.errors.length = 0;
-      _.each(errors, function (value, key) {
-        $scope.errors.push({ name: key, errors: value.join(', ') });
+      $scope[event] = [];
+
+      events.on(event, function (e, items) {
+
+        $scope[event].length = 0;
+
+        setTimeout(function () {
+          _.each(items, function (value, key) {
+            $scope.$apply(function () {
+              $scope[event].push({ name: key, message: value.join(', ') });
+            });
+          });
+        }, 50);
+
       });
-    });
+
+    };
+
+    setEvents('errors');
+    setEvents('warnings');
 
   }
 
@@ -2623,7 +2653,7 @@ require('./general')(jungles);
 require('./forms')(jungles);
 require('./instances')(jungles);
 require('./actions')(jungles);
-require('./errors')(jungles);
+require('./alerts')(jungles);
 
 });
 require("/client/index.js");

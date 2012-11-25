@@ -70,24 +70,30 @@ a {
   background: #ebebeb;
   color: #3a3a3a;
 }
-.errors,
-.errors ul {
+.alerts {
   color: #c30;
   padding: 0;
   margin: 0;
   overflow: auto;
   list-style-type: none;
-}
-.errors {
   font-weight: 700;
 }
-.errors li {
-  border-bottom: 1px #eed3d7 solid;
-  background: #fcefef;
+.alerts .error {
+  border-bottom: 1px #eacac9 solid;
+  background: #fdf9f9;
   color: #b94a48;
   padding: 15px 20px 13px;
 }
-.errors li span {
+.alerts .error span {
+  font-weight: 300;
+}
+.alerts .warning {
+  border-bottom: 1px #acd4ad solid;
+  background: #d8ebd8;
+  color: #468847;
+  padding: 15px 20px 13px;
+}
+.alerts .warning span {
   font-weight: 300;
 }
 form {

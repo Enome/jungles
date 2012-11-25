@@ -1,9 +1,15 @@
 <h1>{{title}}</h1>
 
-<ul ng-controller='ErrorCtrl' class='errors' ng-show='errors.length'>
-  <li ng-repeat='error in errors'>
-    {{error.name}}: <span>{{error.errors}}</span>
+<ul ng-controller='AlertsCtrl' class='alerts' ng-show='warnings.length || errors.length'>
+
+  <li class='warning' ng-repeat='warning in warnings'>
+    {{warning.name}}: <span>{{warning.message}}</span>
   </li>
+
+  <li class='error' ng-repeat='error in errors'>
+    {{error.name}}: <span>{{error.message}}</span>
+  </li>
+
 </ul>
 
 <form name='form' novalidate>

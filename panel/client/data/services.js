@@ -12,6 +12,15 @@ var instances = function ($http, $window, general, events, _) {
       if (data.errors) {
         return events.emit('errors', data.errors);
       }
+
+      if (type === 'post') {
+        return $window.history.back();
+      }
+
+      var alert = {};
+      alert[data.name] = [ 'was saved' ];
+      events.emit('warnings', alert);
+
     });
 
   };

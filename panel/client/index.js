@@ -7,4 +7,4 @@ require('./general')(jungles);
 require('./forms')(jungles);
 require('./instances')(jungles);
 require('./actions')(jungles);
-require('./errors')(jungles);
+require('./alerts')(jungles);

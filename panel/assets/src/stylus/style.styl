@@ -77,24 +77,30 @@ selectable()
       background: third
       color: fourth
 
-.errors, .errors ul
+alert(color)
+
+  border-bottom: 1px lighten(color, 35) solid
+  background: lighten(color, 48)
+  color: color
+  padding: 15px 20px 13px
+
+  span
+    font-weight: 300
+
+.alerts
   color: first
   padding: 0
   margin: 0
   overflow: auto
   list-style-type: none
-
-.errors
   font-weight: 700
 
-  li
-    border-bottom: 1px #EED3D7 solid
-    background: #fcefef
-    color: #B94A48
-    padding: 15px 20px 13px
+  .error
+    alert(#B94A48)
 
-    span
-      font-weight: 300
+  .warning
+    alert(#468847)
+
 
 form
   padding: 15px 20px
