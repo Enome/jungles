@@ -11,7 +11,7 @@ app.get('/', render('index'));
 # Redirect
 
 ```js
-app.get('/', render('/somewhere'));
+app.get('/', redirect('/somewhere'));
 ```
 
 # Send
