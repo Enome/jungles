@@ -2,6 +2,12 @@ var check = require('validator').check;
 var sanitize = require('validator').sanitize;
 var utils = require('./utils');
 
+var doIfDefined = function (val, func) {
+  if (typeof val !== 'undefined') {
+    func();
+  }
+};
+
 var validators = {
 
   required: function (msg) {
@@ -60,6 +66,22 @@ var validators = {
     };
 
   },
+
+  url: function (msg) {
+
+    return function (data, key, errors, sanitized, callback) {
+      try {
+        doIfDefined(data[key], function () {
+          check(data[key], msg).isUrl();
+        });
+      } catch (e) {
+        utils.pushValue(errors, key, e.message);
+      }
+      callback();
+    };
+
+  },
+
 
 };
 

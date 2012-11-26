@@ -3,6 +3,7 @@ var required = validators.required;
 var string = validators.string;
 var integer = validators.integer;
 var array = validators.array;
+var url = validators.url;
 
 describe('Validators', function () {
 
@@ -18,7 +19,12 @@ describe('Validators', function () {
   describe('Valid', function () {
 
     beforeEach(function () {
-      data = { name: 'Geert', age: 18, files: [ 'me.jpg', 'soon.png' ] };
+      data = {
+        name: 'Geert',
+        age: 18,
+        files: [ 'me.jpg', 'soon.png' ],
+        link: 'http://www.google.be'
+      };
     });
 
     describe('Required', function () {
@@ -81,13 +87,40 @@ describe('Validators', function () {
 
     });
 
+    describe('Url', function () {
+
+      it('adds no error when the value is an url', function (done) {
+
+        var validator = url();
+
+        validator(data, 'link', errors, sanitize, function () {
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
+      it('adds no error when the value is undefined', function (done) {
+
+        var validator = url();
+
+        validator({ link: undefined }, 'link', errors, sanitize, function () {
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
+    });
+
+
   });
 
   describe('Invalid', function () {
 
     beforeEach(function () {
 
-      data = { name: ' ', age: 'abc', files: 15 };
+      data = { name: ' ', age: 'abc', files: 15, link: 'xzf://www.google.be' };
 
     });
 
@@ -129,6 +162,21 @@ describe('Validators', function () {
 
         validator(data, 'files', errors, sanitize, function () {
           errors.should.eql({files: ['Not an array']});
+          done();
+        });
+
+      });
+
+    });
+
+    describe('Url', function () {
+
+      it('adds an error when the value isnt a url', function (done) {
+
+        var validator = url();
+
+        validator(data, 'link', errors, sanitize, function () {
+          errors.should.eql({link: ['Invalid URL']});
           done();
         });
 
