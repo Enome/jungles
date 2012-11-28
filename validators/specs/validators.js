@@ -75,11 +75,23 @@ describe('Validators', function () {
 
     describe('Decimal', function () {
 
-      it('adds no error when the value is a decimal and sanitizes the value', function (done) {
+      it('adds no error when the value is a decimal', function (done) {
 
         var validator = decimal();
 
         validator(data, 'price', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
+      it('adds no error when the value is undefined', function (done) {
+
+        var validator = decimal();
+
+        validator({}, 'price', errors, sanitize, function () {
           sanitize.should.eql({});
           errors.should.eql({});
           done();

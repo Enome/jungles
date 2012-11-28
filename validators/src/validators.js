@@ -57,7 +57,9 @@ var validators = {
 
     return function (data, key, errors, sanitized, callback) {
       try {
-        check(data[key], msg).isDecimal();
+        doIfDefined(data[key], function () {
+          check(data[key], msg).isDecimal();
+        });
       } catch (e) {
         utils.pushValue(errors, key, e.message);
       }
