@@ -3,7 +3,7 @@ var sanitize = require('validator').sanitize;
 var utils = require('./utils');
 
 var doIfDefined = function (val, func) {
-  if (typeof val !== 'undefined') {
+  if (typeof val !== 'undefined' && val !== null) {
     func();
   }
 };
@@ -41,8 +41,10 @@ var validators = {
 
     return function (data, key, errors, sanitized, callback) {
       try {
-        check(data[key], msg).isInt();
-        sanitized[key] = sanitize(data[key]).toInt();
+        doIfDefined(data[key], function () {
+          check(data[key], msg).isInt();
+          sanitized[key] = sanitize(data[key]).toInt();
+        });
       } catch (e) {
         utils.pushValue(errors, key, e.message);
       }

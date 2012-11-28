@@ -59,6 +59,18 @@ describe('Validators', function () {
 
       });
 
+      it('adds no error when the value is null', function (done) {
+
+        var validator = integer();
+
+        validator({ age: null }, 'age', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
     });
 
     describe('Decimal', function () {
