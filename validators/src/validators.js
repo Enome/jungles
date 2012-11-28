@@ -51,6 +51,19 @@ var validators = {
 
   },
 
+  decimal: function (msg) {
+
+    return function (data, key, errors, sanitized, callback) {
+      try {
+        check(data[key], msg).isDecimal();
+      } catch (e) {
+        utils.pushValue(errors, key, e.message);
+      }
+      callback();
+    };
+
+  },
+
   array: function (msg) {
 
     return function (data, key, errors, sanitized, callback) {

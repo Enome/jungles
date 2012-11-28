@@ -4,6 +4,7 @@ var string = validators.string;
 var integer = validators.integer;
 var array = validators.array;
 var url = validators.url;
+var decimal = validators.decimal;
 
 describe('Validators', function () {
 
@@ -23,7 +24,8 @@ describe('Validators', function () {
         name: 'Geert',
         age: 18,
         files: [ 'me.jpg', 'soon.png' ],
-        link: 'http://www.google.be'
+        link: 'http://www.google.be',
+        price: '1.05',
       };
     });
 
@@ -51,6 +53,22 @@ describe('Validators', function () {
 
         validator(data, 'age', errors, sanitize, function () {
           sanitize.should.eql({ age: 18 });
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
+    });
+
+    describe('Decimal', function () {
+
+      it('adds no error when the value is a decimal and sanitizes the value', function (done) {
+
+        var validator = decimal();
+
+        validator(data, 'price', errors, sanitize, function () {
+          sanitize.should.eql({});
           errors.should.eql({});
           done();
         });
@@ -113,14 +131,19 @@ describe('Validators', function () {
 
     });
 
-
   });
 
   describe('Invalid', function () {
 
     beforeEach(function () {
 
-      data = { name: ' ', age: 'abc', files: 15, link: 'xzf://www.google.be' };
+      data = {
+        name: ' ',
+        age: 'abc',
+        files: 15,
+        link: 'xzf://www.google.be',
+        price: '1.abc',
+      };
 
     });
 
@@ -147,6 +170,21 @@ describe('Validators', function () {
 
         validator(data, 'age', errors, sanitize, function () {
           errors.should.eql({age: ['Invalid integer']});
+          done();
+        });
+
+      });
+
+    });
+
+    describe('Decimal', function () {
+
+      it('adds an error when the value isnt an decimal', function (done) {
+
+        var validator = decimal();
+
+        validator(data, 'price', errors, sanitize, function () {
+          errors.should.eql({price: ['Invalid decimal']});
           done();
         });
 
