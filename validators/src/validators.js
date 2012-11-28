@@ -2,12 +2,6 @@ var check = require('validator').check;
 var sanitize = require('validator').sanitize;
 var utils = require('./utils');
 
-var doIfDefined = function (val, func) {
-  if (typeof val !== 'undefined' && val !== null) {
-    func();
-  }
-};
-
 var validators = {
 
   required: function (msg) {
@@ -41,7 +35,7 @@ var validators = {
 
     return function (data, key, errors, sanitized, callback) {
       try {
-        doIfDefined(data[key], function () {
+        utils.doWhenNotEmpty(data[key], function () {
           check(data[key], msg).isInt();
           sanitized[key] = sanitize(data[key]).toInt();
         });
@@ -57,7 +51,7 @@ var validators = {
 
     return function (data, key, errors, sanitized, callback) {
       try {
-        doIfDefined(data[key], function () {
+        utils.doWhenNotEmpty(data[key], function () {
           check(data[key], msg).isDecimal();
         });
       } catch (e) {
@@ -72,10 +66,10 @@ var validators = {
 
     return function (data, key, errors, sanitized, callback) {
       try {
-        if (typeof data[key] !== 'undefined') {
+        utils.doWhenNotEmpty(data[key], function () {
           check(data[key], msg).isArray();
           sanitized[key] = data[key];
-        }
+        });
       } catch (e) {
         utils.pushValue(errors, key, e.message);
       }
@@ -88,7 +82,7 @@ var validators = {
 
     return function (data, key, errors, sanitized, callback) {
       try {
-        doIfDefined(data[key], function () {
+        utils.doWhenNotEmpty(data[key], function () {
           check(data[key], msg).isUrl();
         });
       } catch (e) {
