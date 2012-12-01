@@ -62,6 +62,21 @@ var validators = {
 
   },
 
+  email: function (msg) {
+
+    return function (data, key, errors, sanitized, callback) {
+      try {
+        utils.doWhenNotEmpty(data[key], function () {
+          check(data[key], msg).isEmail();
+        });
+      } catch (e) {
+        utils.pushValue(errors, key, e.message);
+      }
+      callback();
+    };
+
+  },
+
   array: function (msg) {
 
     return function (data, key, errors, sanitized, callback) {

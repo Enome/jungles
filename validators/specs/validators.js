@@ -5,6 +5,7 @@ var integer = validators.integer;
 var array = validators.array;
 var url = validators.url;
 var decimal = validators.decimal;
+var email = validators.email;
 
 describe('Validators', function () {
 
@@ -26,6 +27,7 @@ describe('Validators', function () {
         files: [ 'me.jpg', 'soon.png' ],
         link: 'http://www.google.be',
         price: '1.05',
+        email: 'info@gmail.com',
       };
     });
 
@@ -101,6 +103,34 @@ describe('Validators', function () {
 
     });
 
+    describe('Email', function () {
+
+      it('adds no error when the value is an email', function (done) {
+
+        var validator = email();
+
+        validator(data, 'email', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
+      it('adds no error when the value is undefined', function (done) {
+
+        var validator = email();
+
+        validator({}, 'email', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
+    });
+
     describe('Array', function () {
 
       it('adds no error when the value is an array and sanitizes the array', function (done) {
@@ -167,6 +197,7 @@ describe('Validators', function () {
         files: 15,
         link: 'xzf://www.google.be',
         price: '1.abc',
+        email: 'infogmail.com',
       };
 
     });
@@ -209,6 +240,21 @@ describe('Validators', function () {
 
         validator(data, 'price', errors, sanitize, function () {
           errors.should.eql({price: ['Invalid decimal']});
+          done();
+        });
+
+      });
+
+    });
+
+    describe('Email', function () {
+
+      it('adds an error when the value isnt an email', function (done) {
+
+        var validator = email();
+
+        validator(data, 'email', errors, sanitize, function () {
+          errors.should.eql({email: ['Invalid email']});
           done();
         });
 
