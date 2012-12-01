@@ -108,6 +108,20 @@ var validators = {
 
   },
 
+  compare: function (other_value, msg) {
+
+    return function (data, key, errors, sanitized, callback) {
+      try {
+        if (data[key] !== data[other_value]) {
+          throw new Error('Didn\'t equal ' + other_value);
+        }
+      } catch (e) {
+        utils.pushValue(errors, key, e.message);
+      }
+      callback();
+    };
+
+  },
 
 };
 

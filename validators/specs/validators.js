@@ -6,6 +6,7 @@ var array = validators.array;
 var url = validators.url;
 var decimal = validators.decimal;
 var email = validators.email;
+var compare = validators.compare;
 
 describe('Validators', function () {
 
@@ -28,6 +29,8 @@ describe('Validators', function () {
         link: 'http://www.google.be',
         price: '1.05',
         email: 'info@gmail.com',
+        password: '1234',
+        password_verify: '1234',
       };
     });
 
@@ -185,6 +188,22 @@ describe('Validators', function () {
 
     });
 
+    describe('Compare', function () {
+
+      it('adds no error when the value doesnt match', function (done) {
+
+        var validator = compare('password');
+
+        validator(data, 'password_verify', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
+    });
+
   });
 
   describe('Invalid', function () {
@@ -198,6 +217,8 @@ describe('Validators', function () {
         link: 'xzf://www.google.be',
         price: '1.abc',
         email: 'infogmail.com',
+        password: '1234',
+        password_verify: '4321',
       };
 
     });
@@ -285,6 +306,22 @@ describe('Validators', function () {
 
         validator(data, 'link', errors, sanitize, function () {
           errors.should.eql({link: ['Invalid URL']});
+          done();
+        });
+
+      });
+
+    });
+
+    describe('Compare', function () {
+
+      it('adds no error when the value doesnt match', function (done) {
+
+        var validator = compare('password');
+
+        validator(data, 'password_verify', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({ password_verify: ['Didn\'t equal password']});
           done();
         });
 
