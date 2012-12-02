@@ -7,6 +7,7 @@ var url = validators.url;
 var decimal = validators.decimal;
 var email = validators.email;
 var compare = validators.compare;
+var generic = validators.generic;
 
 describe('Validators', function () {
 
@@ -204,6 +205,28 @@ describe('Validators', function () {
 
     });
 
+    describe('Generic', function () {
+
+      it('adds no error when the callback returns true', function (done) {
+
+        var validate = function (data, key, callback) {
+          if (data[key] === 'Geert') {
+            callback(null, 'Geert Pasteels');
+          }
+        };
+
+        var validator = generic(validate);
+
+        validator(data, 'name', errors, sanitize, function () {
+          sanitize.should.eql({ name: 'Geert Pasteels' });
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
+    });
+
   });
 
   describe('Invalid', function () {
@@ -329,6 +352,29 @@ describe('Validators', function () {
 
     });
 
+    describe('Generic', function () {
+
+      it('adds no error when the callback returns true', function (done) {
+
+        var validate = function (data, key, callback) {
+          if (data[key] === 'Geert') {
+            return callback(null, 'Geert Pasteels');
+          }
+
+          callback('Not your name');
+        };
+
+        var validator = generic(validate);
+
+        validator(data, 'name', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({ name: [ 'Not your name' ] });
+          done();
+        });
+
+      });
+
+    });
 
   });
 

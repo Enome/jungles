@@ -123,6 +123,26 @@ var validators = {
 
   },
 
+  generic: function (func) {
+
+    return function (data, key, errors, sanitized, callback) {
+
+      func(data, key, function (err, dat) {
+
+        if (err) {
+          utils.pushValue(errors, key, err);
+          return callback();
+        }
+
+        sanitized[key] = dat;
+        callback();
+
+      });
+
+    };
+
+  },
+
 };
 
 module.exports = validators;
