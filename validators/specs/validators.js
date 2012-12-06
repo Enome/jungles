@@ -225,6 +225,24 @@ describe('Validators', function () {
 
       });
 
+      it('doesnt sanitize anything', function (done) {
+
+        var validate = function (data, key, callback) {
+          if (data[key] === 'Geert') {
+            callback();
+          }
+        };
+
+        var validator = generic(validate);
+
+        validator(data, 'name', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
     });
 
   });

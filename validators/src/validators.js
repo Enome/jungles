@@ -134,7 +134,10 @@ var validators = {
           return callback();
         }
 
-        sanitized[key] = dat;
+        if (typeof dat !== 'undefined') {
+          sanitized[key] = dat;
+        }
+
         callback();
 
       });
