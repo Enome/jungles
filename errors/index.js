@@ -1,6 +1,6 @@
 module.exports = {
 
-  init: function (app) {
+  init: function (app, view) {
 
     app.all('*', function (req, res, next) {
       next({ type: 'http', error: 404 });
@@ -29,7 +29,7 @@ module.exports = {
 
       res.locals.code = code;
 
-      res.render(__dirname + '/index.jade', { status: code });
+      res.render(view || __dirname + '/index.jade', { status: code });
 
     });
 
