@@ -9,8 +9,6 @@ var helpers = {
       var root = current.path.split('/')[1];
       var result = kwery.tree(tree, { path: '/' + root });
 
-      var root;
-
       result.one(function (response) {
         root = response; // This works cause kwery isn't async.
       });
@@ -37,8 +35,7 @@ var helpers = {
 
         ns.forEach(function (node) {
 
-
-          if (start <= lvl && end >= lvl) {
+          if (start <= lvl && end >= lvl && !node.navigation_hide) {
 
             ret.push('<li>');
 
