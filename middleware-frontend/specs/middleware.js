@@ -1,6 +1,7 @@
 var sinon = require('sinon');
 var recorder = require('express-recorder');
 var middleware = require('../middleware');
+var kwery = require('kwery');
 
 describe('Middleware', function () {
 
@@ -321,6 +322,101 @@ describe('Middleware', function () {
           done();
         });
 
+      });
+
+    });
+
+  });
+
+  describe('constants', function () {
+    
+    it('adds constants to the instances', function (done) {
+
+      // Dependencies
+
+      var tree = [
+        {
+          name: 'skateboard',
+          type: 'product',
+          children: [
+            {
+              name: 'board',
+              type: 'tag',
+            },
+            {
+              name: 'extreme',
+              type: 'tag',
+            },
+          ]
+        },
+
+        {
+          name: 'bike',
+          type: 'vehicle',
+        }
+
+      ];
+
+      var types = { find: kwery.flat.bind(null, [
+        {
+          name: 'product',
+          constants: {
+            hide: true
+          }
+        },
+
+        {
+          name: 'tag',
+          constants: {
+            color: 'red'
+          }
+        },
+      ]) };
+
+      // Setup state
+
+      var state = {
+        locals: { tree: tree }
+      };
+
+      // Handler
+      
+      var handler = middleware.constants(types);
+
+      // Record
+
+      recorder(handler, state, function (result) {
+        result.eql({
+          next: true,
+          locals: {
+            tree: [
+              {
+                name: 'skateboard',
+                type: 'product',
+                hide: true,
+                children: [
+                  {
+                    name: 'board',
+                    type: 'tag',
+                    color: 'red'
+                  },
+                  {
+                    name: 'extreme',
+                    type: 'tag',
+                    color: 'red'
+                  },
+                ]
+              },
+
+              {
+                name: 'bike',
+                type: 'vehicle',
+              }
+
+            ]
+          }
+        });
+        done();
       });
 
     });

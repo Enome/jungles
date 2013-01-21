@@ -1,5 +1,6 @@
 var kwery = require('kwery');
 var walkSubstack = require('./functions').walkSubstack;
+var extend = require('underscore').extend;
 
 var middleware = {
 
@@ -79,7 +80,37 @@ var middleware = {
 
     res.render(type.name);
          
-  }
+  },
+
+  constants: function (types) {
+    
+    return function (req, res, next) {
+
+      var traverse = function (instances) {
+
+        instances.forEach(function (instance) {
+
+          var type = types.find({ name: instance.type });
+
+          type.one(function (type) {
+            extend(instance, type.constants);
+          });
+
+          if (instance.children) {
+            traverse(instance.children);
+          }
+
+        });
+
+      };
+
+      traverse(res.locals.tree);
+
+      next();
+    };
+
+  },
+
 
 };
 

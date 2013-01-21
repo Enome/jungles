@@ -5,6 +5,7 @@ module.exports = function (jungles) {
     middleware.tree(jungles.core.data),
     middleware.current,
     middleware.type(jungles.core.types),
+    middleware.constants(jungles.core.types),
     middleware.middleware,
     middleware.render
   ];

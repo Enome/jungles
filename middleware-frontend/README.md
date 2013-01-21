@@ -18,15 +18,35 @@ var middleware = require('jungles-middleware');
 app.get(':path(*)', middleware(jungles)); 
 ```
 
-## Types
+## Middleware
 
-This middleware will allow you to add a middleware method to your types. If you don't specifiy this method it will try and render a view with the name of your type. So if you have a product type it will try and look for views/product view.
+You can also define extra middleware on your types. If you don't specifiy this method it will try and render a view with the name of your type. So if you have a product type it will try and look for views/product view.
+
+```js
+var type = {
+  middleware: function (req, res, next) { 
+    res.locals.foobar = res.locals.current.foobar;
+    next();
+  }
+}
+```
+
+This is useful if you want to do something extra with your response before rendering a template.
+
+## Constants
+
+You can also define constants on your types. For example if you want to hide some type in your navigation you could do the following.
+
 
 ```js
 var product = {
-  middleware: function (req, res, next) { }
+  constants: {
+    hide: true
+  }
 }
 ```
+
+This will add a hide property to all the instance of the type product. Constants will overwrite instance properties.
 
 ## Warning
 
