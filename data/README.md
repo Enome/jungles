@@ -46,8 +46,8 @@ result.error(function (error) { });
 ### Create
 
 ```js
-var result = data.save({ name: 'products', order: 0 });
-var result = data.save({ parent: '/products', name: 'snowboard', order: 0 });
+var result = data.create({ name: 'products', order: 0 });
+var result = data.create({ parent: '/products', name: 'snowboard', order: 0 });
 
 result.success(function (instance) { });
 result.error(function (error) { });
