@@ -36,3 +36,7 @@ Checkout the [getting started](http://github.com/Enome/jungles-getting-started) 
 - **vagrant:** This is a vagrant setup containing the postgresql database to test data-postgres.
 - **validation:** module that the rest service uses to validate incoming data.
 - **validators:** validators used by the validation module.
+
+## License
+
+MIT
