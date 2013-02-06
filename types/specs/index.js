@@ -66,6 +66,32 @@ describe('types', function () {
 
     });
 
+    it('sets the highest order if its not defined', function (done) {
+
+      delete product.order;
+
+      data_item.order = 21;
+
+      var t = types(settings, data([data_item])).create(product);
+
+      t.success(function (one) {
+
+        one.should.eql({
+          name: 'snowboard',
+          type: 'product',
+          price: 15,
+          order: 22,
+          path: '/snowboard',
+        });
+
+        done();
+
+      });
+
+      t.error(console.log);
+
+    });
+
   });
 
   describe('update', function () {

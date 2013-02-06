@@ -2,6 +2,7 @@ var EventEmitter = require('events').EventEmitter;
 var _ = require('underscore');
 var validation = require('jungles-validation');
 var default_schema = require('./schema');
+var async = require('async');
 
 var create = function (settings, datalayer) {
 
@@ -17,18 +18,47 @@ var create = function (settings, datalayer) {
 
     var rules = _.extend({}, default_schema, type.schema);
 
-    process.nextTick(function () {
+    var highestOrder = function (callback) {
 
-      var result = validation(data, rules);
+      if (typeof data.order === 'undefined') {
 
-      result.valid(function (sanitized) {
-        var create_result = oldCreate(sanitized);
-        create_result.success(ee.emit.bind(ee, 'success'));
+        var result = datalayer.find({ type: data.type });
+
+        result.many(function (many) {
+
+          var m = _.max(many, function (one) {
+            return one.order;
+          });
+
+          data.order = (m.order += 1);
+          callback();
+
+        });
+
+      } else {
+        callback();
+      }
+
+    };
+
+    var validate = function (callback) {
+
+      process.nextTick(function () {
+
+        var result = validation(data, rules);
+
+        result.valid(function (sanitized) {
+          var create_result = oldCreate(sanitized);
+          create_result.success(ee.emit.bind(ee, 'success'));
+        });
+
+        result.invalid(ee.emit.bind(ee, 'error'));
+
       });
 
-      result.invalid(ee.emit.bind(ee, 'error'));
+    };
 
-    });
+    async.waterfall([highestOrder, validate]);
 
     return {
       success: ee.on.bind(ee, 'success'),
