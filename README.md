@@ -1,4 +1,4 @@
-# Jungles (Unstable)
+# Jungles
 
 In this repo you find the building blocks to create a CMS. This is meant for developers that know Node.js and Express.js. Knowing angular.js helps to customize the backend admin panel.
 
