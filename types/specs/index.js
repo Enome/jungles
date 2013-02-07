@@ -66,29 +66,58 @@ describe('types', function () {
 
     });
 
-    it('sets the highest order if its not defined', function (done) {
+    describe('when the order isnt defined', function () {
 
-      delete product.order;
+      it('sets the order to zero if its the first one', function (done) {
 
-      data_item.order = 21;
+        delete product.order;
 
-      var t = types(settings, data([data_item])).create(product);
+        var t = types(settings, data([])).create(product);
 
-      t.success(function (one) {
+        t.success(function (one) {
 
-        one.should.eql({
-          name: 'snowboard',
-          type: 'product',
-          price: 15,
-          order: 22,
-          path: '/snowboard',
+          one.should.eql({
+            name: 'snowboard',
+            type: 'product',
+            price: 15,
+            order: 0,
+            path: '/snowboard',
+          });
+
+          done();
+
         });
 
-        done();
+        t.error(console.log);
 
       });
 
-      t.error(console.log);
+
+      it('get the previous highest order and adds 1', function (done) {
+
+        delete product.order;
+
+        data_item.order = 21;
+
+        var t = types(settings, data([data_item])).create(product);
+
+        t.success(function (one) {
+
+          one.should.eql({
+            name: 'snowboard',
+            type: 'product',
+            price: 15,
+            order: 22,
+            path: '/snowboard',
+          });
+
+          done();
+
+        });
+
+        t.error(console.log);
+
+      });
 
     });
 

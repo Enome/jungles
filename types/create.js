@@ -26,11 +26,17 @@ var create = function (settings, datalayer) {
 
         result.many(function (many) {
 
-          var m = _.max(many, function (one) {
-            return one.order;
-          });
+          var order = 0;
 
-          data.order = (m.order += 1);
+          if (many.length !== 0) {
+            var m = _.max(many, function (one) {
+              return one.order;
+            });
+
+            order = m.order + 1;
+          }
+
+          data.order = order;
           callback();
 
         });
