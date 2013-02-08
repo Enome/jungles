@@ -52,6 +52,6 @@ This will add a hide property to all the instance of the type product. Constants
 
 Because the whole tree structure is loaded into memory on each request this module might not be suited for big sites. So start with this module if you run into performance issues fork it and make some adjustments.
 
-If you do think about premature optimizing your site I would like to leave you with the this message:
+If you do think about premature optimizing your site I would like to leave you with this message:
 
 ![batman slap](http://i.qkme.me/3rken9.jpg)

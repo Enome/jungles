@@ -146,6 +146,20 @@ var validators = {
 
   },
 
+  boolean: function () {
+    
+    return function (data, key, errors, sanitized, callback) {
+
+      if (typeof data[key] !== 'undefined') {
+        sanitized[key] = sanitize(data[key]).toBoolean();
+      }
+
+      callback();
+
+    };
+
+  },
+
 };
 
 module.exports = validators;

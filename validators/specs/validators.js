@@ -8,6 +8,7 @@ var decimal = validators.decimal;
 var email = validators.email;
 var compare = validators.compare;
 var generic = validators.generic;
+var boolean = validators.boolean;
 
 describe('Validators', function () {
 
@@ -399,7 +400,10 @@ describe('Validators', function () {
   describe('Sanitizers', function () {
 
     beforeEach(function () {
-      data = { name: 'Geert' };
+      data = {
+        name: 'Geert',
+        payed: true,
+      };
     });
 
     describe('String', function () {
@@ -428,7 +432,32 @@ describe('Validators', function () {
 
     });
 
+    describe('Boolean', function () {
+
+      it('returns the sanitized values', function (done) {
+
+        var sanitizer = boolean();
+
+        sanitizer(data, 'payed', errors, sanitize, function () {
+          sanitize.should.eql({ payed: true });
+          done();
+        });
+
+      });
+
+      it('can take an undefined value', function (done) {
+
+        var sanitizer = boolean();
+
+        sanitizer(data, 'last_name', errors, sanitize, function () {
+          sanitize.should.eql({});
+          done();
+        });
+
+      });
+
+    });
+
   });
 
 });
-
