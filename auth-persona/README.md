@@ -1,11 +1,11 @@
-![screenshot](https://raw.github.com/Enome/jungles-auth-persona/master/screenshot.png)
+![screenshot](https://raw.github.com/Enome/jungles/master/auth-persona/screenshot.png)
 
 Mozilla Persona Authentication app for Express.js. This app is developed for Jungles but can be used with any Express.js application. In case you didn't know: Express.js allows you to break your project into small apps which you can mount onto a base app.
 
 ## Mount
 
 ```js
-var auth = require('jungles-authentication-persona');
+var auth = require('jungles-auth-persona');
 var app = express(); // Your app
 app.use(auth.init('/admin*'));
 ```
