@@ -29,7 +29,7 @@ module.exports = {
   verify: function (assertion, audience, callback) {
 
     var options = {
-      host: 'browserid.org',
+      host: 'verifier.login.persona.org',
       path: '/verify',
       method: 'POST'
     };
