@@ -27,8 +27,8 @@ Checkout the [getting started](http://github.com/Enome/jungles-getting-started) 
 - **data:** Create your own data layer for Jungles with this module.
 - **errors:** Middleware to handle errors.
 - **files**: Express.js app to store and serve files (file server).
-- **frontend-helpers:** helpers for your front-end website. 
-- **frontend-middleware:** middleware for your front-end website.
+- **helpers-frontend:** helpers for your front-end website. 
+- **middleware-frontend:** middleware for your front-end website.
 - **middleware-general**: General purpose middleware.
 - **panel:** Express.js app you can mount to give you an admin panel for your rest service. Client side tech is Angular.js
 - **rest:** This is an Express.js app you can mount which gives you a rest API for your front-end.
