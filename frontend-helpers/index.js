@@ -1,4 +1,5 @@
 var kwery = require('kwery');
+var marked = require('marked');
 
 var helpers = {
 
@@ -65,7 +66,17 @@ var helpers = {
 
     };
 
-  }
+    app.locals.markdown = function (md) {
+
+      if (md) {
+        return marked(md);
+      }
+
+      return '';
+
+    };
+
+  },
 
 };
 

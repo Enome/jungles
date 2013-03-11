@@ -8,6 +8,7 @@
     "helpers"
   ],
   "dependencies": {
-    "kwery": "~1.2.0"
+    "kwery": "~1.2.0",
+    "marked": "~0.2.8"
   }
 }
