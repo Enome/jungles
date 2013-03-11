@@ -6,10 +6,17 @@
 navigation(tree, start_level, end_level, current);
 ```
 
+Instances with navigation_hide=true will be ignored.
+
+
 # Markdown
 
 ```js
 markdown(string)
 ```
 
-Instances with navigation_hide=true will be ignored.
+# findInstancesByType
+
+```js
+findInstancesByType(tree, type)
+```

@@ -76,6 +76,19 @@ var helpers = {
 
     };
 
+    app.locals.findInstancesByType = function (tree, type) {
+
+      var instances;
+      var result = kwery.tree(tree, { type: type });
+
+      result.many(function (results) {
+        instances = results;
+      });
+
+      return instances;
+
+    };
+
   },
 
 };
