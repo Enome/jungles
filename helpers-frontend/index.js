@@ -1,5 +1,6 @@
 var kwery = require('kwery');
 var marked = require('marked');
+var functions = require('./functions');
 
 var helpers = {
 
@@ -42,7 +43,7 @@ var helpers = {
 
             ret.push('<a');
 
-            if (new RegExp(node.path + '.*').test(current.path)) {
+            if (functions.isPartOfUrl(node.path, current.path)) {
               ret.push(' class="selected"');
             }
 
