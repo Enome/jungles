@@ -40,6 +40,9 @@ form textarea {
   border: 1px solid #c0c0c0;
   width: 100%;
 }
+form input[type='checkbox'] {
+  width: auto;
+}
 form textarea {
   height: 10em;
 }
