@@ -13,38 +13,45 @@ var panel = require('jungles-panel').init({
 
 ### Url
 
-This is where you installed jungles-rest.
+This is the url pointing to the API where it should get the data. In most cases this will be Jungles Rest.
 
 ### Customize
 
-Use this to add extra angular.js controls that you can use in your forms. Components can have javascript, css and add extra pages. 
+Use this to add extra angular.js components to Jungles Panel. Components can have javascript, css and assets (images, html, ...).
 
-The javascript and css is merged into one file and can be found at:
+The js and css files are merged into one file and can be found at:
 
 ```
 /baseurl/customize/javascript
 /baseurl/customize/css
 ```
 
-The html can be found at:
+The assets can be found at:
 
 ```
-/baseurl/customize/:name
+/baseurl/customize/:componentname/:file
 ```
 
 #### Component structure:
 
 ```js
 var component = {
-  javascript: 'alert("test");',
-  css: 'body { color: red; }',
-  html: [
-    {
-      name: 'home',
-      html: '<h1>Hello? yes, this is dog.</h1>'
-    }
-  ]
+  name: 'componentname',
+  javascript: __dirname + '/file.js',
+  css: __dirname + '/file.css',
+  assets: __dirname + '/directory
 };
+```
+
+In your components you can access the global Jungles Panel app with:
+
+```js
+var app = window.jungles;
+
+app.filter('your_filter', ...);
+app.factory('your_factory', ...);
+app.controller('your_controller', ...);
+app.directive('your_directive', ...);
 ```
 
 ## Mount

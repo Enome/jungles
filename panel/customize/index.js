@@ -2,38 +2,30 @@ var functions = require('./functions');
 
 var customize = {
 
-  init: function (app, callbacks) {
+  init: function (app, components) {
+
+    var javascript, css;
+
+    functions.javascript(components, function (string) {
+      javascript = string;
+    });
+
+    functions.css(components, function (string) {
+      css = string;
+    });
 
     app.get('/custom/javascript', function (req, res, next) {
-
-      functions.javascript(callbacks, function (javascript) {
-        res.header('Content-type', 'text/javascript');
-        res.send(javascript);
-      });
-
+      res.header('Content-type', 'text/javascript');
+      res.send(javascript);
     });
 
     app.get('/custom/css', function (req, res, next) {
-
-      functions.css(callbacks, function (css) {
-        res.header('Content-type', 'text/css');
-        res.send(css);
-      });
-
+      res.header('Content-type', 'text/css');
+      res.send(css);
     });
 
-    app.get('/custom/html/:name', function (req, res, next) {
-
-      functions.html(callbacks, function (html) {
-        var current = html[req.params.name];
-
-        if (typeof current === 'undefined') {
-          return next({ type: 'http', error: 404 });
-        }
-
-        res.send(html[req.params.name]);
-      });
-
+    app.get('/custom/assets/:component/:name', function (req, res, next) {
+      res.sendfile(functions.assets(components, req.params.component, req.params.name));
     });
 
   }

@@ -8,44 +8,19 @@ describe('Customize Functions', function () {
 
     components = [
 
-      function (callback) {
-        callback(null, {
-          css: 'First',
-          html: [
-            {
-              name: 'home',
-              html: 'home page'
-            },
-            {
-              name: 'contact',
-              html: 'contact page'
-            }
-          ]
-        });
+      {
+        name: 'foo',
+        js: __dirname + '/files/1.txt',
+        css: __dirname + '/files/2.txt',
+        assets: __dirname + '/files',
       },
 
-      function (callback) {
-        callback(null, {
-          javascript: 'First',
-          html: [
-            {
-              name: 'about',
-              html: 'about page'
-            },
-            {
-              name: 'products',
-              html: 'products page'
-            }
-          ]
-        });
+      {
+        name: 'bar',
+        js: __dirname + '/files/2.txt',
+        css: __dirname + '/files/1.txt',
+        assets: __dirname + '/files',
       },
-
-      function (callback) {
-        callback(null, {
-          javascript: 'Second',
-          css: 'Second'
-        });
-      }
 
     ];
 
@@ -55,8 +30,8 @@ describe('Customize Functions', function () {
 
     it('returns the merged javascript', function (done) {
 
-      functions.javascript(components, function (javascript) {
-        javascript.should.eql('First\nSecond\n');
+      functions.javascript(components, function (string) {
+        string.should.eql('one.txt\ntwo.txt\n');
         done();
       });
 
@@ -68,8 +43,8 @@ describe('Customize Functions', function () {
 
     it('returns the merged css', function (done) {
 
-      functions.css(components, function (css) {
-        css.should.eql('First\nSecond\n');
+      functions.css(components, function (string) {
+        string.should.eql('two.txt\none.txt\n');
         done();
       });
 
@@ -77,22 +52,12 @@ describe('Customize Functions', function () {
 
   });
 
-  describe('Html', function () {
+  describe('assets', function () {
 
-    it('returns the html objects with all the pages', function (done) {
+    it('returns the asset path by component name and file name', function () {
 
-      functions.html(components, function (html) {
-
-        html.should.eql({
-          home: 'home page',
-          contact: 'contact page',
-          about: 'about page',
-          products: 'products page'
-        });
-
-        done();
-
-      });
+      functions.assets(components, 'foo', '1.txt').should.eql(__dirname + '/files/1.txt');
+      functions.assets(components, 'bar', '2.txt').should.eql(__dirname + '/files/2.txt');
 
     });
 

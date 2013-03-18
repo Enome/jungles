@@ -1,8 +1,8 @@
 var app = require('./app');
 
 var panel = {
-  init: function (path) {
-    return app(path);
+  init: function (options) {
+    return app(options);
   }
 };
 
