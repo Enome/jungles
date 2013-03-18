@@ -8,6 +8,10 @@ var controllers = {
       });
     };
 
+    $scope.isImage = function (path) {
+      return false;
+    };
+
     $scope.remove = function (file) {
       $scope.current = _.reject($scope.current, function (f) {
         return file === f;
@@ -20,16 +24,17 @@ var controllers = {
         return;
       }
 
-      for (var i = 0; i < value.length; i += 1) {
+      var i;
+      for (i = 0; i < value.length; i += 1) {
 
         var current = $scope.files[i];
-        var reader = new FileReader();
+        var reader = new window.FileReader();
         reader.readAsDataURL(current);
 
         reader.onload = function (e) {
           var result = $http.post($scope.url + '/' + current.name, { file : e.target.result });
 
-          result.success(function (data, status, headers, config) { 
+          result.success(function (data, status, headers, config) {
             if (typeof $scope.current === 'undefined') {
               $scope.current = [];
             }

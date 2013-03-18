@@ -1,5 +1,3 @@
-var template = require('./template');
-
 var directives = {
 
   upload: function ($compile) {
@@ -7,7 +5,7 @@ var directives = {
     return {
       restrict: 'E',
       controller: 'UploadCtrl',
-      template: template,
+      templateUrl: 'custom/assets/upload/template.html',
       scope: {
         current: '=ngModel',
       },
