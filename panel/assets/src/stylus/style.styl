@@ -18,6 +18,58 @@ a
   text-decoration: none
   color: black
 
+form
+  padding: 15px 20px
+  border-bottom: 1px solid third
+  background: white
+
+  fieldset
+    padding: 0
+    border: 0
+    margin-bottom: 20px
+
+  legend
+    font-weight: bold
+    padding: 10px 0
+
+  label
+    display: block
+    margin: 5px
+
+  input, textarea
+    padding: 3px 5px
+    display: block
+    font-family: 'Open Sans'
+    border: 1px solid silver
+    width: 100%
+
+  textarea
+    height: 10em
+
+table
+  width: 100%
+
+  td
+    border: 1px solid lighten(silver, 15)
+    padding: 10px
+
+  input
+    margin: 0
+    padding: 0
+    width: auto
+
+button
+  background: fourth
+  padding: 5px
+  color: silver
+  border: none 0
+
+  &:hover
+    background: #444444
+
+  &:disabled
+    color: #444444
+
 row()
   padding-left: 20px
   border-bottom: 1px solid third
@@ -102,34 +154,6 @@ alert(color)
     alert(#468847)
 
 
-form
-  padding: 15px 20px
-  border-bottom: 1px solid third
-  background: white
-
-  fieldset
-    padding: 0
-    border: 0
-    margin-bottom: 20px
-
-    legend
-      font-weight: bold
-      padding-bottom: 10px
-
-  label
-    display: block
-
-  input, textarea
-    padding: 3px 5px
-    display: block
-    font-family: 'Open Sans'
-    border: 1px solid silver
-    width: 100%
-
-  textarea
-    height: 10em
-
-
 .actions
   height: height / 2
   background: fourth
@@ -143,19 +167,10 @@ form
 
     button
       line-height: height
-      background: none
-      color: silver
-      border: none 0
-      border-right: 1px solid #444444
       padding: 0 25px
       display: inline-block
       margin-left: -4px
-
-      &:hover
-        background: #444444
+      border-right: 1px solid #444444
 
       &:first-child
         border-left: 1px solid #444444
-
-      &:disabled
-        color: #444444

@@ -14,6 +14,59 @@ a {
   text-decoration: none;
   color: #000;
 }
+form {
+  padding: 15px 20px;
+  border-bottom: 1px solid #ebebeb;
+  background: #fff;
+}
+form fieldset {
+  padding: 0;
+  border: 0;
+  margin-bottom: 20px;
+}
+form legend {
+  font-weight: bold;
+  padding: 10px 0;
+}
+form label {
+  display: block;
+  margin: 5px;
+}
+form input,
+form textarea {
+  padding: 3px 5px;
+  display: block;
+  font-family: 'Open Sans';
+  border: 1px solid #c0c0c0;
+  width: 100%;
+}
+form textarea {
+  height: 10em;
+}
+table {
+  width: 100%;
+}
+table td {
+  border: 1px solid #e6e6e6;
+  padding: 10px;
+}
+table input {
+  margin: 0;
+  padding: 0;
+  width: auto;
+}
+button {
+  background: #3a3a3a;
+  padding: 5px;
+  color: #c0c0c0;
+  border: none 0;
+}
+button:hover {
+  background: #444;
+}
+button:disabled {
+  color: #444;
+}
 .page {
   margin-bottom: 60px;
 }
@@ -96,34 +149,6 @@ a {
 .alerts .warning span {
   font-weight: 300;
 }
-form {
-  padding: 15px 20px;
-  border-bottom: 1px solid #ebebeb;
-  background: #fff;
-}
-form fieldset {
-  padding: 0;
-  border: 0;
-  margin-bottom: 20px;
-}
-form fieldset legend {
-  font-weight: bold;
-  padding-bottom: 10px;
-}
-form label {
-  display: block;
-}
-form input,
-form textarea {
-  padding: 3px 5px;
-  display: block;
-  font-family: 'Open Sans';
-  border: 1px solid #c0c0c0;
-  width: 100%;
-}
-form textarea {
-  height: 10em;
-}
 .actions {
   height: 60px/2;
   background: #3a3a3a;
@@ -137,20 +162,11 @@ form textarea {
 }
 .actions .buttons button {
   line-height: 60px;
-  background: none;
-  color: #c0c0c0;
-  border: none 0;
-  border-right: 1px solid #444;
   padding: 0 25px;
   display: inline-block;
   margin-left: -4px;
-}
-.actions .buttons button:hover {
-  background: #444;
+  border-right: 1px solid #444;
 }
 .actions .buttons button:first-child {
   border-left: 1px solid #444;
-}
-.actions .buttons button:disabled {
-  color: #444;
 }
