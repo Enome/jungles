@@ -4,7 +4,7 @@ In this repo you find the building blocks to create a CMS. This is meant for dev
 
 ## Want to help out?
 
-If you want to help out you can mostly find me in #jungles on freenode (ping pickels) or create an issue here on Github.
+If you want to help out you can mostly find me in #express on freenode (ping pickels) or create an issue here on Github.
 
 ## Want to get started?
 
