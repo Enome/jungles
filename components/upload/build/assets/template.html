@@ -1,9 +1,22 @@
-<div class='upload'>
-  <input type='file' multiple onchange='angular.element(this).scope().upload(this)' />
+<table class='upload'>
 
-  <div class='file' ng-repeat='file in current'>
-    <img ng-src='{{url+"/"+file|fileType}}' alt='{{file}}' width='80' height='80' />
-    <button ng-click='remove(file)'>x</button>
-  </div>
+  <thead>
+    <tr>
+      <td colspan='3'>
+        <input type='file' multiple onchange='angular.element(this).scope().upload(this)' />
+      </td>
+  </thead>
 
-</div>
+  <tbody>
+    <tr ng-repeat='file in current'>
+      <td class='thumb'>
+        <img ng-src='{{url+"/"+file|fileType}}' alt='{{file}}' />
+      </td>
+      <td>{{file|fileName}}</td>
+      <td class='buttons'>
+        <button ng-click='remove(file)'>Remove</button>
+      </td>
+    </tr>
+  </tbody>
+
+</table>

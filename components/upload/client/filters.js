@@ -1,3 +1,5 @@
+var files_functions = require('../../../files/functions');
+
 var filters = {
 
   fileType: function () {
@@ -14,7 +16,15 @@ var filters = {
 
     };
 
-  }
+  },
+
+  fileName: function () {
+    
+    return function (path) {
+      return files_functions.getFilename(path);
+    };
+
+  },
 
 };
 

@@ -5,6 +5,7 @@ var filters = require('./filters');
 var app = window.jungles;
 
 app.filter('fileType', filters.fileType);
+app.filter('fileName', filters.fileName);
 app.controller('UploadCtrl', controllers.UploadCtrl);
 app.directive('upload', directives.upload);
 
@@ -84,7 +85,9 @@ module.exports = controllers;
 
 module.exports = directives;
 
-},{}],4:[function(require,module,exports){var filters = {
+},{}],4:[function(require,module,exports){var files_functions = require('../../../files/functions');
+
+var filters = {
 
   fileType: function () {
 
@@ -100,10 +103,36 @@ module.exports = directives;
 
     };
 
-  }
+  },
+
+  fileName: function () {
+    
+    return function (path) {
+      return files_functions.getFilename(path);
+    };
+
+  },
 
 };
 
 module.exports = filters;
+
+},{"../../../files/functions":5}],5:[function(require,module,exports){var functions = {
+
+  getFilename: function (name) {
+    var extension = name.lastIndexOf('.') === -1 ? '' : '.' + name.split('.').pop();
+    var uuid = name.substring(0, 36);
+    var filename = name.replace(uuid, '');
+
+    if (filename.length === extension.length) {
+      return uuid + extension;
+    }
+
+    return filename;
+  }
+
+};
+
+module.exports = functions;
 
 },{}]},{},[1]);
