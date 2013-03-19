@@ -18,29 +18,37 @@ var controllers = {
       });
     };
 
-    $scope.$watch('files', function (value) {
+    $scope.$watch('files', function (value, v) {
       
       if (typeof value === 'undefined') {
         return;
       }
 
       var i;
+
       for (i = 0; i < value.length; i += 1) {
 
-        var current = $scope.files[i];
+        var current = value[i];
         var reader = new window.FileReader();
+
         reader.readAsDataURL(current);
 
-        reader.onload = function (e) {
-          var result = $http.post($scope.url + '/' + current.name, { file : e.target.result });
+        (function () {
 
-          result.success(function (data, status, headers, config) {
-            if (typeof $scope.current === 'undefined') {
-              $scope.current = [];
-            }
-            $scope.current.push(data.file);
-          });
-        }
+          var name = current.name;
+
+          reader.onload = function (e) {
+            var result = $http.post($scope.url + '/' + name, { file : e.target.result });
+
+            result.success(function (data, status, headers, config) {
+              if (typeof $scope.current === 'undefined') {
+                $scope.current = [];
+              }
+              $scope.current.push(data.file);
+            });
+          };
+
+        }());
 
       }
 
