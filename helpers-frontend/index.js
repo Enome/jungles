@@ -1,6 +1,7 @@
 var kwery = require('kwery');
 var marked = require('marked');
 var functions = require('./functions');
+var jungles_functions = require('jungles-functions');
 
 var helpers = {
 
@@ -88,6 +89,10 @@ var helpers = {
 
       return instances;
 
+    };
+
+    app.locals.getFilename = function (file) {
+      return jungles_functions.getFilename(file);
     };
 
   },

@@ -2,13 +2,14 @@
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles-helpers-frontend",
   "description": "Helpers for Jungles",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "keywords": [
     "jungles",
     "helpers"
   ],
   "dependencies": {
     "kwery": "~1.2.0",
-    "marked": "~0.2.8"
+    "marked": "~0.2.8",
+    "jungles-functions": "~1.0.0"
   }
 }
