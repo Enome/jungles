@@ -1,0 +1,11 @@
+{
+  "author": "Geert Pasteels <geert.pasteels@gmail.com>",
+  "name": "jungles-auth-simple",
+  "description": "Simple authorization middleware",
+  "version": "1.0.0",
+  "keywords": [
+    "jungles",
+    "authorization"
+  ],
+  "dependencies": { }
+}
