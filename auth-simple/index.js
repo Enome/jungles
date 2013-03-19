@@ -12,11 +12,14 @@ var auth_simple = {
         throw 'Simple auth needs to have sessions enabled';
       }
 
-      admins.forEach(function (admin) {
-        if (req.session.user === admin) {
+      var i;
+
+      for (i = 0; i < admins.length; i += 1) {
+        if (req.session.user === admins[i]) {
           return next();
         }
-      });
+
+      }
 
       return next({ type: 'http', error: 403 });
 
