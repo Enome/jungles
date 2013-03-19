@@ -12,6 +12,10 @@ app.use(auth.init('/admin*'));
 
 This will redirect to the /login if session.user is undefined and the user visits /admin*. If you need multiple urls you can pass an array.
 
+## Warning
+
+This module only does authentication you should still do authorization on logged in users. Check Jungles Auth Simple for an example.
+
 ## Test
 
 mocha.js and should.js is needed.
