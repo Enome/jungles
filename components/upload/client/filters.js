@@ -1,4 +1,4 @@
-var files_functions = require('../../../files/functions');
+var functions = require('jungles-functions');
 
 var filters = {
 
@@ -21,7 +21,7 @@ var filters = {
   fileName: function () {
     
     return function (path) {
-      return files_functions.getFilename(path);
+      return functions.getFilename(path);
     };
 
   },

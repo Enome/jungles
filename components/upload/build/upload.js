@@ -85,7 +85,7 @@ module.exports = controllers;
 
 module.exports = directives;
 
-},{}],4:[function(require,module,exports){var files_functions = require('../../../files/functions');
+},{}],4:[function(require,module,exports){var functions = require('jungles-functions');
 
 var filters = {
 
@@ -108,7 +108,7 @@ var filters = {
   fileName: function () {
     
     return function (path) {
-      return files_functions.getFilename(path);
+      return functions.getFilename(path);
     };
 
   },
@@ -117,9 +117,10 @@ var filters = {
 
 module.exports = filters;
 
-},{"../../../files/functions":5}],5:[function(require,module,exports){var functions = {
+},{"jungles-functions":5}],5:[function(require,module,exports){var functions = {
 
   getFilename: function (name) {
+
     var extension = name.lastIndexOf('.') === -1 ? '' : '.' + name.split('.').pop();
     var uuid = name.substring(0, 36);
     var filename = name.replace(uuid, '');
@@ -129,6 +130,7 @@ module.exports = filters;
     }
 
     return filename;
+
   }
 
 };
