@@ -1,0 +1,7 @@
+{
+  "author": "Geert Pasteels <geert.pasteels@gmail.com>",
+  "name": "jungles-functions",
+  "version": "1.0.0",
+  "description": "Shared functions for Jungles modules",
+  "dependencies": {}
+}
