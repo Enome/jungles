@@ -1,7 +1,7 @@
 var fs = require('fs');
 var uuid = require('node-uuid');
 var express = require('express');
-var functions = require('./functions');
+var functions = require('jungles-functions');
 
 var files = function (dir) {
 
