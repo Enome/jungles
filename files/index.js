@@ -25,8 +25,17 @@ var files = function (dir) {
 
   app.get('/:filename', function (req, res) {
     var crs = fs.createReadStream(dir + '/' + req.params.filename);
-    res.header('Content-Disposition', 'attachment; filename=' + functions.getFilename(req.params.filename));
+
+    if (typeof req.query.download !== 'undefined') {
+      res.header('Content-Disposition', 'attachment; filename=' + functions.getFilename(req.params.filename));
+    }
+
     crs.pipe(res);
+
+    crs.on('error', function (err) {
+      res.send(404);
+    });
+
   });
 
   return app;
