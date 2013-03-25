@@ -3,7 +3,7 @@
 Middleware for dealing with errors.
 
 ```js
-require('jungles-errors').init(app);
+require('jungles-errors').init(app, <optional path to custom error view>);
 ```
 
 ```js
