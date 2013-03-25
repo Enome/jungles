@@ -35,7 +35,7 @@ var middleware = {
     });
 
     result.empty(function () {
-      next({ type: 'http', error: 404 });
+      next('route');
     });
 
   },
