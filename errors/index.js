@@ -28,8 +28,9 @@ module.exports = {
       console.log('--------------------------------------------------');
 
       res.locals.code = code;
+      res.statusCode = code;
 
-      res.render(view || __dirname + '/index.jade', { status: code });
+      res.render(view || __dirname + '/index.jade');
 
     });
 
