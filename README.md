@@ -21,16 +21,19 @@ Checkout the [getting started](http://github.com/Enome/jungles-getting-started) 
 ## Modules
 
 - **auth-persona:** This is a Express.js app you can mount that adds Mozilla persona authentication.
+- **auth-simple:** Simple authorization module.
 - **components:** Angular.js components to add extra controls to your forms.
 - **data-memory:** This is a data layer for your rest service which stores your data in memory.
 - **data-postgres:** This is a data layer for your rest service which stores your data in postgres.
 - **data:** Create your own data layer for Jungles with this module.
 - **errors:** Middleware to handle errors.
 - **files**: Express.js app to store and serve files (file server).
+- **functions**: shared functionality used by multiple modules.
 - **helpers-frontend:** helpers for your front-end website. 
 - **middleware-frontend:** middleware for your front-end website.
 - **middleware-general**: General purpose middleware.
 - **panel:** Express.js app you can mount to give you an admin panel for your rest service. Client side tech is Angular.js
+- **resources:** Fireworks and photoshop designs.
 - **rest:** This is an Express.js app you can mount which gives you a rest API for your front-end.
 - **Types:** This combines the datalayer and validation to create a module for entering data with validation.
 - **vagrant:** This is a vagrant setup containing the postgresql database to test data-postgres.
