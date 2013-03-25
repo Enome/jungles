@@ -30,6 +30,7 @@ Checkout the [getting started](http://github.com/Enome/jungles-getting-started) 
 - **files**: Express.js app to store and serve files (file server).
 - **functions**: shared functionality used by multiple modules.
 - **helpers-frontend:** helpers for your front-end website. 
+- **jungles:** this main module bundles all the modules you need to setup Jungles.
 - **middleware-frontend:** middleware for your front-end website.
 - **middleware-general**: General purpose middleware.
 - **panel:** Express.js app you can mount to give you an admin panel for your rest service. Client side tech is Angular.js
