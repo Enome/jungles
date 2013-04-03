@@ -203,7 +203,7 @@ describe('Types Middleware', function () {
 
         var validate = sinon.stub().returns(result);
 
-        var schema = { name: 'validator' };
+        var schema = function () { return { name: 'validator' }; };
 
         middleware.inject(null, null, validate, schema);
 
@@ -251,7 +251,7 @@ describe('Types Middleware', function () {
 
         var validate = sinon.stub().returns(result);
 
-        var schema = { name: 'validator' };
+        var schema = function () { return { name: 'validator' }; };
 
         middleware.inject(null, null, validate, schema);
 

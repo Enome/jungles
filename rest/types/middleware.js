@@ -68,7 +68,7 @@ module.exports = {
     var type = res.locals.types[0];
     
     if (type.schema) {
-      rules = extend({}, schema, type.schema);
+      rules = extend({}, schema(core.data), type.schema);
     }
 
     var result = validate(req.body, rules || schema);
