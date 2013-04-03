@@ -32,5 +32,4 @@ var jungles = {
 
 };
 
-
 module.exports = jungles;
