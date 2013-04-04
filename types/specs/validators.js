@@ -43,6 +43,33 @@ describe('Validators', function () {
 
       });
 
+      it('adds no error if paths match because then its updating itself', function () {
+
+
+        var data_layer = {
+          find: kwery.flat.bind(null, [
+            {
+              name: 'home',
+              path: '/home',
+            }
+          ]),
+        };
+
+        var validator = uniqueName(data_layer);
+
+        var data = {
+          name: 'home',
+          path: '/home',
+        };
+
+        validator(data, 'name', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({});
+        });
+
+      });
+
+
       it('adds no error when there are no matching results', function () {
 
 
@@ -73,7 +100,6 @@ describe('Validators', function () {
     describe('Unique', function () {
       
       it('adds an error when name property isnt unique within its parent', function () {
-
 
         var data_layer = {
           find: kwery.flat.bind(null, [

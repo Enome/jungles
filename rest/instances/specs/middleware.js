@@ -94,28 +94,65 @@ describe('Instances Middleware', function () {
       };
 
       var result = {
-        success: sinon.stub().yields(response)
+        success: sinon.stub().yields(response),
+        error: sinon.stub(),
       };
 
       var core = {
-        data: { create: sinon.stub().returns(result) }
+        types: { create: sinon.stub().returns(result) }
       };
 
       middleware.inject(core);
 
       var state = {
-        locals: { data: '__data__' }
+        body: '__data__'
       };
 
       recorder(middleware.create, state, function (result) {
 
         result.eql({
           next: true,
-          locals: { response: { user: 'Enome' }, data: '__data__' }
+          locals: { response: { user: 'Enome' } }
         });
         
         //Extra
-        core.data.create.args.should.eql([['__data__']]);
+        core.types.create.args.should.eql([['__data__']]);
+
+        done();
+
+      });
+
+    });
+
+    it('calls nexts and sets the created object', function (done) {
+
+      var response = {
+        name: '__error__'
+      };
+
+      var result = {
+        success: sinon.stub(),
+        error: sinon.stub().yields(response),
+      };
+
+      var core = {
+        types: { create: sinon.stub().returns(result) }
+      };
+
+      middleware.inject(core);
+
+      var state = {
+        body: '__data__'
+      };
+
+      recorder(middleware.create, state, function (result) {
+
+        result.eql({
+          json: { errors: { name: '__error__' } }
+        });
+        
+        //Extra
+        core.types.create.args.should.eql([['__data__']]);
 
         done();
 
@@ -134,28 +171,65 @@ describe('Instances Middleware', function () {
       };
 
       var result = {
-        success: sinon.stub().yields(response)
+        success: sinon.stub().yields(response),
+        error: sinon.stub(),
       };
 
       var core = {
-        data: { update: sinon.stub().returns(result) }
+        types: { update: sinon.stub().returns(result) }
       };
 
       middleware.inject(core);
 
       var state = {
-        locals: { data: '__data__' }
+        body: '__data__'
       };
 
       recorder(middleware.update, state, function (result) {
 
         result.eql({
           next: true,
-          locals: { response: { user: 'Enome' }, data: '__data__' }
+          locals: { response: { user: 'Enome' } }
         });
 
         // Extra
-        core.data.update.args.should.eql([[ '__data__' ]]);
+        core.types.update.args.should.eql([[ '__data__' ]]);
+
+        done();
+
+      });
+
+    });
+
+    it('calls json with the errors', function (done) {
+
+      var response = {
+        name: '__error__'
+      };
+
+      var result = {
+        success: sinon.stub(),
+        error: sinon.stub().yields(response),
+      };
+
+      var core = {
+        types: { update: sinon.stub().returns(result) }
+      };
+
+      middleware.inject(core);
+
+      var state = {
+        body: '__data__'
+      };
+
+      recorder(middleware.update, state, function (result) {
+
+        result.eql({
+          json: { errors: { name:  '__error__' } }
+        });
+
+        // Extra
+        core.types.update.args.should.eql([[ '__data__' ]]);
 
         done();
 
@@ -217,7 +291,7 @@ describe('Instances Middleware', function () {
       };
 
       var core = {
-        types: { find: sinon.stub().returns(result) }
+        schemas: { find: sinon.stub().returns(result) }
       };
 
       middleware.inject(core);
@@ -246,7 +320,7 @@ describe('Instances Middleware', function () {
 
         // Extra: verify types.find
         
-        core.types.find.args.should.eql([ [ { name: 'book' } ], [ { name: 'page' } ] ]);
+        core.schemas.find.args.should.eql([ [ { name: 'book' } ], [ { name: 'page' } ] ]);
 
         done();
 

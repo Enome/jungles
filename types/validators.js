@@ -6,7 +6,8 @@ var validators = {
 
     return function (data, key, errors, sanitized, callback) {
 
-      var result = data_layer.find({ path: new RegExp(data.parent + '.+$') });
+      var parent = data.parent || data.path.replace('/' + data.path.split('/').pop(), '');
+      var result = data_layer.find({ path: new RegExp(parent + '.+$') });
       var found = false;
 
       result.many(function (many) {
@@ -17,7 +18,7 @@ var validators = {
 
         many.forEach(function (one) {
 
-          if (one.name.toLowerCase() === data.name.toLowerCase()) {
+          if (one.name.toLowerCase() === data.name.toLowerCase() && data.path !== one.path) {
             found = true;
           }
 

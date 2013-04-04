@@ -35,7 +35,7 @@ describe('Types Middleware', function () {
         };
 
         var core = {
-          types: { find: sinon.stub().returns(result) }
+          schemas: { find: sinon.stub().returns(result) }
         };
 
         middleware.inject(core);
@@ -60,7 +60,7 @@ describe('Types Middleware', function () {
 
           // Extra: verify types.find
 
-          core.types.find.args.should.eql([[ { id: 'someid' } ]]);
+          core.schemas.find.args.should.eql([[ { id: 'someid' } ]]);
 
           done();
 
@@ -82,7 +82,7 @@ describe('Types Middleware', function () {
         };
 
         var core = {
-          types: { find: sinon.stub().returns(result) }
+          schemas: { find: sinon.stub().returns(result) }
         };
 
         middleware.inject(core);
@@ -184,102 +184,6 @@ describe('Types Middleware', function () {
 
     });
 
-  });
-
-  describe('validate', function () {
-
-    describe('valid with schema', function () {
-      
-      it('extends the basic schema and sets the local data', function (done) {
-
-        // Setup dependencies
-
-        var response = '__valid_data__';
-
-        var result = {
-          valid: sinon.stub().yields(response),
-          invalid: sinon.stub()
-        };
-
-        var validate = sinon.stub().returns(result);
-
-        var schema = function () { return { name: 'validator' }; };
-
-        middleware.inject(null, null, validate, schema);
-
-        // Setup State
-
-        var state = {
-          locals: { types: [{ schema: { password: 'validator' } }] },
-          body: '__body__'
-        };
-
-        // Record
-
-        recorder(middleware.validate, state, function (result) {
-          result.eql({
-            locals : {
-              types: [ { schema: { password: 'validator' } } ],
-              data: "__valid_data__"
-            },
-            next : true
-          });
-
-          // Extra: verify validate
-
-          validate.args.should.eql([ [ '__body__', { name: 'validator', password: 'validator' } ] ]);
-          done();
-        });
-
-
-      });
-
-    });
-
-    describe('invalid without schema', function () {
-
-      it('sets flash errors and instances', function (done) {
-
-        // Setup dependencies
-
-        var response = '__errors__';
-
-        var result = {
-          valid: sinon.stub(),
-          invalid: sinon.stub().yields(response)
-        };
-
-        var validate = sinon.stub().returns(result);
-
-        var schema = function () { return { name: 'validator' }; };
-
-        middleware.inject(null, null, validate, schema);
-
-        // Setup State
-
-        var state = {
-          locals: { types: [ { schema: { password: 'validator' } } ] },
-          body: '__body__',
-          headers: { Referer: '/path' }
-        };
-
-        // Record
-
-        recorder(middleware.validate, state, function (result) {
-          result.eql({
-            locals : {
-              types: [ { schema: { password: 'validator' } } ]
-            },
-            json: { errors: '__errors__' }
-          });
-
-          done();
-        });
-
-      });
-
-    });
-    
   });
 
 });

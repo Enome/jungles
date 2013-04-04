@@ -1,5 +1,4 @@
 var core = require('../core');
-var validate = require('jungles-validation');
 var extend = require('underscore').extend;
 var functions = require('./functions');
 
@@ -8,7 +7,6 @@ module.exports = {
   inject: function (_core, _functions, _validate, _schema) {
     if (_core) { core = _core; }
     if (_functions) { functions = _functions; }
-    if (_validate) { validate = _validate; }
   },
 
   defaultQuery: function (req, res, next) {
