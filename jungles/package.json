@@ -12,7 +12,7 @@
     "jungles-auth-simple": "~1.0.0",
     "jungles-data-postgres": "~2.0.1",
     "jungles-data-memory": "~3.0.2",
-    "jungles-rest": "~1.1.3",
+    "jungles-rest": "~1.2.0",
     "jungles-panel": "~2.1.1",
     "jungles-files": "~1.3.0",
     "jungles-helpers-frontend": "~1.2.0",
