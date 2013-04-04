@@ -1,7 +1,6 @@
 var core = require('../core');
 var validate = require('jungles-validation');
 var extend = require('underscore').extend;
-var schema = require('./schema');
 var functions = require('./functions');
 
 module.exports = {
@@ -10,7 +9,6 @@ module.exports = {
     if (_core) { core = _core; }
     if (_functions) { functions = _functions; }
     if (_validate) { validate = _validate; }
-    if (_schema) { schema = _schema; }
   },
 
   defaultQuery: function (req, res, next) {
@@ -26,7 +24,7 @@ module.exports = {
 
       var q = query.call({ req: req, res: res });
 
-      var result = core.types.find(q);
+      var result = core.schemas.find(q);
 
       result.many(function (response) {
         if (response.length !== 0) {
@@ -61,27 +59,5 @@ module.exports = {
     });
 
   },
-
-  validate: function (req, res, next) {
-
-    var rules;
-    var type = res.locals.types[0];
-    
-    if (type.schema) {
-      rules = extend({}, schema(core.data), type.schema);
-    }
-
-    var result = validate(req.body, rules || schema);
-
-    result.valid(function (response) {
-      res.locals.data = response;
-      return next();
-    });
-
-    result.invalid(function (errors) {
-      res.json({ errors: errors });
-    });
-
-  }
 
 };

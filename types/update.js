@@ -19,7 +19,7 @@ var update = function (settings, datalayer) {
         return t.name === resp.type;
       });
 
-      var rules = _.extend({}, default_schema, type.schema);
+      var rules = _.extend({}, default_schema(datalayer), type.schema);
 
       process.nextTick(function () {
 

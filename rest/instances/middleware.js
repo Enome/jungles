@@ -45,22 +45,30 @@ module.exports = {
 
   create: function (req, res, next) {
 
-    var result = core.data.create(res.locals.data);
+    var result = core.types.create(req.body);
 
     result.success(function (response) {
       res.locals.response = response;
       next();
     });
 
+    result.error(function (errors) {
+      res.json({ errors: errors });
+    });
+
   },
 
   update: function (req, res, next) {
 
-    var result = core.data.update(res.locals.data);
+    var result = core.types.update(req.body);
 
     result.success(function (response) {
       res.locals.response = response;
       next();
+    });
+
+    result.error(function (errors) {
+      res.json({ errors: errors });
     });
 
   },
@@ -79,7 +87,7 @@ module.exports = {
     
     res.locals.instances.forEach(function (item) {
       
-      var result = core.types.find({ name: item.type });
+      var result = core.schemas.find({ name: item.type });
 
       result.one(function (type) {
         item.children = type.children || [];

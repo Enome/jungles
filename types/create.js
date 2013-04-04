@@ -16,7 +16,7 @@ var create = function (settings, datalayer) {
       return t.name === data.type;
     });
 
-    var rules = _.extend({}, default_schema, type.schema);
+    var rules = _.extend({}, default_schema(datalayer), type.schema);
 
     var highestOrder = function (callback) {
 

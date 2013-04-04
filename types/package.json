@@ -1,6 +1,6 @@
 {
   "name": "jungles-types",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Combines the datalayer and validators for jungles",
   "main": "index.js",
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
@@ -15,6 +15,7 @@
     "jungles-validation": "~1.0.0",
     "jungles-validators": "~1.7.1",
     "jungles-data-memory": "~3.0.2",
-    "async": "~0.2.3"
+    "async": "~0.2.3",
+    "kwery": "~1.2.0"
   }
 }

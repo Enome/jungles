@@ -15,16 +15,16 @@ module.exports = {
             general.send(function () { return this.res.locals.instances; }));
 
     app.post('/instances',
-             types.find(function () { return { name: this.req.body.type }; }),
-             types.validate,
-             instances.create,
+             //types.find(function () { return { name: this.req.body.type }; }),
+             //types.validate,
+             instances.create, //changed
              general.send(function () { return this.res.locals.response; }));
 
     app.put('/instances',
-             types.find(function () { return { name: this.req.body.type }; }),
-             types.validate,
+             //types.find(function () { return { name: this.req.body.type }; }),
+             //types.validate,
              instances.find(function () { return { path: this.req.body.path }; }),
-             instances.update,
+             instances.update, //changed
              general.send(function () { return this.res.locals.response; }));
 
     app.del('/instances/:path(*)',
