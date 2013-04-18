@@ -160,7 +160,26 @@ describe('Update >', function () {
         done();
 
       });
+      
+    });
 
+  });
+
+  it('updates the instance changing the path parent is provided', function (done) {
+    
+    var result = data.update({ path: '/items/skateboard/yellow', parent: '/items' });
+
+    result.success(function (instance) {
+
+      eql(instance, {
+        type: 'wheel',
+        name: 'yellow',
+        path: '/items/yellow',
+        material: 'plastic',
+        order: 0
+      });
+
+      done();
       
     });
 
@@ -238,7 +257,7 @@ describe('Find >', function () {
             type: 'wheel',
             name: 'yellow',
             material: 'plastic',
-            path: '/items/skateboard/yellow',
+            path: '/items/yellow',
             order: 0
           }
         ]);
@@ -312,15 +331,13 @@ describe('Tree', function () {
               order: 1,
               name: 'skateboard',
               type: 'product',
-              children: [
-                {
-                  path: '/items/skateboard/yellow',
-                  material: 'plastic',
-                  order: 0,
-                  name: 'yellow',
-                  type: 'wheel'
-                }
-              ]
+            },
+            {
+              path: '/items/yellow',
+              material: 'plastic',
+              order: 0,
+              name: 'yellow',
+              type: 'wheel'
             }
           ],
         }
@@ -365,7 +382,7 @@ describe('Remove >', function () {
             type: 'wheel',
             name: 'yellow',
             material: 'plastic',
-            path: '/items/skateboard/yellow',
+            path: '/items/yellow',
             order: 0
           }
         ]);

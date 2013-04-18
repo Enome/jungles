@@ -71,6 +71,11 @@ result.success(function (instance) { });
 result.error(function (error) { });
 ```
 
+Update doesn't need all the properties. It will overwrite those you provide and keep those that you don't.
+
+You can change parents by providing a parent property.
+
+
 ### Result
 
 ```js

@@ -2,7 +2,7 @@
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles-data",
   "description": "Test your jungles-data layer with this tool",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "dependencies": {
     "eql": "0.0.5",
     "mocha": "~1.6.0",
