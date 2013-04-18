@@ -19,7 +19,8 @@ var update = function (db, data) {
 
         // remove last part
         
-        var base_path = old_path.replace(/\/[^\/]+$/, '');
+        var base_path = response.parent || old_path.replace(/\/[^\/]+$/, '');
+        delete response.parent;
         var base_sort = old_sort.slice(0, old_sort.length - 1);
 
         // Add new last part
