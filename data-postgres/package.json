@@ -13,6 +13,6 @@
     "kwery": "*",
     "slug": "~0.2.2",
     "pg": "~0.8.7",
-    "jungles-data": "~1.1.0"
+    "jungles-data": "~1.2.0"
   }
 }

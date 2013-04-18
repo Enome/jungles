@@ -30,7 +30,7 @@ var utils = {
   },
 
   pickData: function (data) {
-    var reserved = [ 'id', 'type', 'path', 'name', 'sort', 'order', 'parent' ];
+    var reserved = [ 'id', 'type', 'path', 'name', 'sort', 'order', 'parent', 'move_to' ];
     return pick(data, difference(Object.keys(data), reserved));
   },
 

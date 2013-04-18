@@ -14,13 +14,15 @@ var update = function (db, data) {
       var query = db.query('select * from instances where path = $1', [data.path], function (err, result) {
 
         var instance = result.rows[0];
-        delete instance.data;
-        var row = extend({}, instance, data);
+        var old_data = JSON.parse(instance.data); delete instance.data;
+        var row = extend({}, instance, old_data, data);
 
         // Path
         
         var slug_name = (slug(row.name.toLowerCase())).replace('//', '/');
-        row.path = row.path.replace(/[^\/]+$/, slug_name);
+
+        var base_path = row.path.replace(/\/[^\/]+$/, '');
+        row.path = (row.parent || base_path) + '/' + slug_name;
 
         // Sort
 
