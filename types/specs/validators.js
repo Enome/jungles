@@ -17,7 +17,7 @@ describe('Validators', function () {
 
     describe('Unique', function () {
       
-      it('adds no error when name property isnt unique within its parent', function () {
+      it('adds no error when name property is unique within its parent', function () {
 
 
         var data_layer = {
@@ -42,6 +42,33 @@ describe('Validators', function () {
         });
 
       });
+
+      it('adds no error when when the same name exists on a different level', function () {
+
+
+        var data_layer = {
+          find: kwery.flat.bind(null, [
+            {
+              name: 'home',
+              path: '/nl/home',
+            }
+          ]),
+        };
+
+        var validator = uniqueName(data_layer);
+
+        var data = {
+          name: 'home',
+          parent: '/',
+        };
+
+        validator(data, 'name', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({});
+        });
+
+      });
+
 
       it('adds no error if paths match because then its updating itself', function () {
 

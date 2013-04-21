@@ -7,7 +7,8 @@ var validators = {
     return function (data, key, errors, sanitized, callback) {
 
       var parent = data.parent || data.path.replace('/' + data.path.split('/').pop(), '');
-      var result = data_layer.find({ path: new RegExp(parent + '.+$') });
+      var regex = new RegExp('^' + parent + '[^/]+$');
+      var result = data_layer.find({ path: regex });
       var found = false;
 
       result.many(function (many) {
