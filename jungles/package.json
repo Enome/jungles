@@ -2,7 +2,7 @@
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles",
   "description": "Jungles Content Management System",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "keywords": [
     "jungles",
     "cms"
@@ -23,7 +23,7 @@
     "jungles-validation": "~1.0.0",
     "jungles-functions": "~1.0.0",
     "jungles-middleware-general": "~0.1.0",
-    "jungles-types": "~1.2.1"
+    "jungles-types": "~1.2.2"
   },
   "devDependencies": {}
 }
