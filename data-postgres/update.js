@@ -22,7 +22,7 @@ var update = function (db, data) {
         var slug_name = (slug(row.name.toLowerCase())).replace('//', '/');
 
         var base_path = row.path.replace(/\/[^\/]+$/, '');
-        row.path = (row.parent || base_path) + '/' + slug_name;
+        row.path = ((row.parent || base_path) + '/' + slug_name).replace('//', '/');
 
         // Sort
 

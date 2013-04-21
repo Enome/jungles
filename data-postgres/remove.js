@@ -10,7 +10,7 @@ module.exports = function (db, query) {
       var result = find(db, query);
 
       result.one(function (node) {
-        db.query('DELETE FROM instances WHERE id = $1 or path ~ $2;', [ node.id, node.path + '.*' ], function (err, result) {
+        db.query('DELETE FROM instances WHERE id = $1 or path ~ $2;', [ node.id, '^' + node.path + '.*' ], function (err, result) {
           callback();
         });
       });
