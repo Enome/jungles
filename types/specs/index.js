@@ -13,6 +13,7 @@ describe('types', function () {
       type: 'product',
       price: '15',
       order: 0,
+      path: '/',
     };
 
     data_item = {
@@ -97,6 +98,7 @@ describe('types', function () {
 
         delete product.order;
 
+        data_item.name = 'skateboard';
         data_item.order = 21;
 
         var t = types(settings, data([data_item])).create(product);

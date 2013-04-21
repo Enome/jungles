@@ -126,7 +126,7 @@ describe('Validators', function () {
 
     describe('Unique', function () {
       
-      it('adds an error when name property isnt unique within its parent', function () {
+      it('adds an error when name property isnt unique within the root', function () {
 
         var data_layer = {
           find: kwery.flat.bind(null, [
@@ -151,7 +151,32 @@ describe('Validators', function () {
 
       });
 
-      it('adds an error and is case sensitive', function () {
+      it('adds an error when name property isnt unique within its parent', function () {
+
+        var data_layer = {
+          find: kwery.flat.bind(null, [
+            {
+              name: 'home',
+              path: '/products/home',
+            }
+          ]),
+        };
+
+        var validator = uniqueName(data_layer);
+
+        var data = {
+          name: 'home',
+          parent: '/products',
+        };
+
+        validator(data, 'name', errors, sanitize, function () {
+          sanitize.should.eql({});
+          errors.should.eql({ name: [ 'Should be unique' ] });
+        });
+
+      });
+
+      it('adds an error and is case insensitive', function () {
 
 
         var data_layer = {

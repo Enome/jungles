@@ -5,7 +5,7 @@ var default_schema = require('./schema');
 
 var update = function (settings, datalayer) {
 
-  var oldCreate = datalayer.update;
+  var oldUpdate = datalayer.update;
 
   return function (data) {
 
@@ -26,7 +26,7 @@ var update = function (settings, datalayer) {
         var result = validation(_.extend(resp, data), rules);
 
         result.valid(function (sanitized) {
-          var update = oldCreate(sanitized);
+          var update = oldUpdate(sanitized);
           update.success(ee.emit.bind(ee, 'success'));
         });
 
