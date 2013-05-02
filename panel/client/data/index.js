@@ -1,8 +1,7 @@
-var services = require('./services');
+var factories = require('./factories');
 
 var data = function (app) {
-  app.factory('instances', services.instances);
-  app.factory('types', services.types);
+  app.factory('data', factories);
 };
 
 module.exports = data;

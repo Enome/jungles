@@ -1,16 +1,12 @@
 var express = require('express');
 var stylus = require('stylus');
+var nib = require('nib');
 
 module.exports = function (options) {
 
   // App
 
   var app = express();
-  
-  // Settings
-
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
 
   // Base paths
 
@@ -23,11 +19,14 @@ module.exports = function (options) {
   // Middleware
 
   app.use(stylus.middleware({
-    src: __dirname + '/assets/src/',
-    dest: __dirname + '/assets/public/'
+    src: __dirname + '/static/src',
+    dest: __dirname + '/static/public',
+    compile: function (str, path) {
+      return stylus(str).set('filename', path).use(nib());
+    }
   }));
 
-  app.use(express.static(__dirname + '/assets/public'));
+  app.use(express.static(__dirname + '/static/public'));
   app.use('/partials', express.static(__dirname + '/client/partials'));
 
   // Customize

@@ -1,0 +1,178 @@
+body
+  padding: 20px
+  font-family: 'Open Sans'
+  font-weight: 300
+  background: second
+  font-size: 1.25em
+  color: first
+
+a
+  color: second
+  text-decoration: none
+
+h1,h2,h3,h4
+  margin-top: 12px
+
+header
+  margin-bottom: 20px
+  padding-left: 20px
+  border-radius: 3px
+  height: 60px
+  line-height: 60px
+  background: first
+  color: second
+  
+  span:last-child
+    a
+      font-weight: 600
+
+  a:hover
+    color: white
+
+.table
+  margin-bottom: 20px
+  border-radius: 3px
+  background: white
+  width: 100%
+
+  tr
+    th
+      background: third
+      height: 45px
+      text-align: left
+      padding-left: 20px
+      font-weight: 600
+      border-top-right-radius: 3px
+      border-top-left-radius: 3px
+      text-transform: uppercase
+      font-size: 14px
+
+    td
+      cursor: pointer
+      border-bottom: 1px solid third
+      padding-left: 20px
+      height: 60px
+
+      &:hover
+        color: second
+
+
+      &.button
+        border-left: 1px solid third
+        text-align: center
+        width: 90px
+        padding: 0
+        text-transform: uppercase
+        font-size: .7em
+
+      &.confirm
+        color: #E74C3C
+
+    &:last-child 
+      td
+        border-bottom: 0 none
+
+
+form
+  font-size: .85em
+
+  fieldset
+    reset-box-model()
+    border: 0
+    background: white
+    margin-bottom: 20px
+    position: relative
+    border-radius: 3px
+    padding: 65px 20px 20px
+    overflow: hidden
+
+  legend
+    position: absolute
+    top: 0
+    left: 0
+    background: third
+    height: 45px
+    line-height: 45px
+    text-align: left
+    padding-left: 20px
+    font-weight: 600
+    text-transform: uppercase
+    font-size: 14px
+    width: 100%
+    box-sizing: border-box
+    border-top-left-radius: 3px
+    border-top-right-radius: 3px
+
+  label
+    display: block
+    margin-bottom: 8px
+
+  input, textarea
+    width: 100%
+    margin-bottom: 12px
+    border: 1px solid darken(third, 5)
+    padding: 5px
+    box-sizing: border-box
+
+  textarea
+    height: 10em
+
+  input[type=checkbox], input[type=button], input[type=submit]
+    width: auto
+
+  button, input[type=button], input[type=submit], .button
+    background: second
+    color: white
+    border: 0 none
+    padding: 6px 30px
+    border-radius: 2px
+
+    &:hover
+      color: white
+
+    &:disabled
+      background: darken(third, 10)
+      color: darken(third, 30)
+
+      &:hover
+        color: auto
+
+  table
+    margin-bottom: 20px
+    width: 100%
+
+    td, th
+      border: 1px solid third 
+      padding: 5px
+
+  .actions
+    height: 60px
+    line-height: 60px
+    border-radius: 3px
+    background: first
+    color: second
+    text-align: center
+
+.alerts
+  reset-box-model()
+  list-style-position: inside
+
+  li
+    background: third
+    height: 45px
+    line-height: 45px
+    text-align: left
+    padding-left: 20px
+    font-weight: 600
+    font-size: 14px
+    margin-bottom: 20px
+    border-radius: 3px
+
+    strong
+      text-transform: uppercase
+
+    &.success
+      background: #2ECC71
+
+    &.error
+      background: #E74C3C

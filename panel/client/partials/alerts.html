@@ -1,0 +1,6 @@
+<ul class='alerts' ng-controller='AlertsCtrl'>
+  <li ng-repeat='alert in alerts' ng-class='alert.type'>
+    <strong>{{alert.name}}:</strong>
+    {{alert.msg}}
+  </li>
+</ul>

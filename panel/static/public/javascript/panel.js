@@ -1,508 +1,100 @@
-(function(){var require = function (file, cwd) {
-    var resolved = require.resolve(file, cwd || '/');
-    var mod = require.modules[resolved];
-    if (!mod) throw new Error(
-        'Failed to resolve module ' + file + ', tried ' + resolved
-    );
-    var cached = require.cache[resolved];
-    var res = cached? cached.exports : mod();
-    return res;
-};
+;(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){var jungles = angular.module('jungles', []);
+window.jungles = jungles;
 
-require.paths = [];
-require.modules = {};
-require.cache = {};
-require.extensions = [".js",".coffee",".json"];
+require('./data')(jungles);
+require('./collections')(jungles);
+require('./general')(jungles);
+require('./header')(jungles);
+require('./alerts')(jungles);
+require('./forms')(jungles);
+require('./types')(jungles);
+require('./instances')(jungles);
 
-require._core = {
-    'assert': true,
-    'events': true,
-    'fs': true,
-    'path': true,
-    'vm': true
-};
-
-require.resolve = (function () {
-    return function (x, cwd) {
-        if (!cwd) cwd = '/';
-        
-        if (require._core[x]) return x;
-        var path = require.modules.path();
-        cwd = path.resolve('/', cwd);
-        var y = cwd || '/';
-        
-        if (x.match(/^(?:\.\.?\/|\/)/)) {
-            var m = loadAsFileSync(path.resolve(y, x))
-                || loadAsDirectorySync(path.resolve(y, x));
-            if (m) return m;
-        }
-        
-        var n = loadNodeModulesSync(x, y);
-        if (n) return n;
-        
-        throw new Error("Cannot find module '" + x + "'");
-        
-        function loadAsFileSync (x) {
-            x = path.normalize(x);
-            if (require.modules[x]) {
-                return x;
-            }
-            
-            for (var i = 0; i < require.extensions.length; i++) {
-                var ext = require.extensions[i];
-                if (require.modules[x + ext]) return x + ext;
-            }
-        }
-        
-        function loadAsDirectorySync (x) {
-            x = x.replace(/\/+$/, '');
-            var pkgfile = path.normalize(x + '/package.json');
-            if (require.modules[pkgfile]) {
-                var pkg = require.modules[pkgfile]();
-                var b = pkg.browserify;
-                if (typeof b === 'object' && b.main) {
-                    var m = loadAsFileSync(path.resolve(x, b.main));
-                    if (m) return m;
-                }
-                else if (typeof b === 'string') {
-                    var m = loadAsFileSync(path.resolve(x, b));
-                    if (m) return m;
-                }
-                else if (pkg.main) {
-                    var m = loadAsFileSync(path.resolve(x, pkg.main));
-                    if (m) return m;
-                }
-            }
-            
-            return loadAsFileSync(x + '/index');
-        }
-        
-        function loadNodeModulesSync (x, start) {
-            var dirs = nodeModulesPathsSync(start);
-            for (var i = 0; i < dirs.length; i++) {
-                var dir = dirs[i];
-                var m = loadAsFileSync(dir + '/' + x);
-                if (m) return m;
-                var n = loadAsDirectorySync(dir + '/' + x);
-                if (n) return n;
-            }
-            
-            var m = loadAsFileSync(x);
-            if (m) return m;
-        }
-        
-        function nodeModulesPathsSync (start) {
-            var parts;
-            if (start === '/') parts = [ '' ];
-            else parts = path.normalize(start).split('/');
-            
-            var dirs = [];
-            for (var i = parts.length - 1; i >= 0; i--) {
-                if (parts[i] === 'node_modules') continue;
-                var dir = parts.slice(0, i + 1).join('/') + '/node_modules';
-                dirs.push(dir);
-            }
-            
-            return dirs;
-        }
-    };
-})();
-
-require.alias = function (from, to) {
-    var path = require.modules.path();
-    var res = null;
-    try {
-        res = require.resolve(from + '/package.json', '/');
-    }
-    catch (err) {
-        res = require.resolve(from, '/');
-    }
-    var basedir = path.dirname(res);
-    
-    var keys = (Object.keys || function (obj) {
-        var res = [];
-        for (var key in obj) res.push(key);
-        return res;
-    })(require.modules);
-    
-    for (var i = 0; i < keys.length; i++) {
-        var key = keys[i];
-        if (key.slice(0, basedir.length + 1) === basedir + '/') {
-            var f = key.slice(basedir.length);
-            require.modules[to + f] = require.modules[basedir + f];
-        }
-        else if (key === basedir) {
-            require.modules[to] = require.modules[basedir];
-        }
-    }
-};
-
-(function () {
-    var process = {};
-    var global = typeof window !== 'undefined' ? window : {};
-    var definedProcess = false;
-    
-    require.define = function (filename, fn) {
-        if (!definedProcess && require.modules.__browserify_process) {
-            process = require.modules.__browserify_process();
-            definedProcess = true;
-        }
-        
-        var dirname = require._core[filename]
-            ? ''
-            : require.modules.path().dirname(filename)
-        ;
-        
-        var require_ = function (file) {
-            var requiredModule = require(file, dirname);
-            var cached = require.cache[require.resolve(file, dirname)];
-
-            if (cached && cached.parent === null) {
-                cached.parent = module_;
-            }
-
-            return requiredModule;
-        };
-        require_.resolve = function (name) {
-            return require.resolve(name, dirname);
-        };
-        require_.modules = require.modules;
-        require_.define = require.define;
-        require_.cache = require.cache;
-        var module_ = {
-            id : filename,
-            filename: filename,
-            exports : {},
-            loaded : false,
-            parent: null
-        };
-        
-        require.modules[filename] = function () {
-            require.cache[filename] = module_;
-            fn.call(
-                module_.exports,
-                require_,
-                module_,
-                module_.exports,
-                dirname,
-                filename,
-                process,
-                global
-            );
-            module_.loaded = true;
-            return module_.exports;
-        };
-    };
-})();
-
-
-require.define("path",function(require,module,exports,__dirname,__filename,process,global){function filter (xs, fn) {
-    var res = [];
-    for (var i = 0; i < xs.length; i++) {
-        if (fn(xs[i], i, xs)) res.push(xs[i]);
-    }
-    return res;
-}
-
-// resolves . and .. elements in a path array with directory names there
-// must be no slashes, empty elements, or device names (c:\) in the array
-// (so also no leading and trailing slashes - it does not distinguish
-// relative and absolute paths)
-function normalizeArray(parts, allowAboveRoot) {
-  // if the path tries to go above the root, `up` ends up > 0
-  var up = 0;
-  for (var i = parts.length; i >= 0; i--) {
-    var last = parts[i];
-    if (last == '.') {
-      parts.splice(i, 1);
-    } else if (last === '..') {
-      parts.splice(i, 1);
-      up++;
-    } else if (up) {
-      parts.splice(i, 1);
-      up--;
-    }
-  }
-
-  // if the path is allowed to go above the root, restore leading ..s
-  if (allowAboveRoot) {
-    for (; up--; up) {
-      parts.unshift('..');
-    }
-  }
-
-  return parts;
-}
-
-// Regex to split a filename into [*, dir, basename, ext]
-// posix version
-var splitPathRe = /^(.+\/(?!$)|\/)?((?:.+?)?(\.[^.]*)?)$/;
-
-// path.resolve([from ...], to)
-// posix version
-exports.resolve = function() {
-var resolvedPath = '',
-    resolvedAbsolute = false;
-
-for (var i = arguments.length; i >= -1 && !resolvedAbsolute; i--) {
-  var path = (i >= 0)
-      ? arguments[i]
-      : process.cwd();
-
-  // Skip empty and invalid entries
-  if (typeof path !== 'string' || !path) {
-    continue;
-  }
-
-  resolvedPath = path + '/' + resolvedPath;
-  resolvedAbsolute = path.charAt(0) === '/';
-}
-
-// At this point the path should be resolved to a full absolute path, but
-// handle relative paths to be safe (might happen when process.cwd() fails)
-
-// Normalize the path
-resolvedPath = normalizeArray(filter(resolvedPath.split('/'), function(p) {
-    return !!p;
-  }), !resolvedAbsolute).join('/');
-
-  return ((resolvedAbsolute ? '/' : '') + resolvedPath) || '.';
-};
-
-// path.normalize(path)
-// posix version
-exports.normalize = function(path) {
-var isAbsolute = path.charAt(0) === '/',
-    trailingSlash = path.slice(-1) === '/';
-
-// Normalize the path
-path = normalizeArray(filter(path.split('/'), function(p) {
-    return !!p;
-  }), !isAbsolute).join('/');
-
-  if (!path && !isAbsolute) {
-    path = '.';
-  }
-  if (path && trailingSlash) {
-    path += '/';
-  }
-  
-  return (isAbsolute ? '/' : '') + path;
-};
-
-
-// posix version
-exports.join = function() {
-  var paths = Array.prototype.slice.call(arguments, 0);
-  return exports.normalize(filter(paths, function(p, index) {
-    return p && typeof p === 'string';
-  }).join('/'));
-};
-
-
-exports.dirname = function(path) {
-  var dir = splitPathRe.exec(path)[1] || '';
-  var isWindows = false;
-  if (!dir) {
-    // No dirname
-    return '.';
-  } else if (dir.length === 1 ||
-      (isWindows && dir.length <= 3 && dir.charAt(1) === ':')) {
-    // It is just a slash or a drive letter with a slash
-    return dir;
-  } else {
-    // It is a full dirname, strip trailing slash
-    return dir.substring(0, dir.length - 1);
-  }
-};
-
-
-exports.basename = function(path, ext) {
-  var f = splitPathRe.exec(path)[2] || '';
-  // TODO: make this comparison case-insensitive on windows?
-  if (ext && f.substr(-1 * ext.length) === ext) {
-    f = f.substr(0, f.length - ext.length);
-  }
-  return f;
-};
-
-
-exports.extname = function(path) {
-  return splitPathRe.exec(path)[3] || '';
-};
-
-});
-
-require.define("__browserify_process",function(require,module,exports,__dirname,__filename,process,global){var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-        && window.setImmediate;
-    var canPost = typeof window !== 'undefined'
-        && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    if (canPost) {
-        var queue = [];
-        window.addEventListener('message', function (ev) {
-            if (ev.source === window && ev.data === 'browserify-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('browserify-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-process.binding = function (name) {
-    if (name === 'evals') return (require)('vm')
-    else throw new Error('No such module. (Possibly not yet loaded)')
-};
-
-(function () {
-    var cwd = '/';
-    var path;
-    process.cwd = function () { return cwd };
-    process.chdir = function (dir) {
-        if (!path) path = require('path');
-        cwd = path.resolve(dir, cwd);
-    };
-})();
-
-});
-
-require.define("/client/data/index.js",function(require,module,exports,__dirname,__filename,process,global){var services = require('./services');
+},{"./data":2,"./collections":3,"./general":4,"./header":5,"./alerts":6,"./forms":7,"./types":8,"./instances":9}],2:[function(require,module,exports){var factories = require('./factories');
 
 var data = function (app) {
-  app.factory('instances', services.instances);
-  app.factory('types', services.types);
+  app.factory('data', factories);
 };
 
 module.exports = data;
 
-});
-
-require.define("/client/data/services.js",function(require,module,exports,__dirname,__filename,process,global){var _ = require('underscore');
+},{"./factories":10}],10:[function(require,module,exports){var _ = require('underscore');
 var qs = require('querystring');
 var EventEmitter = require('events').EventEmitter;
 
-var instances = function ($http, $window, general, events, _) {
+var data = function ($http, $window, general, collections, _) {
 
-  var save = function (type, data) {
-
+  var save = function (type, data, callback) {
     var result = $http[type](general.resource_url('/instances'), data);
-
-    result.success(function (data, status, headers, config) {
-      if (data.errors) {
-        return events.emit('errors', data.errors);
-      }
-
-      if (type === 'post') {
-        return $window.history.back();
-      }
-
-      var alert = {};
-      alert[data.name] = [ 'was saved' ];
-      events.emit('warnings', alert);
-
-    });
-
+    result.success(callback);
   };
+
 
   return {
 
-    get: function (query, callback) {
-      _.each(query, function (value, key) {
-        if (value instanceof RegExp) {
-          query[key] = 'regex-' + value.toString();
-        }
-      });
+    types: {
 
-      var url = general.resource_url('/instances?' + qs.stringify(query));
-      var result = $http.get(url);
-      result.success(callback);
+      get: function (query, callback) {
+        var url = general.resource_url('/types?' + qs.stringify(query));
+        var result = $http.get(url);
+        result.success(callback);
+      }
+
     },
 
-    create: save.bind(null, 'post'),
-    update: save.bind(null, 'put'),
+    instances: {
 
-    remove: function (instance) {
+      get: function (query, callback) {
+        _.each(query, function (value, key) {
+          if (value instanceof RegExp) {
+            query[key] = 'regex-' + value.toString();
+          }
+        });
 
-      var result = $http.delete(general.resource_url('/instances/' + instance.path));
-      var ee = new EventEmitter();
+        var url = general.resource_url('/instances?' + qs.stringify(query));
+        var result = $http.get(url);
+        result.success(callback);
+      },
 
-      result.success(function (data, status, headers, config) {
-        ee.emit('success', data);
-      });
+      create: save.bind(null, 'post'),
+      update: save.bind(null, 'put'),
 
-      result.error(function (data, status, headers, config) {
-        ee.emit('error', data);
-      });
+      remove: function (instance) {
 
-      return {
-        success: function (callback) {
-          ee.on('success', callback);
-        },
+        var result = $http.delete(general.resource_url('/instances/' + instance.path));
+        var ee = new EventEmitter();
 
-        error: function (callback) {
-          ee.on('error', callback);
-        }
-      };
+        result.success(function (data, status, headers, config) {
+          ee.emit('success', data);
+        });
 
+        result.error(function (data, status, headers, config) {
+          ee.emit('error', data);
+        });
+
+        return {
+          success: function (callback) {
+            ee.on('success', callback);
+          },
+
+          error: function (callback) {
+            ee.on('error', callback);
+          }
+        };
+
+      }
 
     }
-    
+
   };
 
 };
 
-var types = function ($http, general) {
+module.exports = data;
 
-  return {
-
-    get: function (query, callback) {
-      var url = general.resource_url('/types?' + qs.stringify(query));
-      var result = $http.get(url);
-      result.success(callback);
-    }
-    
-  };
-
-};
-
-module.exports = {
-  instances: instances,
-  types: types
-};
-
-});
-
-require.define("/node_modules/underscore/package.json",function(require,module,exports,__dirname,__filename,process,global){module.exports = {"main":"underscore.js"}
-});
-
-require.define("/node_modules/underscore/underscore.js",function(require,module,exports,__dirname,__filename,process,global){//     Underscore.js 1.4.2
+},{"underscore":11,"querystring":12,"events":13}],11:[function(require,module,exports){(function(){//     Underscore.js 1.4.4
 //     http://underscorejs.org
-//     (c) 2009-2012 Jeremy Ashkenas, DocumentCloud Inc.
+//     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
 //     Underscore may be freely distributed under the MIT license.
 
 (function() {
@@ -526,7 +118,6 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   var push             = ArrayProto.push,
       slice            = ArrayProto.slice,
       concat           = ArrayProto.concat,
-      unshift          = ArrayProto.unshift,
       toString         = ObjProto.toString,
       hasOwnProperty   = ObjProto.hasOwnProperty;
 
@@ -563,11 +154,11 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
     }
     exports._ = _;
   } else {
-    root['_'] = _;
+    root._ = _;
   }
 
   // Current version.
-  _.VERSION = '1.4.2';
+  _.VERSION = '1.4.4';
 
   // Collection Functions
   // --------------------
@@ -604,6 +195,8 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
     return results;
   };
 
+  var reduceError = 'Reduce of empty array with no initial value';
+
   // **Reduce** builds up a single result from a list of values, aka `inject`,
   // or `foldl`. Delegates to **ECMAScript 5**'s native `reduce` if available.
   _.reduce = _.foldl = _.inject = function(obj, iterator, memo, context) {
@@ -621,7 +214,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
         memo = iterator.call(context, memo, value, index, list);
       }
     });
-    if (!initial) throw new TypeError('Reduce of empty array with no initial value');
+    if (!initial) throw new TypeError(reduceError);
     return memo;
   };
 
@@ -632,7 +225,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
     if (obj == null) obj = [];
     if (nativeReduceRight && obj.reduceRight === nativeReduceRight) {
       if (context) iterator = _.bind(iterator, context);
-      return arguments.length > 2 ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
+      return initial ? obj.reduceRight(iterator, memo) : obj.reduceRight(iterator);
     }
     var length = obj.length;
     if (length !== +length) {
@@ -648,7 +241,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
         memo = iterator.call(context, memo, obj[index], index, list);
       }
     });
-    if (!initial) throw new TypeError('Reduce of empty array with no initial value');
+    if (!initial) throw new TypeError(reduceError);
     return memo;
   };
 
@@ -679,12 +272,9 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
 
   // Return all the elements for which a truth test fails.
   _.reject = function(obj, iterator, context) {
-    var results = [];
-    if (obj == null) return results;
-    each(obj, function(value, index, list) {
-      if (!iterator.call(context, value, index, list)) results[results.length] = value;
-    });
-    return results;
+    return _.filter(obj, function(value, index, list) {
+      return !iterator.call(context, value, index, list);
+    }, context);
   };
 
   // Determine whether all of the elements match a truth test.
@@ -718,20 +308,19 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // Determine if the array or object contains a given value (using `===`).
   // Aliased as `include`.
   _.contains = _.include = function(obj, target) {
-    var found = false;
-    if (obj == null) return found;
+    if (obj == null) return false;
     if (nativeIndexOf && obj.indexOf === nativeIndexOf) return obj.indexOf(target) != -1;
-    found = any(obj, function(value) {
+    return any(obj, function(value) {
       return value === target;
     });
-    return found;
   };
 
   // Invoke a method (with arguments) on every item in a collection.
   _.invoke = function(obj, method) {
     var args = slice.call(arguments, 2);
+    var isFunc = _.isFunction(method);
     return _.map(obj, function(value) {
-      return (_.isFunction(method) ? method : value[method]).apply(value, args);
+      return (isFunc ? method : value[method]).apply(value, args);
     });
   };
 
@@ -741,15 +330,21 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   };
 
   // Convenience version of a common use case of `filter`: selecting only objects
-  // with specific `key:value` pairs.
-  _.where = function(obj, attrs) {
-    if (_.isEmpty(attrs)) return [];
-    return _.filter(obj, function(value) {
+  // containing specific `key:value` pairs.
+  _.where = function(obj, attrs, first) {
+    if (_.isEmpty(attrs)) return first ? null : [];
+    return _[first ? 'find' : 'filter'](obj, function(value) {
       for (var key in attrs) {
         if (attrs[key] !== value[key]) return false;
       }
       return true;
     });
+  };
+
+  // Convenience version of a common use case of `find`: getting the first object
+  // containing specific `key:value` pairs.
+  _.findWhere = function(obj, attrs) {
+    return _.where(obj, attrs, true);
   };
 
   // Return the maximum element or (element-based computation).
@@ -760,7 +355,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
       return Math.max.apply(Math, obj);
     }
     if (!iterator && _.isEmpty(obj)) return -Infinity;
-    var result = {computed : -Infinity};
+    var result = {computed : -Infinity, value: -Infinity};
     each(obj, function(value, index, list) {
       var computed = iterator ? iterator.call(context, value, index, list) : value;
       computed >= result.computed && (result = {value : value, computed : computed});
@@ -774,7 +369,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
       return Math.min.apply(Math, obj);
     }
     if (!iterator && _.isEmpty(obj)) return Infinity;
-    var result = {computed : Infinity};
+    var result = {computed : Infinity, value: Infinity};
     each(obj, function(value, index, list) {
       var computed = iterator ? iterator.call(context, value, index, list) : value;
       computed < result.computed && (result = {value : value, computed : computed});
@@ -823,7 +418,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // An internal function used for aggregate "group by" operations.
   var group = function(obj, value, context, behavior) {
     var result = {};
-    var iterator = lookupIterator(value);
+    var iterator = lookupIterator(value || _.identity);
     each(obj, function(value, index) {
       var key = iterator.call(context, value, index, obj);
       behavior(result, key, value);
@@ -843,7 +438,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // either a string attribute to count by, or a function that returns the
   // criterion.
   _.countBy = function(obj, value, context) {
-    return group(obj, value, context, function(result, key, value) {
+    return group(obj, value, context, function(result, key) {
       if (!_.has(result, key)) result[key] = 0;
       result[key]++;
     });
@@ -865,12 +460,14 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // Safely convert anything iterable into a real, live array.
   _.toArray = function(obj) {
     if (!obj) return [];
-    if (obj.length === +obj.length) return slice.call(obj);
+    if (_.isArray(obj)) return slice.call(obj);
+    if (obj.length === +obj.length) return _.map(obj, _.identity);
     return _.values(obj);
   };
 
   // Return the number of elements in an object.
   _.size = function(obj) {
+    if (obj == null) return 0;
     return (obj.length === +obj.length) ? obj.length : _.keys(obj).length;
   };
 
@@ -881,6 +478,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // values in the array. Aliased as `head` and `take`. The **guard** check
   // allows it to work with `_.map`.
   _.first = _.head = _.take = function(array, n, guard) {
+    if (array == null) return void 0;
     return (n != null) && !guard ? slice.call(array, 0, n) : array[0];
   };
 
@@ -895,6 +493,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // Get the last element of an array. Passing **n** will return the last N
   // values in the array. The **guard** check allows it to work with `_.map`.
   _.last = function(array, n, guard) {
+    if (array == null) return void 0;
     if ((n != null) && !guard) {
       return slice.call(array, Math.max(array.length - n, 0));
     } else {
@@ -912,7 +511,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
 
   // Trim out all falsy values from an array.
   _.compact = function(array) {
-    return _.filter(array, function(value){ return !!value; });
+    return _.filter(array, _.identity);
   };
 
   // Internal implementation of a recursive `flatten` function.
@@ -941,6 +540,11 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // been sorted, you have the option of using a faster algorithm.
   // Aliased as `unique`.
   _.uniq = _.unique = function(array, isSorted, iterator, context) {
+    if (_.isFunction(isSorted)) {
+      context = iterator;
+      iterator = isSorted;
+      isSorted = false;
+    }
     var initial = iterator ? _.map(array, iterator, context) : array;
     var results = [];
     var seen = [];
@@ -993,6 +597,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // pairs, or two parallel arrays of the same length -- one of keys, and one of
   // the corresponding values.
   _.object = function(list, values) {
+    if (list == null) return {};
     var result = {};
     for (var i = 0, l = list.length; i < l; i++) {
       if (values) {
@@ -1063,25 +668,23 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // Function (ahem) Functions
   // ------------------
 
-  // Reusable constructor function for prototype setting.
-  var ctor = function(){};
-
   // Create a function bound to a given object (assigning `this`, and arguments,
-  // optionally). Binding with arguments is also known as `curry`.
-  // Delegates to **ECMAScript 5**'s native `Function.bind` if available.
-  // We check for `func.bind` first, to fail fast when `func` is undefined.
-  _.bind = function bind(func, context) {
-    var bound, args;
+  // optionally). Delegates to **ECMAScript 5**'s native `Function.bind` if
+  // available.
+  _.bind = function(func, context) {
     if (func.bind === nativeBind && nativeBind) return nativeBind.apply(func, slice.call(arguments, 1));
-    if (!_.isFunction(func)) throw new TypeError;
-    args = slice.call(arguments, 2);
-    return bound = function() {
-      if (!(this instanceof bound)) return func.apply(context, args.concat(slice.call(arguments)));
-      ctor.prototype = func.prototype;
-      var self = new ctor;
-      var result = func.apply(self, args.concat(slice.call(arguments)));
-      if (Object(result) === result) return result;
-      return self;
+    var args = slice.call(arguments, 2);
+    return function() {
+      return func.apply(context, args.concat(slice.call(arguments)));
+    };
+  };
+
+  // Partially apply a function by creating a version that has had some of its
+  // arguments pre-filled, without changing its dynamic `this` context.
+  _.partial = function(func) {
+    var args = slice.call(arguments, 1);
+    return function() {
+      return func.apply(this, args.concat(slice.call(arguments)));
     };
   };
 
@@ -1089,7 +692,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // all callbacks defined on an object belong to it.
   _.bindAll = function(obj) {
     var funcs = slice.call(arguments, 1);
-    if (funcs.length == 0) funcs = _.functions(obj);
+    if (funcs.length === 0) funcs = _.functions(obj);
     each(funcs, function(f) { obj[f] = _.bind(obj[f], obj); });
     return obj;
   };
@@ -1120,25 +723,26 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // Returns a function, that, when invoked, will only be triggered at most once
   // during a given window of time.
   _.throttle = function(func, wait) {
-    var context, args, timeout, throttling, more, result;
-    var whenDone = _.debounce(function(){ more = throttling = false; }, wait);
+    var context, args, timeout, result;
+    var previous = 0;
+    var later = function() {
+      previous = new Date;
+      timeout = null;
+      result = func.apply(context, args);
+    };
     return function() {
-      context = this; args = arguments;
-      var later = function() {
+      var now = new Date;
+      var remaining = wait - (now - previous);
+      context = this;
+      args = arguments;
+      if (remaining <= 0) {
+        clearTimeout(timeout);
         timeout = null;
-        if (more) {
-          result = func.apply(context, args);
-        }
-        whenDone();
-      };
-      if (!timeout) timeout = setTimeout(later, wait);
-      if (throttling) {
-        more = true;
-      } else {
-        throttling = true;
+        previous = now;
         result = func.apply(context, args);
+      } else if (!timeout) {
+        timeout = setTimeout(later, remaining);
       }
-      whenDone();
       return result;
     };
   };
@@ -1256,8 +860,10 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // Extend a given object with all the properties in passed-in object(s).
   _.extend = function(obj) {
     each(slice.call(arguments, 1), function(source) {
-      for (var prop in source) {
-        obj[prop] = source[prop];
+      if (source) {
+        for (var prop in source) {
+          obj[prop] = source[prop];
+        }
       }
     });
     return obj;
@@ -1286,8 +892,10 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // Fill in a given object with default properties.
   _.defaults = function(obj) {
     each(slice.call(arguments, 1), function(source) {
-      for (var prop in source) {
-        if (obj[prop] == null) obj[prop] = source[prop];
+      if (source) {
+        for (var prop in source) {
+          if (obj[prop] == null) obj[prop] = source[prop];
+        }
       }
     });
     return obj;
@@ -1452,7 +1060,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
 
   // Is a given object a finite number?
   _.isFinite = function(obj) {
-    return _.isNumber(obj) && isFinite(obj);
+    return isFinite(obj) && !isNaN(parseFloat(obj));
   };
 
   // Is the given value `NaN`? (NaN is the only number which does not equal itself).
@@ -1498,7 +1106,9 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
 
   // Run a function **n** times.
   _.times = function(n, iterator, context) {
-    for (var i = 0; i < n; i++) iterator.call(context, i);
+    var accum = Array(n);
+    for (var i = 0; i < n; i++) accum[i] = iterator.call(context, i);
+    return accum;
   };
 
   // Return a random integer between min and max (inclusive).
@@ -1507,7 +1117,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
       max = min;
       min = 0;
     }
-    return min + (0 | Math.random() * (max - min + 1));
+    return min + Math.floor(Math.random() * (max - min + 1));
   };
 
   // List of HTML entities for escaping.
@@ -1563,7 +1173,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // Useful for temporary DOM ids.
   var idCounter = 0;
   _.uniqueId = function(prefix) {
-    var id = idCounter++;
+    var id = ++idCounter + '';
     return prefix ? prefix + id : id;
   };
 
@@ -1598,6 +1208,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
   // Underscore templating handles arbitrary delimiters, preserves whitespace,
   // and correctly escapes quotes within interpolated code.
   _.template = function(text, data, settings) {
+    var render;
     settings = _.defaults({}, settings, _.templateSettings);
 
     // Combine delimiters into one regular expression via alternation.
@@ -1613,11 +1224,18 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
     text.replace(matcher, function(match, escape, interpolate, evaluate, offset) {
       source += text.slice(index, offset)
         .replace(escaper, function(match) { return '\\' + escapes[match]; });
-      source +=
-        escape ? "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'" :
-        interpolate ? "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'" :
-        evaluate ? "';\n" + evaluate + "\n__p+='" : '';
+
+      if (escape) {
+        source += "'+\n((__t=(" + escape + "))==null?'':_.escape(__t))+\n'";
+      }
+      if (interpolate) {
+        source += "'+\n((__t=(" + interpolate + "))==null?'':__t)+\n'";
+      }
+      if (evaluate) {
+        source += "';\n" + evaluate + "\n__p+='";
+      }
       index = offset + match.length;
+      return match;
     });
     source += "';\n";
 
@@ -1629,7 +1247,7 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
       source + "return __p;\n";
 
     try {
-      var render = new Function(settings.variable || 'obj', '_', source);
+      render = new Function(settings.variable || 'obj', '_', source);
     } catch (e) {
       e.source = source;
       throw e;
@@ -1701,9 +1319,8 @@ require.define("/node_modules/underscore/underscore.js",function(require,module,
 
 }).call(this);
 
-});
-
-require.define("querystring",function(require,module,exports,__dirname,__filename,process,global){var isArray = typeof Array.isArray === 'function'
+})()
+},{}],12:[function(require,module,exports){var isArray = typeof Array.isArray === 'function'
     ? Array.isArray
     : function (xs) {
         return Object.prototype.toString.call(xs) === '[object Array]'
@@ -1954,9 +1571,7 @@ function lastBraceInKey(str) {
   }
 }
 
-});
-
-require.define("events",function(require,module,exports,__dirname,__filename,process,global){if (!process.EventEmitter) process.EventEmitter = function () {};
+},{}],13:[function(require,module,exports){(function(process){if (!process.EventEmitter) process.EventEmitter = function () {};
 
 var EventEmitter = exports.EventEmitter = process.EventEmitter;
 var isArray = typeof Array.isArray === 'function'
@@ -2135,54 +1750,101 @@ EventEmitter.prototype.listeners = function(type) {
   return this._events[type];
 };
 
-});
+})(require("__browserify_process"))
+},{"__browserify_process":14}],14:[function(require,module,exports){// shim for using process in browser
 
-require.define("/client/events/index.js",function(require,module,exports,__dirname,__filename,process,global){var services = require('./services');
+var process = module.exports = {};
 
-var events = function (app) {
-  app.factory('events', services.events);
-};
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
 
-module.exports = events;
-
-});
-
-require.define("/client/events/services.js",function(require,module,exports,__dirname,__filename,process,global){var events = function ($rootScope) {
-
-  return {
-
-    on: function (event, handler) {
-      $rootScope.$on(event, handler);
-    },
-
-    emit: function (event, msg) {
-      $rootScope.$emit(event, msg);
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
     }
 
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            if (ev.source === window && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],3:[function(require,module,exports){var services = require('./services');
+
+var collections = function (app) {
+  app.factory('collections', services);
+};
+
+module.exports = collections;
+
+},{"./services":15}],15:[function(require,module,exports){var instances = [];
+var types = [];
+var alerts = [];
+var globals = {};
+
+var services = function () {
+  
+  return {
+    instances: instances,
+    types: types,
+    alerts: alerts,
+    globals: globals,
   };
 
 };
 
-module.exports = { events: events };
+module.exports = services;
 
-});
-
-require.define("/client/general/index.js",function(require,module,exports,__dirname,__filename,process,global){var services = require('./services');
+},{}],4:[function(require,module,exports){var factories = require('./factories');
 var directives = require('./directives');
 var controllers = require('./controllers');
 
 var general = function (app) {
-  app.factory('general', services);
+  app.directive('confirmClick', directives.confirmClick);
+  app.directive('esckeypress', directives.esckeypress);
   app.factory('_', function () { return require('underscore'); });
-  app.directive('documentClick', directives.documentClick);
+  app.factory('general', factories);
   app.controller('PageCtrl', controllers.PageCtrl);
 };
 
 module.exports = general;
 
-});
-
-require.define("/client/general/services.js",function(require,module,exports,__dirname,__filename,process,global){var services = function ($document) {
+},{"./factories":16,"./directives":17,"./controllers":18,"underscore":11}],16:[function(require,module,exports){var factories = function ($document) {
 
   var s = {
     resource_url: function (url) {
@@ -2191,15 +1853,12 @@ require.define("/client/general/services.js",function(require,module,exports,__d
 
     path: {
 
-      decode: function (encoded_path) {
-        return decodeURIComponent(encoded_path);
-      },
-
-      encode: function (path) {
-        return encodeURIComponent(path);
-      },
-
       parent: function (path) {
+
+        if (path.indexOf('/') === 0) {
+          path = path.replace(/^\//, '');
+        }
+
         var parts = path.split('/');
         parts.pop();
 
@@ -2207,7 +1866,8 @@ require.define("/client/general/services.js",function(require,module,exports,__d
           return '/';
         }
 
-        return parts.join('/');
+        return '/' + parts.join('/');
+
       }
 
     }
@@ -2217,30 +1877,74 @@ require.define("/client/general/services.js",function(require,module,exports,__d
 
 };
 
-module.exports = services;
+module.exports = factories;
 
-});
+},{}],17:[function(require,module,exports){var directives = {
 
-require.define("/client/general/directives.js",function(require,module,exports,__dirname,__filename,process,global){var directives = {
+  confirmClick: function ($document, $parse) {
 
-  documentClick: function ($document, $parse) {
+    return {
+      restrict: 'A',
+      link: function ($scope, el, attr) {
 
-    var linkFunction = function ($scope, $element, $attributes) {
+        var fn = $parse(attr.confirmClick);
 
-      var scopeExpression = $attributes.documentClick;
-      var invoker = $parse(scopeExpression);
+        var confirmed = false;
 
-      $document.on('click', function (event) {
+        el.bind('click', function () {
 
-        $scope.$apply(function () {
-          invoker($scope, { $event: event });
+          if (confirmed) {
+            $scope.$apply(function (event) {
+              fn($scope, { $event: event });
+            });
+          }
+
         });
 
-      });
+        $document.on('click', function (e) {
+
+          $scope.$apply(function () {
+
+            confirmed = e.target === el[0];
+
+            if (!confirmed) {
+              return $(el).removeClass('confirm');
+            }
+
+            $(el).addClass('confirm');
+
+          });
+
+        });
+
+      }
 
     };
 
-    return linkFunction;
+  },
+
+  esckeypress: function ($document, $parse) {
+
+    return {
+      restrict: 'A',
+      link: function ($scope, el, attr) {
+
+        $(el).keydown(function (e) {
+
+          console.log(e.which);
+
+          if (e.which === 27) {
+            $scope.$apply(function (event) {
+              $parse(attr.esckeypress)($scope, { $event: event });
+            });
+          }
+
+        });
+
+
+      }
+
+    };
 
   }
 
@@ -2248,16 +1952,12 @@ require.define("/client/general/directives.js",function(require,module,exports,_
 
 module.exports = directives;
 
-});
+},{}],18:[function(require,module,exports){var controllers = {
 
-require.define("/client/general/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
+  PageCtrl: function ($scope, $location) {
 
-  PageCtrl: function ($scope, $window, events) {
-
-    $scope.deselect = function (e) {
-      if (!$window.$(e.target).is('.instance')) {
-        events.emit('instances: deselect all');
-      }
+    $scope.link = function (url) {
+      $location.path(url);
     };
 
   }
@@ -2266,9 +1966,161 @@ require.define("/client/general/controllers.js",function(require,module,exports,
 
 module.exports = controllers;
 
-});
+},{}],5:[function(require,module,exports){var factories = require('./factories');
+var controllers = require('./controllers');
 
-require.define("/client/forms/index.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = require('./controllers');
+var header = function (app) {
+  app.factory('header', factories);
+  app.controller('HeaderCtrl', controllers.HeaderCtrl);
+};
+
+module.exports = header;
+
+},{"./factories":19,"./controllers":20}],19:[function(require,module,exports){var factories = function () {
+
+  return {
+
+    pathToNavigation: function (path) {
+
+      var root = { path: '/', name: 'Root' };
+
+      if (path === '/') {
+        return [root];
+      }
+
+      var navigation = [];
+
+      var i;
+      var parts = path.split('/');
+      var path_parts = [];
+
+      for (i = 0; i < parts.length; i += 1) {
+        var current = parts[i];
+
+        if (current === '') {
+          navigation.push(root);
+        } else {
+          path_parts.push(current);
+          navigation.push({ name: current, path: '/' + path_parts.join('/') });
+        }
+      }
+
+      return navigation;
+
+    }
+
+  };
+
+};
+
+module.exports = factories;
+
+},{}],20:[function(require,module,exports){var controllers = {
+
+  HeaderCtrl: function ($scope, header, collections, general) {
+
+    $scope.globals = collections.globals;
+
+    $scope.$watch('globals', function () {
+
+      if (collections.globals.path) {
+        $scope.path_navigation = header.pathToNavigation(collections.globals.path);
+      }
+
+    }, true);
+
+    $scope.back = function () {
+      $scope.link(general.path.parent(collections.globals.path));
+    };
+
+  }
+
+};
+
+module.exports = controllers;
+
+},{}],6:[function(require,module,exports){var factories = require('./factories');
+var controllers = require('./controllers');
+
+var alerts = function (app) {
+
+  app.factory('alerts', factories);
+  app.controller('AlertsCtrl', controllers.AlertsCtrl);
+
+};
+
+module.exports = alerts;
+
+},{"./factories":21,"./controllers":22}],21:[function(require,module,exports){var factories = function () {
+
+  return {
+
+    flattenValidationErrors: function (errors) {
+
+      var i;
+      var flat = [];
+
+      for (i in errors) {
+
+        if (errors.hasOwnProperty(i)) {
+
+          flat.push({
+            type: 'error',
+            name: i,
+            msg: errors[i].join(', ')
+          });
+
+        }
+
+      }
+
+      return flat;
+
+    }
+
+  };
+
+};
+
+module.exports = factories;
+
+},{}],22:[function(require,module,exports){var controllers = {
+
+  AlertsCtrl: function ($scope, collections) {
+
+    /* Format
+    * var errors = [
+    * { type: 'success/error', name: 'Bold text', msg: 'None bold text', keep: 'boolean' },
+    * ];
+    */
+
+    $scope.alerts = collections.alerts;
+
+    $scope.$on('$locationChangeSuccess', function () {
+
+      var i;
+
+      for (i = $scope.alerts.length - 1; i >= 0; i -= 1) {
+        
+        var current = $scope.alerts[i];
+
+        if (!current.keep) {
+          $scope.alerts.splice(i, 1);
+        } else {
+          current.keep = false;
+        }
+
+      }
+
+    });
+
+  }
+
+};
+
+module.exports = controllers;
+
+},{}],7:[function(require,module,exports){var controllers = require('./controllers');
 
 var forms = function (app) {
   app.controller('CreateFormCtrl', controllers.CreateFormCtrl);
@@ -2276,12 +2128,12 @@ var forms = function (app) {
 
   app.config(function ($routeProvider) {
 
-    $routeProvider.when('/instances/new/:type/:parent', {
+    $routeProvider.when('/new/:type/*parent', {
       controller: 'CreateFormCtrl',
       templateUrl: 'partials/form.html'
     });
 
-    $routeProvider.when('/instances/edit/:path', {
+    $routeProvider.when('/edit/*path', {
       controller: 'EditFormCtrl',
       templateUrl: 'partials/form.html'
     });
@@ -2291,40 +2143,61 @@ var forms = function (app) {
 
 module.exports = forms;
 
-});
+},{"./controllers":23}],23:[function(require,module,exports){var controllers = {
 
-require.define("/client/forms/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
-
-  CreateFormCtrl: function ($scope, $routeParams, $window, instances, general, _) {
+  CreateFormCtrl: function ($scope, $routeParams, $window, data, collections, general, alerts) {
 
     $scope.data = {
       type: $routeParams.type,
-      parent: general.path.decode($routeParams.parent)
+      parent: $routeParams.parent
     };
-    
+
+    $scope.path = $scope.data.parent;
+    collections.globals.path = $scope.path;
+
     // Get Form Url
 
     $scope.form_url = general.resource_url('/types/' + $scope.data.type + '/form');
 
     // create
 
-    $scope.submit = instances.create;
+    $scope.submit = function (form_data) {
+
+      data.instances.create(form_data, function (response) {
+
+        if (response.errors) {
+          collections.alerts.length = 0;
+          collections.alerts.push.apply(collections.alerts, alerts.flattenValidationErrors(response.errors));
+          $window.scrollTo(0, 0);
+          return;
+        }
+
+        collections.alerts.push({
+          type: 'success',
+          name: 'Created',
+          msg: response.path + ' was created',
+          keep: true
+        });
+
+        $scope.link($scope.data.parent);
+        $scope.link($scope.data.parent);
+
+      });
+
+    };
 
     // Cancel
 
     $scope.cancel = function () {
-      $window.history.back();
+      $scope.link($scope.data.parent);
     };
-
-    // Title
-
-    $scope.title = 'new: ' + $scope.data.type;
 
   },
 
-  EditFormCtrl: function ($scope, $routeParams, $window, instances, general, _) {
+  EditFormCtrl: function ($scope, $routeParams, $window, $location, data, general, collections, alerts, _) {
 
-    var path = general.path.decode($routeParams.path);
+    $scope.path = $routeParams.path;
+    collections.globals.path = general.path.parent($scope.path);
     
     // Get Form Url
 
@@ -2336,28 +2209,47 @@ require.define("/client/forms/controllers.js",function(require,module,exports,__
 
     // Get current instance
 
-    instances.get({ path: path }, function (instances) {
+    data.instances.get({ path: $scope.path }, function (instances) {
 
       var current = instances[0];
 
       // Data
 
       $scope.data = current;
-
-      // Title
-      
-      $scope.title = 'Edit: ' + $scope.data.name;
       
     });
 
     // create
 
-    $scope.submit = instances.update;
+    $scope.submit = function (form_data) {
+
+      data.instances.update(form_data, function (response) {
+
+        collections.alerts.length = 0;
+
+        if (response.errors) {
+          collections.alerts.push.apply(collections.alerts, alerts.flattenValidationErrors(response.errors));
+          return;
+        }
+
+        collections.alerts.push({
+          type: 'success',
+          name: 'Saved',
+          msg: response.path + ' was saved',
+          keep: $scope.path !== response.path
+        });
+
+        $location.path('/edit/' + response.path);
+        $window.scrollTo(0, 0);
+
+      });
+
+    };
 
     // Cancel
 
     $scope.cancel = function () {
-      $window.history.back();
+      $scope.link(general.path.parent($scope.path));
     };
 
   }
@@ -2366,25 +2258,31 @@ require.define("/client/forms/controllers.js",function(require,module,exports,__
 
 module.exports = controllers;
 
-});
+},{}],8:[function(require,module,exports){var controllers = {
 
-require.define("/client/instances/index.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = require('./controllers');
+  TypesCtrl: function ($scope, collections) {
+    $scope.types = collections.types;
+  }
+
+};
 
 var types = function (app) {
+  app.controller('TypesCtrl', controllers.TypesCtrl);
+};
 
-  app.controller('RootCtrl', controllers.RootCtrl);
-  app.controller('InstancesCtrl', controllers.InstancesCtrl);
+module.exports = types;
+
+},{}],9:[function(require,module,exports){var controllers = require('./controllers');
+var factories = require('./factories');
+
+var services = function (app) {
+
   app.controller('InstanceCtrl', controllers.InstanceCtrl);
-  app.controller('TypeCtrl', controllers.TypeCtrl);
+  app.controller('InstancesCtrl', controllers.InstancesCtrl);
 
   app.config(function ($routeProvider, $locationProvider) {
     
-    $routeProvider.when('/', {
-      controller: 'RootCtrl',
-      templateUrl: 'partials/instances.html'
-    });
-
-    $routeProvider.when('/instances/:path', {
+    $routeProvider.when('*path', {
       controller: 'InstancesCtrl',
       templateUrl: 'partials/instances.html'
     });
@@ -2393,268 +2291,105 @@ var types = function (app) {
 
 };
 
-module.exports = types;
+module.exports = services;
 
-});
+},{"./controllers":24,"./factories":25}],24:[function(require,module,exports){var InstancesCtrl = function ($scope, $routeParams, header, data, collections, general, _) {
 
-require.define("/client/instances/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
+  $scope.path = $routeParams.path || '/';
+  $scope.instances = collections.instances;
+  collections.globals.path = $scope.path;
 
-  RootCtrl: function ($scope, $routeParams, types, instances, events, _) {
+  // Current
 
-    $scope.current = { name: 'root', path: '/' };
-    $scope.is_root = true;
+  data.instances.get({ path: $scope.path }, function (data) {
 
-    types.get({ root: 'true' }, function (data) {
-      $scope.types = _.map(data, function (type) {
-        return type.name;
+    if (data.length === 0) {
+
+      collections.alerts.push({
+        type: 'error',
+        name: 'Not found',
+        msg: 'No content was found at ' + $scope.path
       });
-    });
 
-    instances.get({ path: /^\/[^\/]+$/ }, function (data) {
-      $scope.instances = data;
-    });
-    
-  },
+      return;
 
-  InstancesCtrl: function ($scope, $routeParams, $location, general, types, instances, _, events) {
+    }
 
-    var path = general.path.decode($routeParams.path);
-
-    // Current
-
-    instances.get({ path: path }, function (data) {
-      $scope.current = data[0];
-      $scope.title = $scope.current.name;
-    });
+    $scope.current = data[0];
 
     // Types
-    
-    $scope.$watch('current', function (current) {
-      if (typeof current !== 'undefined') {
-        types.get({ name: current.type }, function (types) {
-          $scope.types = types[0].children;
-        });
+
+    collections.types.length = 0;
+    collections.types.push.apply(collections.types, data[0].children);
+
+  });
+  
+  // Instances
+
+  var re = new RegExp('^' + $scope.path + '/[^/]+$');
+
+  if ($scope.path === '/') {
+    re = new RegExp('^/[^/]+$');
+  }
+
+  data.instances.get({ path: re }, function (data) {
+    collections.instances.length = 0;
+    collections.instances.push.apply(collections.instances, data);
+  });
+
+
+};
+
+var InstanceCtrl = function ($scope, data, collections) {
+
+  $scope.instance.remove = function () {
+
+    // UI Remove
+
+    var i;
+    for (i = 0; i < collections.instances.length; i += 1) {
+      if (collections.instances[i].path === $scope.instance.path) {
+        collections.instances.splice(i, 1);
+        break;
       }
-    });
+    }
 
-    // Children
+    // Database Remove
 
-    var instances_query = { path: new RegExp(path + '/[^/]+$') };
+    var result = data.instances.remove($scope.instance);
 
-    instances.get(instances_query, function (data) {
-      $scope.instances = data;
-    });
+    result.success(function (data, status) {
 
-    // Back Button
+      collections.alerts.length = 0;
 
-    $scope.back = function () {
-      var parent_path = general.path.parent(path);
-
-      if (parent_path === '') {
-        return $location.path('');
-      }
-
-      $location.path('/instances/' + general.path.encode(parent_path));
-    };
-    
-  },
-
-  InstanceCtrl: function ($scope, $location, general, types, events, _) {
-
-    $scope.select = function (instance) {
-      if (instance.class === 'selected') {
-        instance.class = '';
-        events.emit('instances: deselect', instance);
-        return;
-      }
-      instance.class = 'selected';
-      events.emit('instances: select', instance);
-    };
-
-    $scope.edit = function (instance) {
-      $location.path('/instances/edit/' + general.path.encode(instance.path));
-    };
-
-    $scope.show = function (instance) {
-      $location.path('/instances/' + general.path.encode(instance.path));
-    };
-    
-    // Removed instance from parent
-
-    events.on('instances remove', function (e, path) {
-
-      _.each($scope.$parent.instances, function (instance, i) {
-        if (instance.path === path) {
-          $scope.$parent.instances.splice(i, 1);
-        }
+      collections.alerts.push({
+        type: 'success',
+        name: 'Removed',
+        msg: $scope.instance.path
       });
 
     });
-    
-    // Deselect all
 
-    events.on('instances: deselect all', function (e, instance) {
-      $scope.instance.class = '';
-    });
+    result.error(function (error) {
 
-  },
+      collections.alerts.length = 0;
 
-  TypeCtrl: function ($scope, $location, events, general) {
-    $scope.create = function (name, parent) {
-      $location.path('/instances/new/' + name + '/' + general.path.encode(parent));
-    };
-  }
-
-};
-
-module.exports = controllers;
-
-});
-
-require.define("/client/actions/index.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = require('./controllers');
-
-var actions = function (app) {
-  app.controller('InstancesActionCtrl', controllers.InstancesActionCtrl);
-};
-
-module.exports = actions;
-
-});
-
-require.define("/client/actions/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
-
-  InstancesActionCtrl: function ($scope, $location, instances, events, general, _) {
-
-    $scope.buttons = [];
-    $scope.instances = [];
-
-    events.on('instances: select', function (e, instance) {
-      $scope.instances.push(instance);
-    });
-
-    events.on('instances: deselect', function (e, instance) {
-      $scope.instances = _.reject($scope.instances, function (i) {
-        return instance.path === i.path;
-      });
-e   });
-
-    events.on('instances: deselect all', function (e, instance) {
-      $scope.instances.length = 0;
-    });
-
-    $scope.$watch('instances', function () {
-
-      $scope.buttons.length = 0;
-
-      var editButton = {
-        name: 'Edit',
-        click: function () {
-          var instance = $scope.instances[0];
-          $location.path('/instances/edit/' + general.path.encode(instance.path));
-          $scope.instances.length = 0;
-        }
-      };
-
-      var removeButton = {
-        name: 'Remove',
-        click: function () {
-
-          _.each($scope.instances, function (instance, i) {
-
-            var result = instances.remove(instance);
-
-            result.success(function (data, status) {
-              events.emit('instances remove', data.path);
-            });
-
-            result.error(function (error) {
-              alert('error deleting');
-            });
-
-          });
-
-          $scope.instances.length = 0;
-
-        }
-
-      };
-
-      if ($scope.instances.length === 1) {
-        $scope.buttons.push(editButton, removeButton);
-      }
-
-      if ($scope.instances.length > 1) {
-        $scope.buttons.push(removeButton);
-      }
-
-    }, true);
-
-  }
-
-};
-
-module.exports = controllers;
-
-});
-
-require.define("/client/alerts/index.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = require('./controllers');
-
-var alerts = function (app) {
-
-  app.controller('AlertsCtrl', controllers.AlertsCtrl);
-
-};
-
-module.exports = alerts;
-
-});
-
-require.define("/client/alerts/controllers.js",function(require,module,exports,__dirname,__filename,process,global){var controllers = {
-
-  AlertsCtrl: function ($scope, events, _) {
-
-    var setEvents = function (event) {
-
-      $scope[event] = [];
-
-      events.on(event, function (e, items) {
-
-        $scope[event].length = 0;
-
-        setTimeout(function () {
-          _.each(items, function (value, key) {
-            $scope.$apply(function () {
-              $scope[event].push({ name: key, message: value.join(', ') });
-            });
-          });
-        }, 50);
-
+      collections.alerts.push({
+        type: 'error',
+        name: 'Removed',
+        msg: $scope.instance.path + ' failed.'
       });
 
-    };
+    });
 
-    setEvents('errors');
-    setEvents('warnings');
-
-  }
+  };
 
 };
 
-module.exports = controllers;
+module.exports = { InstanceCtrl: InstanceCtrl, InstancesCtrl: InstancesCtrl };
 
-});
+},{}],25:[function(require,module,exports){var factories = function () {};
 
-require.define("/client/index.js",function(require,module,exports,__dirname,__filename,process,global){var jungles = angular.module('jungles', []);
-window.jungles = jungles;
+module.exports = factories;
 
-require('./data')(jungles);
-require('./events')(jungles);
-require('./general')(jungles);
-require('./forms')(jungles);
-require('./instances')(jungles);
-require('./actions')(jungles);
-require('./alerts')(jungles);
-
-});
-require("/client/index.js");
-})();
+},{}]},{},[1]);

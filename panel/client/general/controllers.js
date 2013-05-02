@@ -1,11 +1,9 @@
 var controllers = {
 
-  PageCtrl: function ($scope, $window, events) {
+  PageCtrl: function ($scope, $location) {
 
-    $scope.deselect = function (e) {
-      if (!$window.$(e.target).is('.instance')) {
-        events.emit('instances: deselect all');
-      }
+    $scope.link = function (url) {
+      $location.path(url);
     };
 
   }

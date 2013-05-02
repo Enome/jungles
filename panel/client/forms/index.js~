@@ -6,12 +6,12 @@ var forms = function (app) {
 
   app.config(function ($routeProvider) {
 
-    $routeProvider.when('/new/:type/*parent', {
+    $routeProvider.when('/instances/new/:type*/parent', {
       controller: 'CreateFormCtrl',
       templateUrl: 'partials/form.html'
     });
 
-    $routeProvider.when('/edit/*path', {
+    $routeProvider.when('/instances/edit/:path', {
       controller: 'EditFormCtrl',
       templateUrl: 'partials/form.html'
     });

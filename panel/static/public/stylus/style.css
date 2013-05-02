@@ -75,7 +75,8 @@ button:disabled {
 }
 .page h1,
 .page .type,
-.page .instance {
+.page .instance,
+.page .clipboard {
   font-size: 1.35em;
   padding-left: 20px;
   border-bottom: 1px solid #ebebeb;
@@ -99,16 +100,24 @@ button:disabled {
   color: #fff;
 }
 .page .type,
-.page .instance {
+.page .instance,
+.page .clipboard {
   cursor: pointer;
 }
 .page .type.selected,
-.page .instance.selected {
+.page .instance.selected,
+.page .clipboard.selected {
   background: #f2f2f2;
 }
 .page .type {
   font-weight: 500;
   background: #f9f9f9;
+}
+.page .clipboard {
+  color: #c0c0c0;
+}
+.page .clipboard .button:first-child {
+  right: 58px;
 }
 .page .button {
   position: absolute;
@@ -153,23 +162,21 @@ button:disabled {
   font-weight: 300;
 }
 .actions {
-  height: 60px/2;
-  background: #3a3a3a;
+  height: 60px;
+  line-height: 60px;
+  background: #ebebeb;
   position: fixed;
   width: 100%;
   bottom: 0;
   left: 0;
-}
-.actions .buttons {
   text-align: center;
+  border-top: 1px solid #d8d8d8;
 }
-.actions .buttons button {
-  line-height: 60px;
-  padding: 0 25px;
+.actions button {
+  background: #898989;
+  width: 85px;
+  height: 35px;
   display: inline-block;
-  margin-left: -4px;
-  border-right: 1px solid #444;
-}
-.actions .buttons button:first-child {
-  border-left: 1px solid #444;
+  color: #fff;
+  border-radius: 3px;
 }

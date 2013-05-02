@@ -1,20 +1,14 @@
 var controllers = require('./controllers');
+var factories = require('./factories');
 
-var types = function (app) {
+var services = function (app) {
 
-  app.controller('RootCtrl', controllers.RootCtrl);
-  app.controller('InstancesCtrl', controllers.InstancesCtrl);
   app.controller('InstanceCtrl', controllers.InstanceCtrl);
-  app.controller('TypeCtrl', controllers.TypeCtrl);
+  app.controller('InstancesCtrl', controllers.InstancesCtrl);
 
   app.config(function ($routeProvider, $locationProvider) {
     
-    $routeProvider.when('/', {
-      controller: 'RootCtrl',
-      templateUrl: 'partials/instances.html'
-    });
-
-    $routeProvider.when('/instances/:path', {
+    $routeProvider.when('*path', {
       controller: 'InstancesCtrl',
       templateUrl: 'partials/instances.html'
     });
@@ -23,4 +17,4 @@ var types = function (app) {
 
 };
 
-module.exports = types;
+module.exports = services;

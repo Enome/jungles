@@ -1,15 +1,19 @@
-<h1>
-  {{current.name}}
-  <a class='button' ng-show='!is_root' ng-click='back()'>&larr;</a>
-</h1>
+<table class='table' ng-controller='TypesCtrl'>
+  <tr>
+    <th colspan='1'>New</th>
+  </tr>
+  <tr ng-repeat='type in types' class='type'>
+    <td ng-click='link("/new/" + type + "/" + path)'>+ {{type}}</td>
+  </tr>
+</table>
 
-<div ng-repeat='type in types' ng-controller='TypeCtrl' ng-click='create(type, current.path)' class='type'>
-  + {{type}}
-</div>
-
-<div ng-repeat='instance in instances' class='instance' ng-controller='InstanceCtrl' ng-click='select(instance)' ng-dblclick='edit(instance)' ng-class='instance.class'>
-
-  {{instance.name}}
-
-  <a class='button' class='next' ng-show='instance.children.length' ng-click='show(instance); $event.stopPropagation()'>&rarr;</a> 
-</div>
+<table class='table'>
+  <tr>
+    <th colspan='4'>Content</th>
+  </tr>
+  <tr ng-repeat='instance in instances' ng-controller='InstanceCtrl'>
+    <td ng-click='link(instance.path)'>{{instance.name}}</td>
+    <td class='button' ng-click='link("/edit/" + instance.path)'>Edit</td>
+    <td class='button' confirm-click='instance.remove()'>Remove</td>
+  </tr>
+</table>

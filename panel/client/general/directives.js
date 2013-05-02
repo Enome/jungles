@@ -1,23 +1,69 @@
 var directives = {
 
-  documentClick: function ($document, $parse) {
+  confirmClick: function ($document, $parse) {
 
-    var linkFunction = function ($scope, $element, $attributes) {
+    return {
+      restrict: 'A',
+      link: function ($scope, el, attr) {
 
-      var scopeExpression = $attributes.documentClick;
-      var invoker = $parse(scopeExpression);
+        var fn = $parse(attr.confirmClick);
 
-      $document.on('click', function (event) {
+        var confirmed = false;
 
-        $scope.$apply(function () {
-          invoker($scope, { $event: event });
+        el.bind('click', function () {
+
+          if (confirmed) {
+            $scope.$apply(function (event) {
+              fn($scope, { $event: event });
+            });
+          }
+
         });
 
-      });
+        $document.on('click', function (e) {
+
+          $scope.$apply(function () {
+
+            confirmed = e.target === el[0];
+
+            if (!confirmed) {
+              return $(el).removeClass('confirm');
+            }
+
+            $(el).addClass('confirm');
+
+          });
+
+        });
+
+      }
 
     };
 
-    return linkFunction;
+  },
+
+  esckeypress: function ($document, $parse) {
+
+    return {
+      restrict: 'A',
+      link: function ($scope, el, attr) {
+
+        $(el).keydown(function (e) {
+
+          console.log(e.which);
+
+          if (e.which === 27) {
+            $scope.$apply(function (event) {
+              $parse(attr.esckeypress)($scope, { $event: event });
+            });
+          }
+
+        });
+
+
+      }
+
+    };
 
   }
 

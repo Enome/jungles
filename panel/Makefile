@@ -1,2 +1,2 @@
 build:
-	@browserify client/index.js -o assets/public/javascript/panel.js
+	@browserify client/index.js -o static/public/javascript/panel.js

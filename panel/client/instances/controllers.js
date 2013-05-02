@@ -1,111 +1,94 @@
-var controllers = {
+var InstancesCtrl = function ($scope, $routeParams, header, data, collections, general, _) {
 
-  RootCtrl: function ($scope, $routeParams, types, instances, events, _) {
+  $scope.path = $routeParams.path || '/';
+  $scope.instances = collections.instances;
+  collections.globals.path = $scope.path;
 
-    $scope.current = { name: 'root', path: '/' };
-    $scope.is_root = true;
+  // Current
 
-    types.get({ root: 'true' }, function (data) {
-      $scope.types = _.map(data, function (type) {
-        return type.name;
+  data.instances.get({ path: $scope.path }, function (data) {
+
+    if (data.length === 0) {
+
+      collections.alerts.push({
+        type: 'error',
+        name: 'Not found',
+        msg: 'No content was found at ' + $scope.path
       });
-    });
 
-    instances.get({ path: /^\/[^\/]+$/ }, function (data) {
-      $scope.instances = data;
-    });
-    
-  },
+      return;
 
-  InstancesCtrl: function ($scope, $routeParams, $location, general, types, instances, _, events) {
+    }
 
-    var path = general.path.decode($routeParams.path);
-
-    // Current
-
-    instances.get({ path: path }, function (data) {
-      $scope.current = data[0];
-      $scope.title = $scope.current.name;
-    });
+    $scope.current = data[0];
 
     // Types
-    
-    $scope.$watch('current', function (current) {
-      if (typeof current !== 'undefined') {
-        types.get({ name: current.type }, function (types) {
-          $scope.types = types[0].children;
-        });
-      }
-    });
 
-    // Children
+    collections.types.length = 0;
+    collections.types.push.apply(collections.types, data[0].children);
 
-    var instances_query = { path: new RegExp(path + '/[^/]+$') };
+  });
+  
+  // Instances
 
-    instances.get(instances_query, function (data) {
-      $scope.instances = data;
-    });
+  var re = new RegExp('^' + $scope.path + '/[^/]+$');
 
-    // Back Button
-
-    $scope.back = function () {
-      var parent_path = general.path.parent(path);
-
-      if (parent_path === '') {
-        return $location.path('');
-      }
-
-      $location.path('/instances/' + general.path.encode(parent_path));
-    };
-    
-  },
-
-  InstanceCtrl: function ($scope, $location, general, types, events, _) {
-
-    $scope.select = function (instance) {
-      if (instance.class === 'selected') {
-        instance.class = '';
-        events.emit('instances: deselect', instance);
-        return;
-      }
-      instance.class = 'selected';
-      events.emit('instances: select', instance);
-    };
-
-    $scope.edit = function (instance) {
-      $location.path('/instances/edit/' + general.path.encode(instance.path));
-    };
-
-    $scope.show = function (instance) {
-      $location.path('/instances/' + general.path.encode(instance.path));
-    };
-    
-    // Removed instance from parent
-
-    events.on('instances remove', function (e, path) {
-
-      _.each($scope.$parent.instances, function (instance, i) {
-        if (instance.path === path) {
-          $scope.$parent.instances.splice(i, 1);
-        }
-      });
-
-    });
-    
-    // Deselect all
-
-    events.on('instances: deselect all', function (e, instance) {
-      $scope.instance.class = '';
-    });
-
-  },
-
-  TypeCtrl: function ($scope, $location, events, general) {
-    $scope.create = function (name, parent) {
-      $location.path('/instances/new/' + name + '/' + general.path.encode(parent));
-    };
+  if ($scope.path === '/') {
+    re = new RegExp('^/[^/]+$');
   }
+
+  data.instances.get({ path: re }, function (data) {
+    collections.instances.length = 0;
+    collections.instances.push.apply(collections.instances, data);
+  });
+
 
 };
 
-module.exports = controllers;
+var InstanceCtrl = function ($scope, data, collections) {
+
+  $scope.instance.remove = function () {
+
+    // UI Remove
+
+    var i;
+    for (i = 0; i < collections.instances.length; i += 1) {
+      if (collections.instances[i].path === $scope.instance.path) {
+        collections.instances.splice(i, 1);
+        break;
+      }
+    }
+
+    // Database Remove
+
+    var result = data.instances.remove($scope.instance);
+
+    result.success(function (data, status) {
+
+      collections.alerts.length = 0;
+
+      collections.alerts.push({
+        type: 'success',
+        name: 'Removed',
+        msg: $scope.instance.path
+      });
+
+    });
+
+    result.error(function (error) {
+
+      collections.alerts.length = 0;
+
+      collections.alerts.push({
+        type: 'error',
+        name: 'Removed',
+        msg: $scope.instance.path + ' failed.'
+      });
+
+    });
+
+  };
+
+};
+
+module.exports = { InstanceCtrl: InstanceCtrl, InstancesCtrl: InstancesCtrl };

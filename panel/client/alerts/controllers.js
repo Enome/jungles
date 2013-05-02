@@ -1,29 +1,32 @@
 var controllers = {
 
-  AlertsCtrl: function ($scope, events, _) {
+  AlertsCtrl: function ($scope, collections) {
 
-    var setEvents = function (event) {
+    /* Format
+    * var errors = [
+    * { type: 'success/error', name: 'Bold text', msg: 'None bold text', keep: 'boolean' },
+    * ];
+    */
 
-      $scope[event] = [];
+    $scope.alerts = collections.alerts;
 
-      events.on(event, function (e, items) {
+    $scope.$on('$locationChangeSuccess', function () {
 
-        $scope[event].length = 0;
+      var i;
 
-        setTimeout(function () {
-          _.each(items, function (value, key) {
-            $scope.$apply(function () {
-              $scope[event].push({ name: key, message: value.join(', ') });
-            });
-          });
-        }, 50);
+      for (i = $scope.alerts.length - 1; i >= 0; i -= 1) {
+        
+        var current = $scope.alerts[i];
 
-      });
+        if (!current.keep) {
+          $scope.alerts.splice(i, 1);
+        } else {
+          current.keep = false;
+        }
 
-    };
+      }
 
-    setEvents('errors');
-    setEvents('warnings');
+    });
 
   }
 

@@ -1,11 +1,12 @@
-var services = require('./services');
+var factories = require('./factories');
 var directives = require('./directives');
 var controllers = require('./controllers');
 
 var general = function (app) {
-  app.factory('general', services);
+  app.directive('confirmClick', directives.confirmClick);
+  app.directive('esckeypress', directives.esckeypress);
   app.factory('_', function () { return require('underscore'); });
-  app.directive('documentClick', directives.documentClick);
+  app.factory('general', factories);
   app.controller('PageCtrl', controllers.PageCtrl);
 };
 
