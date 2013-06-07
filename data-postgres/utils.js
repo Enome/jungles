@@ -40,9 +40,11 @@ var utils = {
 
   arrayifiy: function (array) {
     return '{' + array.join(',') + '}';
-  }
+  },
 
-
+  escapeForRegex: function (s) {
+    return s.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+  },
 
 };
 

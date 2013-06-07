@@ -9,7 +9,7 @@ var functions = {
 
     var query = 'SELECT * FROM instances WHERE path ~ $1 ORDER BY sort';
 
-    state.db.query(query, [ state.data.path + '(/|$)' ], function (err, response) {
+    state.db.query(query, [ utils.escapeForRegex(state.data.path) + '(/|$)' ], function (err, response) {
       state.instances = utils.createInstances(response);
       next(null, state);
     });
@@ -78,7 +78,7 @@ var functions = {
       if (i === 0) {
         instances[i] = state.target;
       } else {
-        instance.path = instance.path.replace(new RegExp('^' + original.path), state.target.path);
+        instance.path = instance.path.replace(new RegExp('^' + utils.escapeForRegex(original.path)), state.target.path);
         instance.sort = state.target.sort.concat(instance.sort.slice(original.sort.length));
       }
 

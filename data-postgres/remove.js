@@ -12,7 +12,7 @@ module.exports = function (db, query) {
 
       result.one(function (instance) {
 
-        db.query('DELETE FROM instances WHERE id = $1 or path ~ $2 RETURNING *;', [ instance.id, '^' + instance.path + '(/|$)' ], function (err, result) {
+        db.query('DELETE FROM instances WHERE path ~ $1 RETURNING *;', [ '^' + utils.escapeForRegex(instance.path) + '(/|$)' ], function (err, result) {
           callback(utils.createInstances(result));
         });
 
