@@ -2,7 +2,7 @@
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles-data-postgres",
   "description": "Data for Jungles using Postgresql",
-  "version": "2.1.1",
+  "version": "3.0.0",
   "keywords": [
     "jungles",
     "data",
@@ -13,6 +13,7 @@
     "kwery": "*",
     "slug": "~0.2.2",
     "pg": "~0.8.7",
-    "jungles-data": "~1.2.0"
+    "jungles-data": "2.0.0",
+    "async": "~0.2.8"
   }
 }

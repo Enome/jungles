@@ -6,6 +6,10 @@ var utils = {
 
   createInstances: function (result) {
 
+    if (!result.rows) {
+      return [];
+    }
+
     var rows = [];
 
     result.rows.forEach(function (val) {
@@ -19,7 +23,6 @@ var utils = {
       val.order = val.sort[val.sort.length - 1];
 
       delete val.id;
-      delete val.sort;
 
       rows.push(val);
 
