@@ -6,6 +6,7 @@ module.exports = function (objects, opts) {
   var many = result.many;
   
   // Proxy many to add sort
+
   result.many = function (callback) {
     
     many(function (response) {
@@ -14,10 +15,6 @@ module.exports = function (objects, opts) {
       });
 
       sorted = JSON.parse(JSON.stringify(sorted));
-
-      sorted.forEach(function (instance) {
-        delete instance.sort;
-      });
 
       callback(sorted);
     });

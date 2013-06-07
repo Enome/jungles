@@ -11,6 +11,7 @@ module.exports = function (db, query) {
 
       result.one(function (node) {
 
+        var retur = [];
         var _db = db.slice(0);
         db.length = 0;
 
@@ -19,10 +20,12 @@ module.exports = function (db, query) {
         _db.forEach(function (el, i) {
           if (!re.test(el.path)) {
             db.push(el);
+          } else {
+            retur.push(el);
           }
         });
 
-        callback();
+        callback(retur);
 
       });
 
