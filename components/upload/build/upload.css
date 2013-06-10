@@ -1,4 +1,10 @@
-.upload {}
+.upload a {
+  color: gray;
+}
+
+.upload a:hover {
+  color: black;
+}
 
 .upload img {
   max-height: 80px;
@@ -10,6 +16,11 @@
 .upload .thumb {
   width: 80px;
   text-align: center;
+}
+
+.upload .thumb i {
+  font-size: 28px;
+  color: silver;
 }
 
 .upload .buttons {

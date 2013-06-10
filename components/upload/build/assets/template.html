@@ -10,11 +10,14 @@
   <tbody>
     <tr ng-repeat='file in current'>
       <td class='thumb'>
-        <img ng-src='{{url+"/"+file|fileType}}' alt='{{file}}' />
+        <img ng-src='{{url+"/"+file}}' alt='{{file}}' ng-show='file|isImage' />
+        <i class='icon-file-alt' ng-hide='file|isImage'></i>
       </td>
-      <td>{{file|fileName}}</td>
+      <td>
+        <a ng-href='{{url+"/"+file}}' target='_blank'>{{file|fileName}}</a>
+      </td>
       <td class='buttons'>
-        <button type='button' ng-click='remove(file)'>Remove</button>
+        <button type='button' ng-click='remove(file)'><i class='icon-trash'></i></button>
       </td>
     </tr>
   </tbody>

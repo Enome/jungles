@@ -1,10 +1,12 @@
 {
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles-components",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "Angular.js components for jungles-panel",
   "dependencies": {
-    "browserify": "~1.16.1",
-    "jungles-functions": "~1.0.0"
+    "jungles-functions": "~1.1.0"
+  },
+  "devDependencies": {
+    "browserify": "~1.16.1"
   }
 }

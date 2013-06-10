@@ -4,7 +4,7 @@ var filters = require('./filters');
 
 var app = window.jungles;
 
-app.filter('fileType', filters.fileType);
+app.filter('isImage', filters.isImage);
 app.filter('fileName', filters.fileName);
 app.controller('UploadCtrl', controllers.UploadCtrl);
 app.directive('upload', directives.upload);
@@ -49,14 +49,20 @@ app.directive('upload', directives.upload);
           var name = current.name;
 
           reader.onload = function (e) {
-            var result = $http.post($scope.url + '/' + name, { file : e.target.result });
 
-            result.success(function (data, status, headers, config) {
-              if (typeof $scope.current === 'undefined') {
-                $scope.current = [];
-              }
-              $scope.current.push(data.file);
+            $scope.$apply(function () {
+
+              var result = $http.post($scope.url + '/' + name, { file : e.target.result });
+
+              result.success(function (data, status, headers, config) {
+                if (typeof $scope.current === 'undefined') {
+                  $scope.current = [];
+                }
+                $scope.current.push(data.file);
+              });
+
             });
+
           };
 
         }());
@@ -96,6 +102,15 @@ module.exports = directives;
 },{}],4:[function(require,module,exports){var functions = require('jungles-functions');
 
 var filters = {
+
+  isImage: function () {
+
+    return function (path) {
+      var ex = path.substring(path.lastIndexOf('.')).toLowerCase();
+      return ex === '.png' || ex === '.jpg' || ex === '.jpeg' || ex === '.gif';
+    };
+
+  },
 
   fileType: function () {
 

@@ -38,14 +38,20 @@ var controllers = {
           var name = current.name;
 
           reader.onload = function (e) {
-            var result = $http.post($scope.url + '/' + name, { file : e.target.result });
 
-            result.success(function (data, status, headers, config) {
-              if (typeof $scope.current === 'undefined') {
-                $scope.current = [];
-              }
-              $scope.current.push(data.file);
+            $scope.$apply(function () {
+
+              var result = $http.post($scope.url + '/' + name, { file : e.target.result });
+
+              result.success(function (data, status, headers, config) {
+                if (typeof $scope.current === 'undefined') {
+                  $scope.current = [];
+                }
+                $scope.current.push(data.file);
+              });
+
             });
+
           };
 
         }());
