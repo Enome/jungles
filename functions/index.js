@@ -12,7 +12,23 @@ var functions = {
 
     return filename;
 
-  }
+  },
+
+  getParent: function (path) {
+
+    path = path.substring(1);
+
+    var parts = path.split('/');
+
+    parts.pop();
+
+    if (parts.length === 0) {
+      return '/';
+    }
+
+    return '/' + parts.join('/');
+
+  },
 
 };
 
