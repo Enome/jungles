@@ -124,7 +124,7 @@ describe('Instances Middleware', function () {
 
     });
 
-    it('calls nexts and sets the created object', function (done) {
+    it('calls json with errors', function (done) {
 
       var response = {
         name: '__error__'
@@ -153,6 +153,83 @@ describe('Instances Middleware', function () {
         
         //Extra
         core.types.create.args.should.eql([['__data__']]);
+
+        done();
+
+      });
+
+    });
+
+  });
+
+  describe('copy', function () {
+
+    it('calls nexts and sets the copied object', function (done) {
+
+      var response = {
+        user: 'Enome'
+      };
+
+      var result = {
+        success: sinon.stub().yields(response),
+        error: sinon.stub(),
+      };
+
+      var core = {
+        types: { copy: sinon.stub().returns(result) }
+      };
+
+      middleware.inject(core);
+
+      var state = {
+        body: '__data__'
+      };
+
+      recorder(middleware.copy, state, function (result) {
+
+        result.eql({
+          next: true,
+          locals: { response: { user: 'Enome' } }
+        });
+        
+        //Extra
+        core.types.copy.args.should.eql([['__data__']]);
+
+        done();
+
+      });
+
+    });
+
+    it('calls json with the errors', function (done) {
+
+      var response = {
+        name: '__error__'
+      };
+
+      var result = {
+        success: sinon.stub(),
+        error: sinon.stub().yields(response),
+      };
+
+      var core = {
+        types: { copy: sinon.stub().returns(result) }
+      };
+
+      middleware.inject(core);
+
+      var state = {
+        body: '__data__'
+      };
+
+      recorder(middleware.copy, state, function (result) {
+
+        result.eql({
+          json: { errors: { name: '__error__' } }
+        });
+        
+        //Extra
+        core.types.copy.args.should.eql([['__data__']]);
 
         done();
 
@@ -245,8 +322,9 @@ describe('Instances Middleware', function () {
       
       // Setup dependencies
 
+      var response = [ 'one', 'two' ];
       var result = {
-        success: sinon.stub().yields()
+        success: sinon.stub().yields(response)
       };
 
       var core = {
@@ -265,63 +343,14 @@ describe('Instances Middleware', function () {
 
       recorder(middleware.remove, state, function (result) {
 
-        result.eql({ next: true });
+        result.eql({
+          locals: { response: response },
+          next: true
+        });
 
         // Extra: verify remove
 
         core.data.remove.args.should.eql([[ { path: 'somepath' } ]]);
-        done();
-
-      });
-
-    });
-
-  });
-
-  describe('addChildTypes', function () {
-
-    it('adds the child types to instances', function (done) {
-      
-      // Setup dependencies
-
-      var type = { children: '__some_types__' };
-
-      var result = {
-        one: sinon.stub().yields(type)
-      };
-
-      var core = {
-        schemas: { find: sinon.stub().returns(result) }
-      };
-
-      middleware.inject(core);
-
-     
-      // Setup Middleware
-
-      var state = {
-        locals: { instances: [ { type: 'book' }, { type: 'page' } ] }
-      };
-
-      
-      // Record
-
-      recorder(middleware.addChildTypes, state, function (result) {
-
-        result.eql({
-          next: true,
-          locals: {
-            instances: [
-              { type: 'book', children: '__some_types__' },
-              { type: 'page', children: '__some_types__' },
-            ]
-          }
-        });
-
-        // Extra: verify types.find
-        
-        core.schemas.find.args.should.eql([ [ { name: 'book' } ], [ { name: 'page' } ] ]);
-
         done();
 
       });

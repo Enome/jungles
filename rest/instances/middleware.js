@@ -9,9 +9,11 @@ module.exports = {
   },
 
   defaultQuery: function (req, res, next) {
+
     if (Object.keys(req.query).length === 0) {
       req.query = { path: /.*/ };
     }
+
     next();
   },
 
@@ -24,6 +26,7 @@ module.exports = {
     });
 
     next();
+
   },
 
   find: function (query) {
@@ -58,6 +61,21 @@ module.exports = {
 
   },
 
+  copy: function (req, res, next) {
+
+    var result = core.types.copy(req.body);
+
+    result.success(function (response) {
+      res.locals.response = response;
+      next();
+    });
+
+    result.error(function (errors) {
+      res.json({ errors: errors });
+    });
+
+  },
+
   update: function (req, res, next) {
 
     var result = core.types.update(req.body);
@@ -77,24 +95,11 @@ module.exports = {
 
     var result = core.data.remove({ path: req.params.path });
 
-    result.success(function () {
+    result.success(function (response) {
+      res.locals.response = response;
       next();
     });
 
   },
-
-  addChildTypes: function (req, res, next) {
-    
-    res.locals.instances.forEach(function (item) {
-      
-      var result = core.schemas.find({ name: item.type });
-
-      result.one(function (type) {
-        item.children = type.children || [];
-      });
-
-    });
-    next();
-  }
   
 };

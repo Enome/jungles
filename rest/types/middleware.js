@@ -25,16 +25,13 @@ module.exports = {
       var result = core.schemas.find(q);
 
       result.many(function (response) {
-        if (response.length !== 0) {
-          res.locals.types = response;
-          return next();
-        }
+        res.locals.types = response;
+        next();
       });
 
       result.empty(function () {
-        return next({ type: 'types', error: 'No types were found.' });
+        next({ type: 'types', error: 'No types were found.' });
       });
-
 
     };
 
@@ -52,7 +49,7 @@ module.exports = {
 
       res.locals.form = str;
 
-      return next();
+      next();
 
     });
 

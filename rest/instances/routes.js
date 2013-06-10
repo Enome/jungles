@@ -11,25 +11,24 @@ module.exports = {
             instances.defaultQuery,
             instances.queryToRegex,
             instances.find(function () { return this.req.query; }),
-            instances.addChildTypes,
             general.send(function () { return this.res.locals.instances; }));
 
     app.post('/instances',
-             //types.find(function () { return { name: this.req.body.type }; }),
-             //types.validate,
-             instances.create, //changed
+             instances.create,
+             general.send(function () { return this.res.locals.response; }));
+
+    app.post('/instances/copy',
+             instances.copy,
              general.send(function () { return this.res.locals.response; }));
 
     app.put('/instances',
-             //types.find(function () { return { name: this.req.body.type }; }),
-             //types.validate,
              instances.find(function () { return { path: this.req.body.path }; }),
-             instances.update, //changed
+             instances.update,
              general.send(function () { return this.res.locals.response; }));
 
     app.del('/instances/:path(*)',
              instances.remove,
-             general.send(function () { return { path: this.req.params.path }; }));
+             general.send(function () { return this.res.locals.response; }));
 
   }
 

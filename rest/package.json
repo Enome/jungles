@@ -2,7 +2,7 @@
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles-rest",
   "description": "Rest layer of Jungles",
-  "version": "1.2.0",
+  "version": "2.0.0",
   "keywords": [
     "jungles",
     "rest"
@@ -11,7 +11,6 @@
     "kwery": "1.2.0",
     "node-uuid": "~1.3.3",
     "underscore": "~1.3.3",
-    "jungles-validators": "~1.1.0",
     "jungles-middleware-general": "~0.1.0",
     "express": "~3.0.0rc5"
   },

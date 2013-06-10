@@ -21,6 +21,7 @@ var jungles_rest = {
 
     // Routes
 
+    require('./general/routes').init(app);
     require('./instances/routes').init(app);
     require('./types/routes').init(app);
 
