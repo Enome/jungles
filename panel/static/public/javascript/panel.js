@@ -1,98 +1,194 @@
-;(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){var jungles = angular.module('jungles', []);
+;(function(e,t,n,r){function i(r){if(!n[r]){if(!t[r]){if(e)return e(r);throw new Error("Cannot find module '"+r+"'")}var s=n[r]={exports:{}};t[r][0](function(e){var n=t[r][1][e];return i(n?n:e)},s,s.exports)}return n[r].exports}for(var s=0;s<r.length;s++)i(r[s]);return i})(typeof require!=="undefined"&&require,{1:[function(require,module,exports){var jungles = window.angular.module('jungles', []);
+
 window.jungles = jungles;
 
-require('./data')(jungles);
-require('./collections')(jungles);
+require('./init')(jungles);
 require('./general')(jungles);
+require('./collections')(jungles);
 require('./header')(jungles);
 require('./alerts')(jungles);
 require('./forms')(jungles);
 require('./types')(jungles);
 require('./instances')(jungles);
+require('./icons')(jungles);
+require('./clipboard')(jungles);
+require('./popups')(jungles);
 
-},{"./data":2,"./collections":3,"./general":4,"./header":5,"./alerts":6,"./forms":7,"./types":8,"./instances":9}],2:[function(require,module,exports){var factories = require('./factories');
+},{"./init":2,"./general":3,"./collections":4,"./header":5,"./alerts":6,"./forms":7,"./types":8,"./instances":9,"./icons":10,"./clipboard":11,"./popups":12}],2:[function(require,module,exports){var init = function (jungles) {
 
-var data = function (app) {
-  app.factory('data', factories);
+  jungles.run(function ($http, general, types) {
+
+    var result = $http.get(general.resource_url('/types'));
+
+    result.success(function (response) {
+      types.set(response);
+    });
+
+  });
+
 };
 
-module.exports = data;
+module.exports = init;
 
-},{"./factories":10}],10:[function(require,module,exports){var _ = require('underscore');
-var qs = require('querystring');
-var EventEmitter = require('events').EventEmitter;
+},{}],3:[function(require,module,exports){var factories = require('./factories');
+var directives = require('./directives');
+var controllers = require('./controllers');
 
-var data = function ($http, $window, general, collections, _) {
+var general = function (app) {
+  app.directive('confirmClick', directives.confirmClick);
+  app.directive('esckeypress', directives.esckeypress);
+  app.factory('_', function () { return require('underscore'); });
+  app.factory('general', factories);
+  app.controller('PageCtrl', controllers.PageCtrl);
+};
 
-  var save = function (type, data, callback) {
-    var result = $http[type](general.resource_url('/instances'), data);
-    result.success(callback);
-  };
+module.exports = general;
 
+},{"./factories":13,"./directives":14,"./controllers":15,"underscore":16}],13:[function(require,module,exports){var jungles_functions = require('jungles-functions');
 
-  return {
+var factories = function ($document) {
 
-    types: {
-
-      get: function (query, callback) {
-        var url = general.resource_url('/types?' + qs.stringify(query));
-        var result = $http.get(url);
-        result.success(callback);
-      }
-
+  var s = {
+    resource_url: function (url) {
+      return $document[0].getElementById('ResourceUrl').value + url;
     },
 
-    instances: {
-
-      get: function (query, callback) {
-        _.each(query, function (value, key) {
-          if (value instanceof RegExp) {
-            query[key] = 'regex-' + value.toString();
-          }
-        });
-
-        var url = general.resource_url('/instances?' + qs.stringify(query));
-        var result = $http.get(url);
-        result.success(callback);
-      },
-
-      create: save.bind(null, 'post'),
-      update: save.bind(null, 'put'),
-
-      remove: function (instance) {
-
-        var result = $http.delete(general.resource_url('/instances/' + instance.path));
-        var ee = new EventEmitter();
-
-        result.success(function (data, status, headers, config) {
-          ee.emit('success', data);
-        });
-
-        result.error(function (data, status, headers, config) {
-          ee.emit('error', data);
-        });
-
-        return {
-          success: function (callback) {
-            ee.on('success', callback);
-          },
-
-          error: function (callback) {
-            ee.on('error', callback);
-          }
-        };
-
-      }
-
+    path: {
+      parent: jungles_functions.getParent
     }
 
   };
 
+  return s;
+
 };
 
-module.exports = data;
+module.exports = factories;
 
-},{"underscore":11,"querystring":12,"events":13}],11:[function(require,module,exports){(function(){//     Underscore.js 1.4.4
+},{"jungles-functions":17}],17:[function(require,module,exports){var functions = {
+
+  getFilename: function (name) {
+
+    var extension = name.lastIndexOf('.') === -1 ? '' : '.' + name.split('.').pop();
+    var uuid = name.substring(0, 36);
+    var filename = name.replace(uuid, '');
+
+    if (filename.length === extension.length) {
+      return uuid + extension;
+    }
+
+    return filename;
+
+  },
+
+  getParent: function (path) {
+
+    path = path.substring(1);
+
+    var parts = path.split('/');
+
+    parts.pop();
+
+    if (parts.length === 0) {
+      return '/';
+    }
+
+    return '/' + parts.join('/');
+
+  },
+
+};
+
+module.exports = functions;
+
+},{}],14:[function(require,module,exports){var directives = {
+
+  confirmClick: function ($document, $parse) {
+
+    return {
+      restrict: 'A',
+      link: function ($scope, el, attr) {
+
+        var fn = $parse(attr.confirmClick);
+
+        var confirmed = false;
+
+        el.bind('click', function () {
+
+          if (confirmed) {
+            $scope.$apply(function (event) {
+              fn($scope, { $event: event });
+            });
+          }
+
+        });
+
+        $document.on('click', function (e) {
+
+          $scope.$apply(function () {
+
+            confirmed = e.target === el[0] || e.target.parentNode === el[0];
+            if (!confirmed) {
+              return $(el).removeClass('confirm');
+            }
+
+            $(el).addClass('confirm');
+
+          });
+
+        });
+
+      }
+
+    };
+
+  },
+
+  esckeypress: function ($document, $parse) {
+
+    return {
+      restrict: 'A',
+      link: function ($scope, el, attr) {
+
+        var handler = function (e) {
+          if (e.which === 27) {
+            $scope.$apply(function (event) {
+              $parse(attr.esckeypress)($scope, { $event: event });
+            });
+          }
+        };
+
+        $($document).keydown(handler);
+
+        $scope.$on('$destroy', function () {
+          $($document).unbind('keydown', handler);
+        });
+
+      }
+
+    };
+
+  }
+
+};
+
+module.exports = directives;
+
+},{}],15:[function(require,module,exports){var controllers = {
+
+  PageCtrl: function ($scope, $location) {
+
+    $scope.link = function (url) {
+      $location.path(url);
+    };
+
+  }
+
+};
+
+module.exports = controllers;
+
+},{}],16:[function(require,module,exports){(function(){//     Underscore.js 1.4.4
 //     http://underscorejs.org
 //     (c) 2009-2013 Jeremy Ashkenas, DocumentCloud Inc.
 //     Underscore may be freely distributed under the MIT license.
@@ -1320,7 +1416,745 @@ module.exports = data;
 }).call(this);
 
 })()
-},{}],12:[function(require,module,exports){var isArray = typeof Array.isArray === 'function'
+},{}],4:[function(require,module,exports){var services = require('./services');
+
+var collections = function (app) {
+  app.factory('collections', services);
+};
+
+module.exports = collections;
+
+},{"./services":18}],18:[function(require,module,exports){var services = function () {
+  return {
+    instances: [],
+    types: [],
+    alerts: [],
+    clipboard: [],
+    popups: [],
+    globals: {},
+  };
+};
+
+module.exports = services;
+
+},{}],5:[function(require,module,exports){var factories = require('./factories');
+var controllers = require('./controllers');
+
+var header = function (app) {
+  app.factory('header', factories);
+  app.controller('HeaderCtrl', controllers.HeaderCtrl);
+};
+
+module.exports = header;
+
+},{"./factories":19,"./controllers":20}],19:[function(require,module,exports){var factories = function () {
+
+  return {
+
+    pathToNavigation: function (path) {
+
+      var root = { path: '/', name: 'Home' };
+
+      if (path === '/') {
+        return [root];
+      }
+
+      var navigation = [];
+
+      var i;
+      var parts = path.split('/');
+      var path_parts = [];
+
+      parts.forEach(function (current) {
+
+        if (current === '') {
+          navigation.push(root);
+        } else {
+          path_parts.push(current);
+          navigation.push({ name: current, path: '/' + path_parts.join('/') });
+        }
+
+      });
+
+      return navigation;
+
+    }
+
+  };
+
+};
+
+module.exports = factories;
+
+},{}],20:[function(require,module,exports){var controllers = {
+
+  HeaderCtrl: function ($scope, header, collections, general) {
+
+    $scope.globals = collections.globals;
+
+    $scope.$watch('globals', function () {
+
+      if (collections.globals.path) {
+        $scope.path_navigation = header.pathToNavigation(collections.globals.path);
+      }
+
+    }, true);
+
+    $scope.back = function () {
+      $scope.link(general.path.parent(collections.globals.path));
+    };
+
+  }
+
+};
+
+module.exports = controllers;
+
+},{}],6:[function(require,module,exports){var factories = require('./factories');
+var controllers = require('./controllers');
+
+var alerts = function (app) {
+
+  app.factory('alerts', factories);
+  app.controller('AlertsCtrl', controllers.AlertsCtrl);
+
+};
+
+module.exports = alerts;
+
+},{"./factories":21,"./controllers":22}],21:[function(require,module,exports){var factories = function () {
+
+  return {
+
+    flattenValidationErrors: function (errors) {
+
+      var i;
+      var flat = [];
+
+      for (i in errors) {
+
+        if (errors.hasOwnProperty(i)) {
+
+          flat.push({
+            type: 'error',
+            name: i,
+            msg: errors[i].join(', ')
+          });
+
+        }
+
+      }
+
+      return flat;
+
+    }
+
+  };
+
+};
+
+module.exports = factories;
+
+},{}],22:[function(require,module,exports){var controllers = {
+
+  AlertsCtrl: function ($scope, collections) {
+
+    /* Format
+    * var errors = [
+    * { type: 'success/error', name: 'Bold text', msg: 'None bold text', keep: 'boolean' },
+    * ];
+    */
+
+    $scope.alerts = collections.alerts;
+
+    $scope.$on('$locationChangeSuccess', function () {
+
+      var i;
+
+      for (i = $scope.alerts.length - 1; i >= 0; i -= 1) {
+        
+        var current = $scope.alerts[i];
+
+        if (!current.keep) {
+          $scope.alerts.splice(i, 1);
+        } else {
+          current.keep = false;
+        }
+
+      }
+
+    });
+
+    $scope.close = function (alert) {
+      collections.alerts.forEach(function (a, i) {
+        if (a === alert) {
+          collections.alerts.splice(i, 1);
+        }
+      });
+    };
+
+    // Icon
+
+    $scope.getIcon = function (alert) {
+      if (alert.type === 'success') {
+        return 'icon-ok';
+      }
+
+      if (alert.type === 'error') {
+        return 'icon-remove';
+      }
+    };
+
+    $scope.getStyle = function (alert) {
+      if (alert.type === 'success') {
+        return { color: '#00B200' };
+      }
+
+      if (alert.type === 'error') {
+        return { color: '#E74C3C' };
+      }
+    };
+
+  }
+
+};
+
+module.exports = controllers;
+
+},{}],7:[function(require,module,exports){var controllers = require('./controllers');
+
+var forms = function (app) {
+  app.controller('CreateFormCtrl', controllers.CreateFormCtrl);
+  app.controller('EditFormCtrl', controllers.EditFormCtrl);
+
+  app.config(function ($routeProvider) {
+
+    $routeProvider.when('/new/:type/*parent', {
+      controller: 'CreateFormCtrl',
+      templateUrl: 'partials/form.html'
+    });
+
+    $routeProvider.when('/edit/*path', {
+      controller: 'EditFormCtrl',
+      templateUrl: 'partials/form.html'
+    });
+
+  });
+};
+
+module.exports = forms;
+
+},{"./controllers":23}],23:[function(require,module,exports){var controllers = {
+
+  CreateFormCtrl: function ($scope, $routeParams, $window, instances, collections, general, alerts, _) {
+
+    $scope.data = {
+      type: $routeParams.type,
+      parent: $routeParams.parent,
+      order: _.max(collections.instances, function (instance) {
+        return instance.order;
+      }).order + 1 || 1
+    };
+
+    $scope.path = $scope.data.parent;
+
+    collections.globals.path = $scope.path;
+
+    // Get Form Url
+
+    $scope.form_url = general.resource_url('/types/' + $scope.data.type + '/form');
+
+    // create
+
+    $scope.submit = instances.create.push;
+
+    // Cancel
+
+    $scope.cancel = function () {
+      $scope.link($scope.data.parent);
+    };
+
+  },
+
+  EditFormCtrl: function ($scope, $routeParams, $window, $location, instances, general, collections, alerts, _) {
+
+    $scope.path = $routeParams.path;
+    collections.globals.path = general.path.parent($scope.path);
+    
+    // Get Form Url
+
+    $scope.$watch('data.type', function (type) {
+      if (typeof type !== 'undefined') {
+        $scope.form_url = general.resource_url('/types/' + type + '/form');
+      }
+    });
+
+    // Get current instance
+
+    instances.get({ path: $scope.path }, function (instances) {
+
+      var current = instances[0];
+
+      // Data
+
+      $scope.data = current;
+      
+    });
+
+    // create
+
+    $scope.submit = instances.update.push;
+
+    // Cancel
+
+    $scope.cancel = function () {
+      $scope.link(general.path.parent($scope.path));
+    };
+
+  }
+
+};
+
+module.exports = controllers;
+
+},{}],8:[function(require,module,exports){var controllers = require('./controllers');
+var factories = require('./factories');
+
+var types = function (app) {
+  app.factory('types', factories);
+  app.controller('TypesCtrl', controllers.TypesCtrl);
+};
+
+module.exports = types;
+
+},{"./controllers":24,"./factories":25}],24:[function(require,module,exports){var controllers = {
+
+  TypesCtrl: function ($scope, collections, types) {
+
+    $scope.globals = collections.globals;
+    $scope.types = collections.types;
+
+    $scope.$watch('globals', function () {
+
+      if ($scope.globals.type) {
+        collections.types.length = 0;
+        collections.types.push.apply(collections.types, types.get($scope.globals.type).children);
+      }
+
+    }, true);
+
+  }
+
+};
+
+module.exports = controllers;
+
+},{}],25:[function(require,module,exports){var types = [];
+
+var factories = function () {
+
+  return {
+
+    set: function (data) {
+      types.push.apply(types, data);
+    },
+
+    get: function (name) {
+      return types.filter(function (type) {
+        return type.name === name;
+      })[0];
+    },
+
+  };
+
+};
+
+module.exports = factories;
+
+},{}],9:[function(require,module,exports){var controllers = require('./controllers');
+var factories = require('./factories');
+
+var instances = function (app) {
+
+  app.factory('instances', factories);
+  app.controller('InstanceCtrl', controllers.InstanceCtrl);
+  app.controller('InstancesCtrl', controllers.InstancesCtrl);
+
+  app.config(function ($routeProvider, $locationProvider) {
+    
+    $routeProvider.when('*path', {
+      controller: 'InstancesCtrl',
+      templateUrl: 'partials/list.html'
+    });
+
+  });
+
+};
+
+module.exports = instances;
+
+},{"./controllers":26,"./factories":27}],26:[function(require,module,exports){var InstancesCtrl = function ($scope, $routeParams, header, instances, collections, general, _) {
+
+  $scope.path = $routeParams.path || '/';
+  $scope.instances = collections.instances;
+  collections.globals.path = $scope.path;
+
+  // Current & Instances
+
+  var re = new RegExp('^' + instances.escapeForRegex($scope.path) + '(/[^/]+$|$)');
+
+  if ($scope.path === '/') {
+    re = new RegExp('^/[^/]+$');
+  }
+
+  instances.get({ path: re }, function (response) {
+
+    if ($scope.path === '/') {
+      response.splice(0, 0, {
+        name: 'root',
+        type: 'root',
+        path: '/',
+      });
+    }
+
+    // 404
+
+    if (response.length === 0) {
+      return;
+    }
+
+    collections.globals.type = response.shift().type;
+    collections.instances.length = 0;
+    collections.instances.push.apply(collections.instances, response);
+
+  });
+
+};
+
+var InstanceCtrl = function ($scope, instances, collections, _) {
+
+  $scope.remove = function () {
+
+    // UI Remove
+
+    collections.instances.forEach(function (instance, i) {
+      if (instance.path === $scope.instance.path) {
+        collections.instances.splice(i, 1);
+      }
+    });
+
+    // Clipboard Remove
+
+    collections.clipboard.forEach(function (instance, i) {
+      if (instance.path === $scope.instance.path) {
+        collections.clipboard.splice(i, 1);
+      }
+    });
+
+    // Database Remove
+
+    instances.remove.push($scope.instance);
+
+  };
+
+  // Move
+
+  $scope.clipboard = function () {
+
+    var isAlreadyInClipboard = _.chain(collections.clipboard)
+      .map(function (instance) { return instance.path; })
+      .contains($scope.instance.path)
+      .value();
+
+    if (!isAlreadyInClipboard) {
+      collections.clipboard.push(JSON.parse(JSON.stringify($scope.instance)));
+    }
+  };
+
+};
+
+module.exports = { InstanceCtrl: InstanceCtrl, InstancesCtrl: InstancesCtrl };
+
+},{}],27:[function(require,module,exports){var oar = require('oar');
+var qs = require('querystring');
+
+var factories = function ($http, $rootScope, $window, $location, general, collections, alerts, _) {
+
+  var t = {
+
+    escapeForRegex: function (s) {
+      return s.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+    },
+
+    get: function (query, callback) {
+      var key;
+      for (key in query) {
+        if (query.hasOwnProperty(key)) {
+          if (query[key] instanceof RegExp) {
+            query[key] = 'regex-' + query[key].toString();
+          }
+        }
+      }
+
+      var result = $http.get(general.resource_url('/instances?' + qs.stringify(query)));
+      result.success(function (response) {
+        callback(response);
+      });
+    },
+
+    remove: oar(),
+    create: oar(),
+    update: oar(),
+    copy: oar(),
+
+  };
+
+  t.remove.on('push', function (instances) {
+
+    $rootScope.$apply(function () {
+
+      var instance;
+
+      while (instance = instances.shift()) {
+
+        var result = $http.delete(general.resource_url('/instances/' + instance.path));
+
+        result.success(function (response, status, headers, config) {
+
+          collections.alerts.length = 0;
+
+          collections.alerts.push({
+            type: 'success',
+            name: 'Removed',
+            msg: _.map(response, function (instance) { return instance.path; }).join(', '),
+          });
+
+        });
+
+      }
+
+      instances.length = 0;
+
+    });
+
+  });
+
+  t.create.on('push', function (instances) {
+
+    $rootScope.$apply(function () {
+
+      var instance;
+
+      while (instance = instances.shift()) {
+
+        var result = $http.post(general.resource_url('/instances'), instance);
+
+        result.success(function (response, status, headers, config) {
+
+          if (response.errors) {
+            collections.alerts.length = 0;
+            collections.alerts.push.apply(collections.alerts, alerts.flattenValidationErrors(response.errors));
+            $window.scrollTo(0, 0);
+            return;
+          }
+
+          collections.alerts.push({
+            type: 'success',
+            name: 'Created',
+            msg: response[0].path,
+            keep: true
+          });
+
+          $location.path(general.path.parent(response[0].path));
+
+        });
+
+      }
+
+      instances.length = 0;
+
+    });
+
+  });
+
+  t.update.on('push', function (instances) {
+
+    $rootScope.$apply(function () {
+
+      var instance;
+
+      while (instance = instances.shift()) {
+
+        var result = $http.put(general.resource_url('/instances'), instance);
+
+        result.success(function (instance, response, status, headers, config) {
+
+          collections.alerts.length = 0;
+
+          if (response.errors) {
+            collections.alerts.push.apply(collections.alerts, alerts.flattenValidationErrors(response.errors));
+            return;
+          }
+
+          collections.alerts.push({
+            type: 'success',
+            name: 'Saved',
+            msg: response[0].path,
+            keep: instance.path !== response[0].path
+          });
+
+          $location.path('/edit/' + response[0].path);
+          $window.scrollTo(0, 0);
+
+        }.bind(null, instance));
+
+      }
+
+      instances.length = 0;
+
+    });
+
+  });
+
+  t.copy.on('push', function (instances) {
+
+    $rootScope.$apply(function () {
+
+      var instance;
+
+      while (instance = instances.shift()) {
+
+        var result = $http.post(general.resource_url('/instances/copy'), instance);
+
+        result.success(function (response, status, headers, config) {
+
+          collections.alerts.length = 0;
+
+          if (response.errors) {
+            collections.alerts.push.apply(collections.alerts, alerts.flattenValidationErrors(response.errors));
+            return;
+          }
+
+          collections.alerts.push({
+            type: 'success',
+            name: 'Copy',
+            msg: _.map(response, function (instance) { return instance.path; }).join(', '),
+          });
+
+          collections.instances.push(response[0]);
+
+          collections.instances.sort(function (a, b) {
+            return a.sort > b.sort;
+          });
+
+        });
+
+      }
+
+    });
+
+  });
+
+  return t;
+
+};
+
+module.exports = factories;
+
+},{"oar":28,"querystring":29}],28:[function(require,module,exports){(function(process){var oar = function (base) {
+
+  var arr = base || [];
+  var handlers = {};
+
+  Object.defineProperty(arr, 'on', { value:  function (event, callback) {
+    if (typeof handlers[event] === 'undefined') {
+      handlers[event] = [];
+    }
+    handlers[event].push(callback);
+  }});
+
+  var proxy = function (method) {
+
+    var args = Array.prototype.slice.call(arguments, 1);
+    var result = Array.prototype[method].apply(arr, args);
+
+    process.nextTick(function () {
+      if (typeof handlers[method] !== 'undefined') {
+        handlers[method].forEach(function (handler) {
+          handler(arr);
+        });
+      }
+    });
+
+    return result;
+
+  };
+
+  [ 'pop', 'push', 'reverse', 'shift', 'sort', 'splice', 'unshift' ].forEach(function (method) {
+    Object.defineProperty(arr, method, { value: proxy.bind(null, method) });
+  });
+
+  return arr;
+
+};
+
+module.exports = oar;
+
+})(require("__browserify_process"))
+},{"__browserify_process":30}],30:[function(require,module,exports){// shim for using process in browser
+
+var process = module.exports = {};
+
+process.nextTick = (function () {
+    var canSetImmediate = typeof window !== 'undefined'
+    && window.setImmediate;
+    var canPost = typeof window !== 'undefined'
+    && window.postMessage && window.addEventListener
+    ;
+
+    if (canSetImmediate) {
+        return function (f) { return window.setImmediate(f) };
+    }
+
+    if (canPost) {
+        var queue = [];
+        window.addEventListener('message', function (ev) {
+            if (ev.source === window && ev.data === 'process-tick') {
+                ev.stopPropagation();
+                if (queue.length > 0) {
+                    var fn = queue.shift();
+                    fn();
+                }
+            }
+        }, true);
+
+        return function nextTick(fn) {
+            queue.push(fn);
+            window.postMessage('process-tick', '*');
+        };
+    }
+
+    return function nextTick(fn) {
+        setTimeout(fn, 0);
+    };
+})();
+
+process.title = 'browser';
+process.browser = true;
+process.env = {};
+process.argv = [];
+
+process.binding = function (name) {
+    throw new Error('process.binding is not supported');
+}
+
+// TODO(shtylman)
+process.cwd = function () { return '/' };
+process.chdir = function (dir) {
+    throw new Error('process.chdir is not supported');
+};
+
+},{}],29:[function(require,module,exports){var isArray = typeof Array.isArray === 'function'
     ? Array.isArray
     : function (xs) {
         return Object.prototype.toString.call(xs) === '[object Array]'
@@ -1571,466 +2405,163 @@ function lastBraceInKey(str) {
   }
 }
 
-},{}],13:[function(require,module,exports){(function(process){if (!process.EventEmitter) process.EventEmitter = function () {};
+},{}],10:[function(require,module,exports){var icons = function (app) {
 
-var EventEmitter = exports.EventEmitter = process.EventEmitter;
-var isArray = typeof Array.isArray === 'function'
-    ? Array.isArray
-    : function (xs) {
-        return Object.prototype.toString.call(xs) === '[object Array]'
-    }
-;
-function indexOf (xs, x) {
-    if (xs.indexOf) return xs.indexOf(x);
-    for (var i = 0; i < xs.length; i++) {
-        if (x === xs[i]) return i;
-    }
-    return -1;
-}
+  app.controller('IconCtrl', function ($scope, types, _) {
 
-// By default EventEmitters will print a warning if more than
-// 10 listeners are added to it. This is a useful default which
-// helps finding memory leaks.
-//
-// Obviously not all Emitters should be limited to 10. This function allows
-// that to be increased. Set to zero for unlimited.
-var defaultMaxListeners = 10;
-EventEmitter.prototype.setMaxListeners = function(n) {
-  if (!this._events) this._events = {};
-  this._events.maxListeners = n;
-};
+    var base = {
+      name: 'icon-file',
+      color: 'inherit',
+    };
 
+    $scope.getIcon = function (name) {
+      var type = _.extend(base, types.get(name).icon);
+      return type.name;
+    };
 
-EventEmitter.prototype.emit = function(type) {
-  // If there is no 'error' event listener then throw.
-  if (type === 'error') {
-    if (!this._events || !this._events.error ||
-        (isArray(this._events.error) && !this._events.error.length))
-    {
-      if (arguments[1] instanceof Error) {
-        throw arguments[1]; // Unhandled 'error' event
-      } else {
-        throw new Error("Uncaught, unspecified 'error' event.");
-      }
-      return false;
-    }
-  }
+    $scope.getStyle = function (name) {
+      var type = _.extend(base, types.get(name).icon);
+      return { color: type.color };
+    };
 
-  if (!this._events) return false;
-  var handler = this._events[type];
-  if (!handler) return false;
-
-  if (typeof handler == 'function') {
-    switch (arguments.length) {
-      // fast cases
-      case 1:
-        handler.call(this);
-        break;
-      case 2:
-        handler.call(this, arguments[1]);
-        break;
-      case 3:
-        handler.call(this, arguments[1], arguments[2]);
-        break;
-      // slower
-      default:
-        var args = Array.prototype.slice.call(arguments, 1);
-        handler.apply(this, args);
-    }
-    return true;
-
-  } else if (isArray(handler)) {
-    var args = Array.prototype.slice.call(arguments, 1);
-
-    var listeners = handler.slice();
-    for (var i = 0, l = listeners.length; i < l; i++) {
-      listeners[i].apply(this, args);
-    }
-    return true;
-
-  } else {
-    return false;
-  }
-};
-
-// EventEmitter is defined in src/node_events.cc
-// EventEmitter.prototype.emit() is also defined there.
-EventEmitter.prototype.addListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('addListener only takes instances of Function');
-  }
-
-  if (!this._events) this._events = {};
-
-  // To avoid recursion in the case that type == "newListeners"! Before
-  // adding it to the listeners, first emit "newListeners".
-  this.emit('newListener', type, listener);
-
-  if (!this._events[type]) {
-    // Optimize the case of one listener. Don't need the extra array object.
-    this._events[type] = listener;
-  } else if (isArray(this._events[type])) {
-
-    // Check for listener leak
-    if (!this._events[type].warned) {
-      var m;
-      if (this._events.maxListeners !== undefined) {
-        m = this._events.maxListeners;
-      } else {
-        m = defaultMaxListeners;
-      }
-
-      if (m && m > 0 && this._events[type].length > m) {
-        this._events[type].warned = true;
-        console.error('(node) warning: possible EventEmitter memory ' +
-                      'leak detected. %d listeners added. ' +
-                      'Use emitter.setMaxListeners() to increase limit.',
-                      this._events[type].length);
-        console.trace();
-      }
-    }
-
-    // If we've already got an array, just append.
-    this._events[type].push(listener);
-  } else {
-    // Adding the second element, need to change to array.
-    this._events[type] = [this._events[type], listener];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.on = EventEmitter.prototype.addListener;
-
-EventEmitter.prototype.once = function(type, listener) {
-  var self = this;
-  self.on(type, function g() {
-    self.removeListener(type, g);
-    listener.apply(this, arguments);
   });
 
-  return this;
 };
 
-EventEmitter.prototype.removeListener = function(type, listener) {
-  if ('function' !== typeof listener) {
-    throw new Error('removeListener only takes instances of Function');
-  }
+module.exports = icons;
 
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (!this._events || !this._events[type]) return this;
-
-  var list = this._events[type];
-
-  if (isArray(list)) {
-    var i = indexOf(list, listener);
-    if (i < 0) return this;
-    list.splice(i, 1);
-    if (list.length == 0)
-      delete this._events[type];
-  } else if (this._events[type] === listener) {
-    delete this._events[type];
-  }
-
-  return this;
-};
-
-EventEmitter.prototype.removeAllListeners = function(type) {
-  // does not use listeners(), so no side effect of creating _events[type]
-  if (type && this._events && this._events[type]) this._events[type] = null;
-  return this;
-};
-
-EventEmitter.prototype.listeners = function(type) {
-  if (!this._events) this._events = {};
-  if (!this._events[type]) this._events[type] = [];
-  if (!isArray(this._events[type])) {
-    this._events[type] = [this._events[type]];
-  }
-  return this._events[type];
-};
-
-})(require("__browserify_process"))
-},{"__browserify_process":14}],14:[function(require,module,exports){// shim for using process in browser
-
-var process = module.exports = {};
-
-process.nextTick = (function () {
-    var canSetImmediate = typeof window !== 'undefined'
-    && window.setImmediate;
-    var canPost = typeof window !== 'undefined'
-    && window.postMessage && window.addEventListener
-    ;
-
-    if (canSetImmediate) {
-        return function (f) { return window.setImmediate(f) };
-    }
-
-    if (canPost) {
-        var queue = [];
-        window.addEventListener('message', function (ev) {
-            if (ev.source === window && ev.data === 'process-tick') {
-                ev.stopPropagation();
-                if (queue.length > 0) {
-                    var fn = queue.shift();
-                    fn();
-                }
-            }
-        }, true);
-
-        return function nextTick(fn) {
-            queue.push(fn);
-            window.postMessage('process-tick', '*');
-        };
-    }
-
-    return function nextTick(fn) {
-        setTimeout(fn, 0);
-    };
-})();
-
-process.title = 'browser';
-process.browser = true;
-process.env = {};
-process.argv = [];
-
-process.binding = function (name) {
-    throw new Error('process.binding is not supported');
-}
-
-// TODO(shtylman)
-process.cwd = function () { return '/' };
-process.chdir = function (dir) {
-    throw new Error('process.chdir is not supported');
-};
-
-},{}],3:[function(require,module,exports){var services = require('./services');
-
-var collections = function (app) {
-  app.factory('collections', services);
-};
-
-module.exports = collections;
-
-},{"./services":15}],15:[function(require,module,exports){var instances = [];
-var types = [];
-var alerts = [];
-var globals = {};
-
-var services = function () {
-  
-  return {
-    instances: instances,
-    types: types,
-    alerts: alerts,
-    globals: globals,
-  };
-
-};
-
-module.exports = services;
-
-},{}],4:[function(require,module,exports){var factories = require('./factories');
-var directives = require('./directives');
+},{}],11:[function(require,module,exports){var factories = require('./factories');
 var controllers = require('./controllers');
 
-var general = function (app) {
-  app.directive('confirmClick', directives.confirmClick);
-  app.directive('esckeypress', directives.esckeypress);
-  app.factory('_', function () { return require('underscore'); });
-  app.factory('general', factories);
-  app.controller('PageCtrl', controllers.PageCtrl);
+var move = function (app) {
+  app.factory('clipboard', factories);
+  app.controller('ClipboardCtrl', controllers.ClipboardCtrl);
+  app.controller('ClipboardInstanceCtrl', controllers.ClipboardInstanceCtrl);
+  app.controller('CopyPopupCtrl', controllers.CopyPopupCtrl);
 };
 
-module.exports = general;
+module.exports = move;
 
-},{"./factories":16,"./directives":17,"./controllers":18,"underscore":11}],16:[function(require,module,exports){var factories = function ($document) {
+},{"./factories":31,"./controllers":32}],31:[function(require,module,exports){var factories = function (collections) {
 
-  var s = {
-    resource_url: function (url) {
-      return $document[0].getElementById('ResourceUrl').value + url;
-    },
+  
+  return {
 
-    path: {
+    clear: function (instance) {
 
-      parent: function (path) {
-
-        if (path.indexOf('/') === 0) {
-          path = path.replace(/^\//, '');
+      collections.clipboard.forEach(function (instance, i) {
+        if (collections.clipboard[i].path === instance.path) {
+          collections.clipboard.splice(i, 1);
         }
-
-        var parts = path.split('/');
-        parts.pop();
-
-        if (parts.length === 0) {
-          return '/';
-        }
-
-        return '/' + parts.join('/');
-
-      }
+      });
 
     }
-  };
 
-  return s;
+  };
 
 };
 
 module.exports = factories;
 
-},{}],17:[function(require,module,exports){var directives = {
+},{}],32:[function(require,module,exports){var controllers = {
 
-  confirmClick: function ($document, $parse) {
+  ClipboardCtrl: function ($scope, collections) {
+    $scope.clipboard = collections.clipboard;
+  },
 
-    return {
-      restrict: 'A',
-      link: function ($scope, el, attr) {
+  ClipboardInstanceCtrl: function ($scope, $window, collections, alerts, instances, clipboard, _) {
 
-        var fn = $parse(attr.confirmClick);
+    $scope.clear = clipboard.clear;
 
-        var confirmed = false;
+    $scope.canCopy = function () {
+      return _.contains(collections.types, $scope.instance.type);
+    };
 
-        el.bind('click', function () {
-
-          if (confirmed) {
-            $scope.$apply(function (event) {
-              fn($scope, { $event: event });
-            });
-          }
-
-        });
-
-        $document.on('click', function (e) {
-
-          $scope.$apply(function () {
-
-            confirmed = e.target === el[0];
-
-            if (!confirmed) {
-              return $(el).removeClass('confirm');
-            }
-
-            $(el).addClass('confirm');
-
-          });
-
-        });
-
+    $scope.canCopyText = function () {
+      if ($scope.canCopy()) {
+        return 'Copy here';
       }
+
+      return 'Cannot copy here';
+    };
+
+    $scope.copy = function () {
+
+      var copy = JSON.parse(JSON.stringify($scope.instance));
+      var is_already_in_instances = _.chain(collections.instances)
+        .map(function (instance) { return instance.name.toLowerCase(); })
+        .contains(copy.name.toLowerCase())
+        .value();
+        
+      copy.parent = collections.globals.path;
+      copy.order = _.max(collections.instances, function (instance) {
+        return instance.order;
+      }).order + 1 || 1;
+
+      // Name doesn't exist at this level
+
+      if (!is_already_in_instances) {
+        $scope.clear();
+        return instances.copy.push(copy);
+      }
+
+      // Pass it to popup
+
+      return collections.popups.push({ type: 'copy', data: copy });
 
     };
 
   },
 
-  esckeypress: function ($document, $parse) {
-
-    return {
-      restrict: 'A',
-      link: function ($scope, el, attr) {
-
-        $(el).keydown(function (e) {
-
-          console.log(e.which);
-
-          if (e.which === 27) {
-            $scope.$apply(function (event) {
-              $parse(attr.esckeypress)($scope, { $event: event });
-            });
-          }
-
-        });
-
-
-      }
-
-    };
-
-  }
-
-};
-
-module.exports = directives;
-
-},{}],18:[function(require,module,exports){var controllers = {
-
-  PageCtrl: function ($scope, $location) {
-
-    $scope.link = function (url) {
-      $location.path(url);
-    };
-
-  }
-
 };
 
 module.exports = controllers;
 
-},{}],5:[function(require,module,exports){var factories = require('./factories');
-var controllers = require('./controllers');
+},{}],12:[function(require,module,exports){var controllers = require('./controllers');
 
-var header = function (app) {
-  app.factory('header', factories);
-  app.controller('HeaderCtrl', controllers.HeaderCtrl);
+var popups = function (jungles) {
+  jungles.controller('CopyPopupCtrl', controllers.CopyPopupCtrl);
 };
 
-module.exports = header;
+module.exports = popups;
 
-},{"./factories":19,"./controllers":20}],19:[function(require,module,exports){var factories = function () {
+},{"./controllers":33}],33:[function(require,module,exports){var controllers = {
 
-  return {
+  CopyPopupCtrl: function ($scope, collections, instances, clipboard, _) {
 
-    pathToNavigation: function (path) {
+    $scope.popups = collections.popups;
+    $scope.show = false;
+    $scope.data = { name: '' };
 
-      var root = { path: '/', name: 'Root' };
-
-      if (path === '/') {
-        return [root];
-      }
-
-      var navigation = [];
-
-      var i;
-      var parts = path.split('/');
-      var path_parts = [];
-
-      for (i = 0; i < parts.length; i += 1) {
-        var current = parts[i];
-
-        if (current === '') {
-          navigation.push(root);
-        } else {
-          path_parts.push(current);
-          navigation.push({ name: current, path: '/' + path_parts.join('/') });
+    $scope.$watch('popups', function () {
+      $scope.popups.forEach(function (popup) {
+        if (popup.type === 'copy') {
+          $scope.show = true;
+          $scope.data = popup.data;
         }
-      }
-
-      return navigation;
-
-    }
-
-  };
-
-};
-
-module.exports = factories;
-
-},{}],20:[function(require,module,exports){var controllers = {
-
-  HeaderCtrl: function ($scope, header, collections, general) {
-
-    $scope.globals = collections.globals;
-
-    $scope.$watch('globals', function () {
-
-      if (collections.globals.path) {
-        $scope.path_navigation = header.pathToNavigation(collections.globals.path);
-      }
-
+      });
     }, true);
 
-    $scope.back = function () {
-      $scope.link(general.path.parent(collections.globals.path));
+    $scope.validate = function (form_invalid, new_name) {
+      var name_already_exists = _.chain(collections.instances)
+        .map(function (instance) { return instance.name.toLowerCase(); })
+        .contains((new_name || '').toLowerCase())
+        .value();
+
+      return form_invalid || name_already_exists;
+    };
+
+    $scope.rename = function () {
+      $scope.data.name = $scope.new_name;
+      $scope.new_name = '';
+      clipboard.clear($scope.data);
+      instances.copy.push($scope.data);
+      $scope.close();
+    };
+
+    $scope.close = function () {
+      collections.popups.length = 0;
+      $scope.show = false;
     };
 
   }
@@ -2038,358 +2569,5 @@ module.exports = factories;
 };
 
 module.exports = controllers;
-
-},{}],6:[function(require,module,exports){var factories = require('./factories');
-var controllers = require('./controllers');
-
-var alerts = function (app) {
-
-  app.factory('alerts', factories);
-  app.controller('AlertsCtrl', controllers.AlertsCtrl);
-
-};
-
-module.exports = alerts;
-
-},{"./factories":21,"./controllers":22}],21:[function(require,module,exports){var factories = function () {
-
-  return {
-
-    flattenValidationErrors: function (errors) {
-
-      var i;
-      var flat = [];
-
-      for (i in errors) {
-
-        if (errors.hasOwnProperty(i)) {
-
-          flat.push({
-            type: 'error',
-            name: i,
-            msg: errors[i].join(', ')
-          });
-
-        }
-
-      }
-
-      return flat;
-
-    }
-
-  };
-
-};
-
-module.exports = factories;
-
-},{}],22:[function(require,module,exports){var controllers = {
-
-  AlertsCtrl: function ($scope, collections) {
-
-    /* Format
-    * var errors = [
-    * { type: 'success/error', name: 'Bold text', msg: 'None bold text', keep: 'boolean' },
-    * ];
-    */
-
-    $scope.alerts = collections.alerts;
-
-    $scope.$on('$locationChangeSuccess', function () {
-
-      var i;
-
-      for (i = $scope.alerts.length - 1; i >= 0; i -= 1) {
-        
-        var current = $scope.alerts[i];
-
-        if (!current.keep) {
-          $scope.alerts.splice(i, 1);
-        } else {
-          current.keep = false;
-        }
-
-      }
-
-    });
-
-  }
-
-};
-
-module.exports = controllers;
-
-},{}],7:[function(require,module,exports){var controllers = require('./controllers');
-
-var forms = function (app) {
-  app.controller('CreateFormCtrl', controllers.CreateFormCtrl);
-  app.controller('EditFormCtrl', controllers.EditFormCtrl);
-
-  app.config(function ($routeProvider) {
-
-    $routeProvider.when('/new/:type/*parent', {
-      controller: 'CreateFormCtrl',
-      templateUrl: 'partials/form.html'
-    });
-
-    $routeProvider.when('/edit/*path', {
-      controller: 'EditFormCtrl',
-      templateUrl: 'partials/form.html'
-    });
-
-  });
-};
-
-module.exports = forms;
-
-},{"./controllers":23}],23:[function(require,module,exports){var controllers = {
-
-  CreateFormCtrl: function ($scope, $routeParams, $window, data, collections, general, alerts) {
-
-    $scope.data = {
-      type: $routeParams.type,
-      parent: $routeParams.parent
-    };
-
-    $scope.path = $scope.data.parent;
-    collections.globals.path = $scope.path;
-
-    // Get Form Url
-
-    $scope.form_url = general.resource_url('/types/' + $scope.data.type + '/form');
-
-    // create
-
-    $scope.submit = function (form_data) {
-
-      data.instances.create(form_data, function (response) {
-
-        if (response.errors) {
-          collections.alerts.length = 0;
-          collections.alerts.push.apply(collections.alerts, alerts.flattenValidationErrors(response.errors));
-          $window.scrollTo(0, 0);
-          return;
-        }
-
-        collections.alerts.push({
-          type: 'success',
-          name: 'Created',
-          msg: response.path + ' was created',
-          keep: true
-        });
-
-        $scope.link($scope.data.parent);
-        $scope.link($scope.data.parent);
-
-      });
-
-    };
-
-    // Cancel
-
-    $scope.cancel = function () {
-      $scope.link($scope.data.parent);
-    };
-
-  },
-
-  EditFormCtrl: function ($scope, $routeParams, $window, $location, data, general, collections, alerts, _) {
-
-    $scope.path = $routeParams.path;
-    collections.globals.path = general.path.parent($scope.path);
-    
-    // Get Form Url
-
-    $scope.$watch('data.type', function (type) {
-      if (typeof type !== 'undefined') {
-        $scope.form_url = general.resource_url('/types/' + type + '/form');
-      }
-    });
-
-    // Get current instance
-
-    data.instances.get({ path: $scope.path }, function (instances) {
-
-      var current = instances[0];
-
-      // Data
-
-      $scope.data = current;
-      
-    });
-
-    // create
-
-    $scope.submit = function (form_data) {
-
-      data.instances.update(form_data, function (response) {
-
-        collections.alerts.length = 0;
-
-        if (response.errors) {
-          collections.alerts.push.apply(collections.alerts, alerts.flattenValidationErrors(response.errors));
-          return;
-        }
-
-        collections.alerts.push({
-          type: 'success',
-          name: 'Saved',
-          msg: response.path + ' was saved',
-          keep: $scope.path !== response.path
-        });
-
-        $location.path('/edit/' + response.path);
-        $window.scrollTo(0, 0);
-
-      });
-
-    };
-
-    // Cancel
-
-    $scope.cancel = function () {
-      $scope.link(general.path.parent($scope.path));
-    };
-
-  }
-
-};
-
-module.exports = controllers;
-
-},{}],8:[function(require,module,exports){var controllers = {
-
-  TypesCtrl: function ($scope, collections) {
-    $scope.types = collections.types;
-  }
-
-};
-
-var types = function (app) {
-  app.controller('TypesCtrl', controllers.TypesCtrl);
-};
-
-module.exports = types;
-
-},{}],9:[function(require,module,exports){var controllers = require('./controllers');
-var factories = require('./factories');
-
-var services = function (app) {
-
-  app.controller('InstanceCtrl', controllers.InstanceCtrl);
-  app.controller('InstancesCtrl', controllers.InstancesCtrl);
-
-  app.config(function ($routeProvider, $locationProvider) {
-    
-    $routeProvider.when('*path', {
-      controller: 'InstancesCtrl',
-      templateUrl: 'partials/instances.html'
-    });
-
-  });
-
-};
-
-module.exports = services;
-
-},{"./controllers":24,"./factories":25}],24:[function(require,module,exports){var InstancesCtrl = function ($scope, $routeParams, header, data, collections, general, _) {
-
-  $scope.path = $routeParams.path || '/';
-  $scope.instances = collections.instances;
-  collections.globals.path = $scope.path;
-
-  // Current
-
-  data.instances.get({ path: $scope.path }, function (data) {
-
-    if (data.length === 0) {
-
-      collections.alerts.push({
-        type: 'error',
-        name: 'Not found',
-        msg: 'No content was found at ' + $scope.path
-      });
-
-      return;
-
-    }
-
-    $scope.current = data[0];
-
-    // Types
-
-    collections.types.length = 0;
-    collections.types.push.apply(collections.types, data[0].children);
-
-  });
-  
-  // Instances
-
-  var re = new RegExp('^' + $scope.path + '/[^/]+$');
-
-  if ($scope.path === '/') {
-    re = new RegExp('^/[^/]+$');
-  }
-
-  data.instances.get({ path: re }, function (data) {
-    collections.instances.length = 0;
-    collections.instances.push.apply(collections.instances, data);
-  });
-
-
-};
-
-var InstanceCtrl = function ($scope, data, collections) {
-
-  $scope.instance.remove = function () {
-
-    // UI Remove
-
-    var i;
-    for (i = 0; i < collections.instances.length; i += 1) {
-      if (collections.instances[i].path === $scope.instance.path) {
-        collections.instances.splice(i, 1);
-        break;
-      }
-    }
-
-    // Database Remove
-
-    var result = data.instances.remove($scope.instance);
-
-    result.success(function (data, status) {
-
-      collections.alerts.length = 0;
-
-      collections.alerts.push({
-        type: 'success',
-        name: 'Removed',
-        msg: $scope.instance.path
-      });
-
-    });
-
-    result.error(function (error) {
-
-      collections.alerts.length = 0;
-
-      collections.alerts.push({
-        type: 'error',
-        name: 'Removed',
-        msg: $scope.instance.path + ' failed.'
-      });
-
-    });
-
-  };
-
-};
-
-module.exports = { InstanceCtrl: InstanceCtrl, InstancesCtrl: InstancesCtrl };
-
-},{}],25:[function(require,module,exports){var factories = function () {};
-
-module.exports = factories;
 
 },{}]},{},[1]);

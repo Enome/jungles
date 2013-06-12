@@ -1,0 +1,16 @@
+<table class='table' ng-controller='TypesCtrl' ng-show='types.length'>
+  <tr>
+    <th colspan='2'><i class='icon-plus'></i> New</th>
+  </tr>
+
+  <tr ng-repeat='type in types' class='type'>
+    <td class='icon'>
+      <div>
+        <i ng-controller='IconCtrl' ng-class='getIcon(type)' ng-style='getStyle(type)'></i>
+      </div>
+    </td>
+    <td class='clickable capitalize' ng-click='link("/new/" + type + "/" + path)'>
+      {{type}}
+    </td>
+  </tr>
+</table>

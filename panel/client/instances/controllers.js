@@ -1,92 +1,79 @@
-var InstancesCtrl = function ($scope, $routeParams, header, data, collections, general, _) {
+var InstancesCtrl = function ($scope, $routeParams, header, instances, collections, general, _) {
 
   $scope.path = $routeParams.path || '/';
   $scope.instances = collections.instances;
   collections.globals.path = $scope.path;
 
-  // Current
+  // Current & Instances
 
-  data.instances.get({ path: $scope.path }, function (data) {
-
-    if (data.length === 0) {
-
-      collections.alerts.push({
-        type: 'error',
-        name: 'Not found',
-        msg: 'No content was found at ' + $scope.path
-      });
-
-      return;
-
-    }
-
-    $scope.current = data[0];
-
-    // Types
-
-    collections.types.length = 0;
-    collections.types.push.apply(collections.types, data[0].children);
-
-  });
-  
-  // Instances
-
-  var re = new RegExp('^' + $scope.path + '/[^/]+$');
+  var re = new RegExp('^' + instances.escapeForRegex($scope.path) + '(/[^/]+$|$)');
 
   if ($scope.path === '/') {
     re = new RegExp('^/[^/]+$');
   }
 
-  data.instances.get({ path: re }, function (data) {
-    collections.instances.length = 0;
-    collections.instances.push.apply(collections.instances, data);
-  });
+  instances.get({ path: re }, function (response) {
 
+    if ($scope.path === '/') {
+      response.splice(0, 0, {
+        name: 'root',
+        type: 'root',
+        path: '/',
+      });
+    }
+
+    // 404
+
+    if (response.length === 0) {
+      return;
+    }
+
+    collections.globals.type = response.shift().type;
+    collections.instances.length = 0;
+    collections.instances.push.apply(collections.instances, response);
+
+  });
 
 };
 
-var InstanceCtrl = function ($scope, data, collections) {
+var InstanceCtrl = function ($scope, instances, collections, _) {
 
-  $scope.instance.remove = function () {
+  $scope.remove = function () {
 
     // UI Remove
 
-    var i;
-    for (i = 0; i < collections.instances.length; i += 1) {
-      if (collections.instances[i].path === $scope.instance.path) {
+    collections.instances.forEach(function (instance, i) {
+      if (instance.path === $scope.instance.path) {
         collections.instances.splice(i, 1);
-        break;
       }
-    }
+    });
+
+    // Clipboard Remove
+
+    collections.clipboard.forEach(function (instance, i) {
+      if (instance.path === $scope.instance.path) {
+        collections.clipboard.splice(i, 1);
+      }
+    });
 
     // Database Remove
 
-    var result = data.instances.remove($scope.instance);
+    instances.remove.push($scope.instance);
 
-    result.success(function (data, status) {
+  };
 
-      collections.alerts.length = 0;
+  // Move
 
-      collections.alerts.push({
-        type: 'success',
-        name: 'Removed',
-        msg: $scope.instance.path
-      });
+  $scope.clipboard = function () {
 
-    });
+    var isAlreadyInClipboard = _.chain(collections.clipboard)
+      .map(function (instance) { return instance.path; })
+      .contains($scope.instance.path)
+      .value();
 
-    result.error(function (error) {
-
-      collections.alerts.length = 0;
-
-      collections.alerts.push({
-        type: 'error',
-        name: 'Removed',
-        msg: $scope.instance.path + ' failed.'
-      });
-
-    });
-
+    if (!isAlreadyInClipboard) {
+      collections.clipboard.push(JSON.parse(JSON.stringify($scope.instance)));
+    }
   };
 
 };

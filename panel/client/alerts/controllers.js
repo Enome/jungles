@@ -28,6 +28,36 @@ var controllers = {
 
     });
 
+    $scope.close = function (alert) {
+      collections.alerts.forEach(function (a, i) {
+        if (a === alert) {
+          collections.alerts.splice(i, 1);
+        }
+      });
+    };
+
+    // Icon
+
+    $scope.getIcon = function (alert) {
+      if (alert.type === 'success') {
+        return 'icon-ok';
+      }
+
+      if (alert.type === 'error') {
+        return 'icon-remove';
+      }
+    };
+
+    $scope.getStyle = function (alert) {
+      if (alert.type === 'success') {
+        return { color: '#00B200' };
+      }
+
+      if (alert.type === 'error') {
+        return { color: '#E74C3C' };
+      }
+    };
+
   }
 
 };

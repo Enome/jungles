@@ -24,8 +24,7 @@ var directives = {
 
           $scope.$apply(function () {
 
-            confirmed = e.target === el[0];
-
+            confirmed = e.target === el[0] || e.target.parentNode === el[0];
             if (!confirmed) {
               return $(el).removeClass('confirm');
             }
@@ -48,18 +47,19 @@ var directives = {
       restrict: 'A',
       link: function ($scope, el, attr) {
 
-        $(el).keydown(function (e) {
-
-          console.log(e.which);
-
+        var handler = function (e) {
           if (e.which === 27) {
             $scope.$apply(function (event) {
               $parse(attr.esckeypress)($scope, { $event: event });
             });
           }
+        };
 
+        $($document).keydown(handler);
+
+        $scope.$on('$destroy', function () {
+          $($document).unbind('keydown', handler);
         });
-
 
       }
 

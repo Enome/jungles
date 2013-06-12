@@ -1,0 +1,26 @@
+<table class='table' ng-controller='ClipboardCtrl' ng-show='clipboard.length'>
+
+  <tr>
+    <th colspan='3'><i class='icon-paper-clip'></i> Clipboard</th>
+  </tr>
+
+  <tr ng-repeat='instance in clipboard' ng-controller='ClipboardInstanceCtrl'>
+    <td class='icon'>
+      <div>
+        <i ng-controller='IconCtrl' ng-class='getIcon(instance.type)' ng-style='getStyle(instance.type)'></i>
+      </div>
+    </td>
+
+    <td>{{instance.name}}</td>
+
+    <td class='buttons'>
+      <button ng-click='copy()' title='{{canCopyText()}}' ng-disabled='!canCopy()'>
+        <i class='icon-copy clickable'></i>
+      </button>
+      <button ng-click='clear(instance)' title='Clear'>
+        <i class='icon-trash clickable'></i>
+      </button>
+    </td>
+  </tr>
+
+</table>

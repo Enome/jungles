@@ -1,19 +1,39 @@
-<table class='table' ng-controller='TypesCtrl'>
-  <tr>
-    <th colspan='1'>New</th>
-  </tr>
-  <tr ng-repeat='type in types' class='type'>
-    <td ng-click='link("/new/" + type + "/" + path)'>+ {{type}}</td>
-  </tr>
-</table>
-
 <table class='table'>
+
   <tr>
-    <th colspan='4'>Content</th>
+    <th colspan='3'><i class='icon-th'></i> Content</th>
   </tr>
+
+  <tr ng-show='!instances.length'>
+    <td class='icon'>
+      <div>
+        <i class='icon-frown'></i>
+      </div>
+    </td>
+    <td><i>Not content found</i></td>
+  </tr>
+
   <tr ng-repeat='instance in instances' ng-controller='InstanceCtrl'>
-    <td ng-click='link(instance.path)'>{{instance.name}}</td>
-    <td class='button' ng-click='link("/edit/" + instance.path)'>Edit</td>
-    <td class='button' confirm-click='instance.remove()'>Remove</td>
+    <td class='icon'>
+      <div>
+        <i ng-controller='IconCtrl' ng-class='getIcon(instance.type)' ng-style='getStyle(instance.type)'></i>
+      </div>
+    </td>
+    <td class='clickable' ng-click='link(instance.path)'>
+      {{instance.name}} <span class='hide'>- {{instance.order}} - {{instance.path}}</span>
+    </td>
+
+    <td class='buttons'>
+      <button title='Edit' ng-click='link("/edit/" + instance.path)'>
+        <i class='icon-edit'></i>
+      </button>
+      <button title='Remove' confirm-click='remove()'>
+        <i class='icon-trash'></i>
+      </button>
+      <button title='Add to clipboard' ng-click='clipboard()'>
+        <i class='icon-paper-clip' ></i>
+      </button>
+    </td>
   </tr>
+
 </table>

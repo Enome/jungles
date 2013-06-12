@@ -1,6 +1,22 @@
-<ul class='alerts' ng-controller='AlertsCtrl'>
-  <li ng-repeat='alert in alerts' ng-class='alert.type'>
-    <strong>{{alert.name}}:</strong>
-    {{alert.msg}}
-  </li>
-</ul>
+<table class='alerts table' ng-controller='AlertsCtrl' ng-show='alerts.length'>
+  <tr>
+    <th colspan='3'><i class='icon-warning-sign'></i> Alerts</th>
+  </tr>
+
+  <tr ng-repeat='alert in alerts' ng-class='alert.type'>
+    <td class='icon'>
+      <div>
+        <i ng-class='getIcon(alert)' ng-style='getStyle(alert)'></i>
+      </div>
+    </td>
+    <td>
+      <strong>{{alert.name}}:</strong>
+      {{alert.msg}}
+    </td>
+    <td class='buttons'>
+      <button ng-click='close(alert)'>
+        <i class='icon-remove'></i>
+      </button>
+    </td>
+  </tr>
+</table>

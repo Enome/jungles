@@ -1,17 +1,12 @@
-var instances = [];
-var types = [];
-var alerts = [];
-var globals = {};
-
 var services = function () {
-  
   return {
-    instances: instances,
-    types: types,
-    alerts: alerts,
-    globals: globals,
+    instances: [],
+    types: [],
+    alerts: [],
+    clipboard: [],
+    popups: [],
+    globals: {},
   };
-
 };
 
 module.exports = services;

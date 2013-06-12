@@ -1,3 +1,3 @@
 <header ng-controller='HeaderCtrl'>
-  <span ng-repeat='part in path_navigation'> / <a ng-href='#{{part.path}}'>{{ part.name }}</a></span>
+  <span ng-repeat='part in path_navigation'> / <a ng-href='#{{part.path}}' title='{{part.name}}'>{{ part.name }}</a></span>
 </header>

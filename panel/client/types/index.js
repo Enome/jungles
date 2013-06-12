@@ -1,12 +1,8 @@
-var controllers = {
-
-  TypesCtrl: function ($scope, collections) {
-    $scope.types = collections.types;
-  }
-
-};
+var controllers = require('./controllers');
+var factories = require('./factories');
 
 var types = function (app) {
+  app.factory('types', factories);
   app.controller('TypesCtrl', controllers.TypesCtrl);
 };
 

@@ -1,8 +1,9 @@
 var controllers = require('./controllers');
 var factories = require('./factories');
 
-var services = function (app) {
+var instances = function (app) {
 
+  app.factory('instances', factories);
   app.controller('InstanceCtrl', controllers.InstanceCtrl);
   app.controller('InstancesCtrl', controllers.InstancesCtrl);
 
@@ -10,11 +11,11 @@ var services = function (app) {
     
     $routeProvider.when('*path', {
       controller: 'InstancesCtrl',
-      templateUrl: 'partials/instances.html'
+      templateUrl: 'partials/list.html'
     });
 
   });
 
 };
 
-module.exports = services;
+module.exports = instances;
