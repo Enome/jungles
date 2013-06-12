@@ -58,18 +58,6 @@ describe('Utils', function () {
       
     });
 
-    it('does it when its empty array', function () {
-
-      var t = true;
-
-      doWhenNotEmpty([], function () {
-        t = false;
-      });
-
-      t.should.be.true;
-      
-    });
-
   });
 
 });

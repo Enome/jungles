@@ -150,6 +150,19 @@ describe('Validators', function () {
 
       });
 
+      it('adds no error when the value is an  empty array and sanitizes the array', function (done) {
+
+        var validator = array();
+
+        validator({ files: [] }, 'files', errors, sanitize, function () {
+          sanitize.should.eql({ files: [] });
+          errors.should.eql({});
+          done();
+        });
+
+      });
+
+
       it('adds no error when the value is undefined', function (done) {
 
         var validator = array();

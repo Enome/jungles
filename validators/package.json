@@ -2,7 +2,7 @@
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles-validators",
   "description": "Validators for jungles-validation.",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "keywords": [ "jungles", "validation", "validators" ],
   "dependencies": {
     "validator": "~0.4.10"

@@ -11,7 +11,7 @@ var utils = {
   },
 
   doWhenNotEmpty: function (val, func) {
-    if (typeof val !== 'undefined' && val !== null && val !== '' && val.length !== 0) {
+    if (typeof val !== 'undefined' && val !== null && val !== '') {
       func();
     }
   }
