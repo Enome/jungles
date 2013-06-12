@@ -1880,6 +1880,22 @@ var qs = require('querystring');
 
 var factories = function ($http, $rootScope, $window, $location, general, collections, alerts, _) {
 
+  var multipleResultMsg = function (results) {
+
+    var paths = _.map(results, function (instance) { return instance.path; });
+
+    paths.sort(function (a, b) {
+      return a.length - b.length;
+    });
+
+    if (paths.length > 3) {
+      return paths.slice(0, 3).join(', ') + ', ...';
+    }
+
+    return paths.join(', ');
+
+  };
+
   var t = {
 
     escapeForRegex: function (s) {
@@ -1926,7 +1942,7 @@ var factories = function ($http, $rootScope, $window, $location, general, collec
           collections.alerts.push({
             type: 'success',
             name: 'Removed',
-            msg: _.map(response, function (instance) { return instance.path; }).join(', '),
+            msg: multipleResultMsg(response),
           });
 
         });
@@ -2038,7 +2054,7 @@ var factories = function ($http, $rootScope, $window, $location, general, collec
           collections.alerts.push({
             type: 'success',
             name: 'Copy',
-            msg: _.map(response, function (instance) { return instance.path; }).join(', '),
+            msg: multipleResultMsg(response),
           });
 
           collections.instances.push(response[0]);

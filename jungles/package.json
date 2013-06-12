@@ -2,7 +2,7 @@
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles",
   "description": "Jungles Content Management System",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "keywords": [
     "jungles",
     "cms"
@@ -13,7 +13,7 @@
     "jungles-data-postgres": "~3.0.0",
     "jungles-data-memory": "~4.0.0",
     "jungles-rest": "~2.0.0",
-    "jungles-panel": "~3.0.0",
+    "jungles-panel": "~3.1.0",
     "jungles-files": "~1.3.1",
     "jungles-helpers-frontend": "~1.2.0",
     "jungles-middleware-frontend": "~1.2.0",
