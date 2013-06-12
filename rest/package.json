@@ -2,7 +2,7 @@
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles-rest",
   "description": "Rest layer of Jungles",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "keywords": [
     "jungles",
     "rest"

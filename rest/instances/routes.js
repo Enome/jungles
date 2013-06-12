@@ -22,7 +22,6 @@ module.exports = {
              general.send(function () { return this.res.locals.response; }));
 
     app.put('/instances',
-             instances.find(function () { return { path: this.req.body.path }; }),
              instances.update,
              general.send(function () { return this.res.locals.response; }));
 
