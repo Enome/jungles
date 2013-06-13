@@ -61,18 +61,4 @@ module.exports = {
 
   },
 
-  figureoutRedirect: function (req) {
-
-    var method = req.route.method;
-    var redirect_url = req.url;
-
-    if (method !== 'get') {
-      redirect_url = req.headers.referer;
-    }
-
-    return '/login?redirect_url=' + redirect_url;
-
-  }
-
 };
-

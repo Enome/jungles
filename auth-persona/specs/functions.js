@@ -1,9 +1,8 @@
 var sinon = require('sinon');
-var functions = require('../src/functions');
+var functions = require('../functions');
 var verify = functions.verify;
 var inject = functions.inject;
 var processReply = functions.processReply;
-var figureoutRedirect = functions.figureoutRedirect;
 
 describe('functions', function () {
 
@@ -74,41 +73,4 @@ describe('functions', function () {
 
   });
 
-
-  describe('figureoutRedirect', function () {
-
-    describe('get', function () {
-
-      it('uses req.url', function () {
-
-        var req = {
-          route: { method: 'get' },
-          url: '/somewhere'
-        };
-
-        figureoutRedirect(req).should.eql('/login?redirect_url=/somewhere');
-
-
-      });
-
-    });
-
-    describe('not get', function () {
-
-      it('uses req.url', function () {
-
-        var req = {
-          route: { method: 'post' },
-          headers: { referer: '/somewhere-else' }
-        };
-
-        figureoutRedirect(req).should.eql('/login?redirect_url=/somewhere-else');
-
-      });
-
-    });
-
-  });
-
 });
-

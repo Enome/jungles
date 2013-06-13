@@ -1,0 +1,18 @@
+!!! 5
+html
+  head
+    title Authenticate With Mozila Persona
+
+    base(href=locals.base_url + '/')
+
+    link(href='http://fonts.googleapis.com/css?family=Roboto:300', rel='stylesheet', type='text/css')
+    link(rel='stylesheet', href='styles.css')
+
+    script(src='https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js')
+    script(src='https://login.persona.org/include.js')
+    script(src='index.js');
+
+  body
+    .panel
+      h1 Sign in using Mozilla Persona
+      img.persona(data-url=locals.query.redirect_url || '/', src='logo.png')
