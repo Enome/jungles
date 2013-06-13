@@ -3,99 +3,95 @@ var marked = require('marked');
 var functions = require('./functions');
 var jungles_functions = require('jungles-functions');
 
-var helpers = {
+var helpers = function (app) {
 
-  init: function (app) {
+  app.locals.getRoot = function (tree, current) {
 
-    app.locals.getRoot = function (tree, current) {
+    var root = current.path.split('/')[1];
+    var result = kwery.tree(tree, { path: '/' + root });
 
-      var root = current.path.split('/')[1];
-      var result = kwery.tree(tree, { path: '/' + root });
+    result.one(function (response) {
+      root = response; // This works cause kwery isn't async.
+    });
 
-      result.one(function (response) {
-        root = response; // This works cause kwery isn't async.
-      });
+    return root;
 
-      return root;
+  };
 
-    };
-  
-    app.locals.navigation = function (nodes, start, end, current) {
+  app.locals.navigation = function (nodes, start, end, current) {
 
-      var traverse = function (ns, lvl) {
+    var traverse = function (ns, lvl) {
 
-        if (!ns) {
-          return '';
-        }
-
-        lvl += 1;
-
-        var ret = [];
-
-        if (start <= lvl && end >= lvl) {
-          ret.push('<ul>');
-        }
-
-        ns.forEach(function (node) {
-
-          if (start <= lvl && end >= lvl && !node.navigation_hide) {
-
-            ret.push('<li>');
-
-            ret.push('<a');
-
-            if (functions.isPartOfUrl(node.path, current.path)) {
-              ret.push(' class="selected"');
-            }
-
-            ret.push(' href="', node.path, '" title="', node.name, '">', node.name, '</a>', traverse(node.children, lvl), '</li>');
-
-          } else {
-            ret.push(traverse(node.children, lvl));
-          }
-
-        });
-
-        if (start <= lvl && end >= lvl) {
-          ret.push('</ul>');
-        }
-
-        return ret.join('');
-
-      };
-
-      return traverse(nodes, -1);
-
-    };
-
-    app.locals.markdown = function (md) {
-
-      if (md) {
-        return marked(md);
+      if (!ns) {
+        return '';
       }
 
-      return '';
+      lvl += 1;
 
-    };
+      var ret = [];
 
-    app.locals.findInstancesByType = function (tree, type) {
+      if (start <= lvl && end >= lvl) {
+        ret.push('<ul>');
+      }
 
-      var instances;
-      var result = kwery.tree(tree, { type: type });
+      ns.forEach(function (node) {
 
-      result.many(function (results) {
-        instances = results;
+        if (start <= lvl && end >= lvl && !node.navigation_hide) {
+
+          ret.push('<li>');
+
+          ret.push('<a');
+
+          if (functions.isPartOfUrl(node.path, current.path)) {
+            ret.push(' class="selected"');
+          }
+
+          ret.push(' href="', node.path, '" title="', node.name, '">', node.name, '</a>', traverse(node.children, lvl), '</li>');
+
+        } else {
+          ret.push(traverse(node.children, lvl));
+        }
+
       });
 
-      return instances;
+      if (start <= lvl && end >= lvl) {
+        ret.push('</ul>');
+      }
+
+      return ret.join('');
 
     };
 
-    app.locals.getFilename = function (file) {
-      return jungles_functions.getFilename(file);
-    };
+    return traverse(nodes, -1);
 
-  },
+  };
+
+  app.locals.markdown = function (md) {
+
+    if (md) {
+      return marked(md);
+    }
+
+    return '';
+
+  };
+
+  app.locals.findInstancesByType = function (tree, type) {
+
+    var instances;
+    var result = kwery.tree(tree, { type: type });
+
+    result.many(function (results) {
+      instances = results;
+    });
+
+    return instances;
+
+  };
+
+  app.locals.getFilename = function (file) {
+    return jungles_functions.getFilename(file);
+  };
 
 };
 
