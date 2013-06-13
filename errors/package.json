@@ -1,6 +1,9 @@
 {
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles-errors",
-  "version": "1.2.0",
-  "keywords": [ "jungles", "errors" ]
+  "version": "2.0.0",
+  "keywords": [
+    "jungles",
+    "errors"
+  ]
 }
