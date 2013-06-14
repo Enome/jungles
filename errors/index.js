@@ -1,3 +1,6 @@
+var express = require('express');
+var error_list = require('./error_list');
+
 var errors = function (app, view) {
 
   app.all('*', function (req, res, next) {
@@ -25,7 +28,9 @@ var errors = function (app, view) {
     console.log('url: ' + req.url);
     console.log('--------------------------------------------------');
 
+    res.locals.error_list = error_list;
     res.locals.code = code;
+    res.locals.url = req.url;
     res.statusCode = code;
 
     res.render(view || __dirname + '/index.jade');
