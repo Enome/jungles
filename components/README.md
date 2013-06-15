@@ -38,4 +38,4 @@ var panel = require('jungles-panel').init({
 });
 ```
 
-If you want to create yoru own components check out the component structure at [Jungles Panel](https://github.com/Enome/jungles/tree/master/panel#component-structure)
+If you want to create your own components check out the component structure at [Jungles Panel](https://github.com/Enome/jungles/tree/master/panel#component-structure)

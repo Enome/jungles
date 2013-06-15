@@ -22,19 +22,14 @@ data.setup(); // Creates table called instances
 Query objects get translated.
 
 ```js
-{ id: 5} 
-// SELECT * FROM instances where id = 5;
-
-{ path: /.*/ } 
-// SELECT * FROM instance WHERE path ~ .*;
-
-{ path: /.*/, id: 5 } 
-// SELECT * FROM instances WHERE path ~ .* and id = 5;
+{ id: 5}               // SELECT * FROM instances where id = 5;
+{ path: /.*/ }         // SELECT * FROM instance WHERE path ~ .*;
+{ path: /.*/, id: 5 }  // SELECT * FROM instances WHERE path ~ .* and id = 5;
 ```
 
 ## Test
 
-mocha.js and should.js is needed. Tests are run against a real database so you need to have postgresql. Check specs/db for database settings.
+mocha.js and should.js is needed. Tests are run against a real database which your can start with `vagrant up`.
 
 ```js
 make test

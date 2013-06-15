@@ -2,27 +2,32 @@
 
 There are two big concepts in Jungles. One is called **type** the other **instance**. A type holds all the info for creating a node that is attached to a tree. In other CMS they sometimes call this a doctype or a content-type. We just call it a type. 
 
-The second concept (instance) is the data created by a type which lives inside a tree structure. You could call this a node but we just call it an instance.
+The second concept (instance) is the data created by a type which lives inside a tree structure.
 
 ## Types
 
 ```js
-var types = {
-  language: {
-    root: true,
+var types = [
+
+  {
+    root: {
+    name: 'root',
+    children: [ 'language' ]
+  },
+
+  {
     name: 'language',
     children: [ 'page', 'projects' ],
     form: 'forms/language',
     schema: { title: [ validators.required(), validators.string() ] }
   }
-};
 
-module.exports = [ language ];
+];
 ```
 
 ### Root
 
-If this property is true then the type is a root type.
+The root type is a special one because it doesn't actually have data (instance) that lives in the content tree. It's only use is to set children that you can add at the root level. So if you don't define a root type you can't create instances because there is no starting point.
 
 ### Name
 
@@ -30,12 +35,21 @@ Name of the type.
 
 ### Children
 
-These are the types that can be added to this type.  So for example: a parent type called products could have a type called 'product'.
+These are the types that can be added to this type.  So for example: a parent type called `Products` could have a type called `Product`. The `Products` type in this case can be viewed as a container to hold products and most likely wont have any form.
 
 ```
 Products
 - Product
 - Product
+```
+
+Types can also include themself as a child. For example you could make a `Page` type that can contain a `Page` child and created an endless tree of pages.
+
+```
+Page
+- Page
+-- Page
+--- ...
 ```
 
 ### Form
@@ -62,7 +76,7 @@ The rest app takes a data layer to store the instances. You can create your own 
 Initialize the rest layer with the data and types.
 
 ```js
-var rest = require('jungles-rest').init({ data: data, types: types });
+var rest = require('jungles-rest')({ data: data, types: types });
 ```
 
 This returns an Express.js app. You can find the data later and types at:

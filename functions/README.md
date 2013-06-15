@@ -1,3 +1,3 @@
 # Jungles Functions
 
-Global functions used by different modules.
+Global functions used by multiple modules.

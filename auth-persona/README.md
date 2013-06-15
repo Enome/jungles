@@ -1,16 +1,21 @@
 ![screenshot](https://raw.github.com/Enome/jungles/master/auth-persona/screenshot.png)
 
-Mozilla Persona Authentication app for Express.js. This app is developed for Jungles but can be used with any Express.js application. In case you didn't know: Express.js allows you to break your project into small apps which you can mount onto a base app.
+Mozilla Persona Authentication app for Express.js.
+
+## API
+
+```js
+require('jungles-auth-person')(/* optional string: template file */);
+```
 
 ## Mount
 
 ```js
-var auth = require('jungles-auth-persona');
-var app = express(); // Your app
-app.use(auth.init('/admin*'));
+var app = express();
+app.use('/base_url', require('jungles-auth-persona')());
 ```
 
-This will redirect to the /login if session.user is undefined and the user visits /admin*. If you need multiple urls you can pass an array.
+When you visit '/base_url' you'll get a login page. Visiting '/base_url/logout' will log you out. 
 
 ## Warning
 
@@ -18,7 +23,7 @@ This module only does authentication you should still do authorization on logged
 
 ## Test
 
-mocha.js and should.js is needed.
+mocha.js and should.js is needed. 
 
 ```js
 make test

@@ -1,5 +1,5 @@
 var recorder = require('express-recorder');
-var middleware = require('../src/middleware');
+var middleware = require('../middleware');
 var sinon = require('sinon');
 
 describe('Middleware', function () {

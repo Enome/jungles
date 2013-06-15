@@ -8,7 +8,7 @@ You can find validators for jungles-validation at [jungles-validators](http://gi
 var validators = require('jungles-validators');
 
 var schema = {
-  name: [ required(), string() ]
+  name: [ validators.required(), validators.string() ]
 };
 
 var data = {

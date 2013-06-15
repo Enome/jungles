@@ -24,6 +24,7 @@ You can also define extra middleware on your types. If you don't specifiy this m
 
 ```js
 var type = {
+  name: 'product',
   middleware: function (req, res, next) { 
     res.locals.foobar = res.locals.current.foobar;
     next();
@@ -31,7 +32,7 @@ var type = {
 }
 ```
 
-This is useful if you want to do something extra with your response before rendering a template.
+This is useful if you want to do something else with your response.
 
 ## Constants
 
@@ -41,7 +42,7 @@ You can also define constants on your types. For example if you want to hide som
 ```js
 var product = {
   constants: {
-    hide: true
+    navigation_hide: true
   }
 }
 ```
@@ -50,8 +51,4 @@ This will add a hide property to all the instance of the type product. Constants
 
 ## Warning
 
-Because the whole tree structure is loaded into memory on each request this module might not be suited for big sites. So start with this module if you run into performance issues fork it and make some adjustments.
-
-If you do think about premature optimizing your site I would like to leave you with this message:
-
-![batman slap](http://i.qkme.me/3rken9.jpg)
+Because the whole tree structure is loaded into memory on each request from the database this module might not be suited for big sites. So start with this module if you run into performance issues fork it and make some adjustments. With postgres I can serve up to 1000 instances without any noticeable delays.
