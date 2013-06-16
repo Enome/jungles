@@ -1,14 +1,22 @@
 # Jungles
 
-In this repo you find the building blocks to create a CMS. This is meant for developers that know Node.js and Express.js. Knowing angular.js helps to customize the backend admin panel.
+Content management system for Node.js. All parts are modules and most of them are optional and replaceable. While Jungles is great for creating a content site it's also easy to use it as a content layer for your an existing Node.js application.
+
+## Developers develop
+
+Configuration is all done in Javascript which means you can version control, use deployment scripts and work with multiple developers on one site.
+
+## Content editors create content
+
+Jungles uses a user friendly control panel without any configuration forms. This means that content editors can focus on creating content.
 
 ## Want to help or need help?
 
-Find me at #jungles on freenode (ping pickels) or create an issue here on Github.
+It's not perfect yet, if you need help or want to help out find me at #jungles on freenode (ping pickels) or create an issue here on Github.
 
 ## Getting started
 
-Coming soon.
+https://github.com/Enome/jungles-tutorial
 
 ## Modules
 
