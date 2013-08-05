@@ -365,8 +365,8 @@ i[class*='icon-'] {
 }
 .table tr td.buttons button:disabled {
   opacity: 0.25;
-  filter: alpha(opacity=25);
   -ms-filter: "progid:DXImageTransform.Microsoft.Alpha(Opacity=25)";
+  filter: alpha(opacity=25);
 }
 .table tr td.buttons button:hover {
   color: #6ed2dd;

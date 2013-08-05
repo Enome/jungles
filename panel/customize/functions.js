@@ -10,6 +10,8 @@ var functions = {
       return component[type];
     });
 
+    files = _.compact(files);
+
     async.map(files, fs.readFile, function (err, result) {
       callback(result.join(''));
     });

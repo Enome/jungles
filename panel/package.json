@@ -15,7 +15,8 @@
     "nib": "~0.9.1",
     "oar": "~1.0.0",
     "jungles-functions": "~1.1.0",
-    "express": "~3.2.6"
+    "express": "~3.2.6",
+    "component-wrapper": "~1.0.1"
   },
   "devDependencies": {
     "browserify": "~1.16.1"

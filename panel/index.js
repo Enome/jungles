@@ -8,6 +8,8 @@ module.exports = function (options) {
 
   var app = express();
 
+  app.locals.pretty = true;
+
   // Base paths
 
   app.use(function (req, res, next) {
@@ -27,11 +29,16 @@ module.exports = function (options) {
   }));
 
   app.use(express.static(__dirname + '/static/public'));
+  app.use(express.static(__dirname + '/components/build'));
   app.use('/partials', express.static(__dirname + '/client/partials'));
 
   // Customize
 
-  require('./customize').init(app, options.customize);
+  //require('./customize').init(app, options.customize);
+
+  // Components
+
+  require('./components')(options.components);
 
   // Routes
 

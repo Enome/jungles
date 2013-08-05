@@ -1,4 +1,18 @@
-var jungles_functions = require('jungles-functions');
+var getParent = function (path) {
+
+  path = path.substring(1);
+
+  var parts = path.split('/');
+
+  parts.pop();
+
+  if (parts.length === 0) {
+    return '/';
+  }
+
+  return '/' + parts.join('/');
+
+};
 
 var factories = function ($document) {
 
@@ -8,7 +22,7 @@ var factories = function ($document) {
     },
 
     path: {
-      parent: jungles_functions.getParent
+      parent: getParent
     }
 
   };

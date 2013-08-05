@@ -1,4 +1,5 @@
 var functions = require('./functions');
+var express = require('express');
 
 var customize = {
 
@@ -14,6 +15,12 @@ var customize = {
       css = string;
     });
 
+    components.forEach(function (component) {
+      if (component.assets) {
+        app.use('/custom/assets/' + component.name, express.static(component.assets));
+      }
+    });
+
     app.get('/custom/javascript', function (req, res, next) {
       res.header('Content-type', 'text/javascript');
       res.send(javascript);
@@ -22,10 +29,6 @@ var customize = {
     app.get('/custom/css', function (req, res, next) {
       res.header('Content-type', 'text/css');
       res.send(css);
-    });
-
-    app.get('/custom/assets/:component/:name', function (req, res, next) {
-      res.sendfile(functions.assets(components, req.params.component, req.params.name));
     });
 
   }
