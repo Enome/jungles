@@ -1,0 +1,36 @@
+.markdown-textarea .textarea-container {
+  position: relative;
+}
+.markdown-textarea .textarea-container > button {
+  position: absolute;
+  border: none 0;
+  background: none;
+  font-size: 24px;
+  color: #c0c0c0;
+  top: 6px;
+  right: 6px;
+}
+.markdown-textarea .textarea-container > button:hover {
+  color: #808080;
+}
+.markdown-textarea .overlay {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1;
+}
+.markdown-textarea .overlay > button {
+  border: none 0;
+  background: none;
+  font-size: 24px;
+  color: #c0c0c0;
+  top: 6px;
+  right: 6px;
+  position: fixed;
+  z-index: 1;
+}
+.markdown-textarea .overlay > button:hover {
+  color: #808080;
+}

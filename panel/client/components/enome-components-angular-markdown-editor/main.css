@@ -1,0 +1,337 @@
+.markdowneditor {
+  font-family: 'Open Sans';
+  font-weight: 300;
+  background: #f2fafa;
+  position: fixed;
+  height: 100%;
+  width: 100%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+.markdowneditor .actionbar {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  top: 10px;
+  line-height: 25px;
+  color: #fff;
+  padding: 0 5px;
+  font-size: 1.25em;
+}
+.markdowneditor .actionbar button {
+  text-transform: uppercase;
+  background: transparent;
+  color: #6ed2dd;
+  font-weight: 300;
+  padding: 0;
+  margin: 0;
+  border: 0 none;
+}
+.markdowneditor .actionbar button:hover {
+  color: #808080;
+}
+.markdowneditor .file-manager-overlay {
+  z-index: 5;
+  background: #f2fafa;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 35px;
+  overflow-y: auto;
+}
+.markdowneditor .file-manager-overlay > .actions {
+  margin-top: 10px;
+}
+.markdowneditor .file-manager-overlay > .actions button {
+  font-size: 12px;
+  text-transform: uppercase;
+  background: #6ed2dd;
+  color: #fff;
+  border: 0 none;
+  padding: 6px 25px;
+}
+.markdowneditor .file-manager-overlay > .actions button:disabled {
+  background: #c0c0c0;
+}
+.markdowneditor .insert,
+.markdowneditor .preview {
+  border: 0 none;
+  position: absolute;
+  top: 45px;
+  bottom: 10px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  font-family: arial;
+  font-size: 14px;
+  color: #000;
+}
+.markdowneditor .insert {
+  left: 10px;
+  display: block;
+  right: 50.1%;
+  background: #f00;
+}
+.markdowneditor .insert textarea {
+  padding: 35px;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  border: 0;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+.markdowneditor .insert textarea:focus {
+  outline: none 0;
+}
+.markdowneditor .preview {
+  padding: 35px;
+  right: 10px;
+  left: 50.1%;
+  background: #fff;
+  overflow-y: auto;
+}
+.markdowneditor .markdown {
+  font-family: 'Droid Serif', Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #333;
+}
+.markdowneditor .markdown > *:first-child {
+  margin-top: 0 !important;
+}
+.markdowneditor .markdown > *:last-child {
+  margin-bottom: 0 !important;
+}
+.markdowneditor .markdown a {
+  color: #10b7f8;
+}
+.markdowneditor .markdown a.absent {
+  color: #c00;
+}
+.markdowneditor .markdown a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+.markdowneditor .markdown h1,
+.markdowneditor .markdown h2,
+.markdowneditor .markdown h3,
+.markdowneditor .markdown h4,
+.markdowneditor .markdown h5,
+.markdowneditor .markdown h6 {
+  font-family: Helvetica, arial, sans-serif;
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  cursor: text;
+  position: relative;
+  -webkit-font-smoothing: antialiased;
+}
+.markdowneditor .markdown h1 tt,
+.markdowneditor .markdown h1 code {
+  font-size: inherit;
+}
+.markdowneditor .markdown h2 tt,
+.markdowneditor .markdown h2 code {
+  font-size: inherit;
+}
+.markdowneditor .markdown h3 tt,
+.markdowneditor .markdown h3 code {
+  font-size: inherit;
+}
+.markdowneditor .markdown h4 tt,
+.markdowneditor .markdown h4 code {
+  font-size: inherit;
+}
+.markdowneditor .markdown h5 tt,
+.markdowneditor .markdown h5 code {
+  font-size: inherit;
+}
+.markdowneditor .markdown h6 tt,
+.markdowneditor .markdown h6 code {
+  font-size: inherit;
+}
+.markdowneditor .markdown h1 {
+  font-size: 28px;
+  color: #000;
+}
+.markdowneditor .markdown h2 {
+  font-size: 24px;
+  color: #000;
+}
+.markdowneditor .markdown h3 {
+  font-size: 18px;
+}
+.markdowneditor .markdown h4 {
+  font-size: 16px;
+}
+.markdowneditor .markdown h5 {
+  font-size: 14px;
+}
+.markdowneditor .markdown h6 {
+  color: #777;
+  font-size: 14px;
+}
+.markdowneditor .markdown p,
+.markdowneditor .markdown blockquote,
+.markdowneditor .markdown ul,
+.markdowneditor .markdown ol,
+.markdowneditor .markdown dl,
+.markdowneditor .markdown table,
+.markdowneditor .markdown pre {
+  margin: 15px 0;
+}
+.markdowneditor .markdown hr {
+  border: 0 none;
+  color: #ccc;
+  height: 4px;
+  padding: 0;
+}
+.markdowneditor .markdown > h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+.markdowneditor .markdown > h1:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+.markdowneditor .markdown > h1:first-child + h2 {
+  margin-top: 0;
+  padding-top: 0;
+}
+.markdowneditor .markdown > h3:first-child,
+.markdowneditor .markdown > h4:first-child,
+.markdowneditor .markdown > h5:first-child,
+.markdowneditor .markdown > h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+.markdowneditor .markdown a:first-child h1,
+.markdowneditor .markdown a:first-child h2,
+.markdowneditor .markdown a:first-child h3,
+.markdowneditor .markdown a:first-child h4,
+.markdowneditor .markdown a:first-child h5,
+.markdowneditor .markdown a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+.markdowneditor .markdown h1 p,
+.markdowneditor .markdown h2 p,
+.markdowneditor .markdown h3 p,
+.markdowneditor .markdown h4 p,
+.markdowneditor .markdown h5 p,
+.markdowneditor .markdown h6 p {
+  margin-top: 0;
+}
+.markdowneditor .markdown li p.first {
+  display: inline-block;
+}
+.markdowneditor .markdown ul,
+.markdowneditor .markdown ol {
+  padding-left: 30px;
+}
+.markdowneditor .markdown ul :first-child,
+.markdowneditor .markdown ol :first-child {
+  margin-top: 0;
+}
+.markdowneditor .markdown ul :last-child,
+.markdowneditor .markdown ol :last-child {
+  margin-bottom: 0;
+}
+.markdowneditor .markdown blockquote {
+  border-left: 4px solid #ddd;
+  padding: 0 15px;
+  color: #777;
+}
+.markdowneditor .markdown blockquote > :first-child {
+  margin-top: 0;
+}
+.markdowneditor .markdown blockquote > :last-child {
+  margin-bottom: 0;
+}
+.markdowneditor .markdown table {
+  padding: 0;
+}
+.markdowneditor .markdown table tr {
+  border-top: 1px solid #ccc;
+  background-color: #fff;
+  margin: 0;
+  padding: 0;
+}
+.markdowneditor .markdown table tr:nth-child(2n) {
+  background-color: #f8f8f8;
+}
+.markdowneditor .markdown table tr th {
+  font-weight: bold;
+  border: 1px solid #ccc;
+  text-align: left;
+  margin: 0;
+  padding: 6px 13px;
+}
+.markdowneditor .markdown table tr td {
+  border: 1px solid #ccc;
+  text-align: left;
+  margin: 0;
+  padding: 6px 13px;
+}
+.markdowneditor .markdown table tr th :first-child,
+.markdowneditor .markdown table tr td :first-child {
+  margin-top: 0;
+}
+.markdowneditor .markdown table tr th :last-child,
+.markdowneditor .markdown table tr td :last-child {
+  margin-bottom: 0;
+}
+.markdowneditor .markdown img {
+  max-width: 100%;
+}
+.markdowneditor .markdown code,
+.markdowneditor .markdown tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #eaeaea;
+  background-color: #f8f8f8;
+  border-radius: 3px;
+}
+.markdowneditor .markdown pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+}
+.markdowneditor .markdown .highlight pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+.markdowneditor .markdown pre {
+  background-color: #f8f8f8;
+  border: 1px solid #ccc;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+.markdowneditor .markdown pre code,
+.markdowneditor .markdown pre tt {
+  background-color: transparent;
+  border: none;
+}

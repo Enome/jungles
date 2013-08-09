@@ -1,42 +1,17 @@
 {
-  "name": "jungles-panel-core",
-  "main": "index.js",
-  "scripts": [
-    "index.js",
-    "init/index.js",
-    "general/controllers.js",
-    "general/directives.js",
-    "general/factories.js",
-    "general/index.js",
-    "collections/index.js",
-    "collections/services.js",
-    "header/controllers.js",
-    "header/factories.js",
-    "header/index.js",
-    "alerts/controllers.js",
-    "alerts/factories.js",
-    "alerts/index.js",
-    "alerts/specs/factories.js",
-    "forms/controllers.js",
-    "forms/index.js",
-    "types/controllers.js",
-    "types/factories.js",
-    "types/index.js",
-    "instances/controllers.js",
-    "instances/factories.js",
-    "instances/filters.js",
-    "instances/index.js",
-    "icons/index.js",
-    "clipboard/controllers.js",
-    "clipboard/factories.js",
-    "clipboard/index.js",
-    "header/specs/factories.js",
-    "popups/controllers.js",
-    "popups/index.js"
+  "name": "jungles-panel",
+  "paths": [
+    "./locals"
   ],
+  "local": [
+    "jungles-panel-core"
+  ],
+  "scripts": [
+    "index.js"
+  ],
+  "main": "index.js",
   "dependencies": {
-    "enome/oar": "*",
-    "component/querystring": "*",
-    "component/underscore": "*"
+    "enome-components/angular-markdown-textarea": "*",
+    "enome-components/angular-arrangeable-array": "*"
   }
 }

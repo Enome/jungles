@@ -1,11 +1,13 @@
 {
+  "name": "temp-file-server",
+  "version": "1.0.0",
+  "description": "This is a temporary implementation of a new file-server for jungles cms",
+  "main": "index.js",
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
-  "name": "jungles-files",
-  "version": "1.4.0",
-  "description": "File server for jungles",
+  "license": "mit",
   "dependencies": {
-    "express": "~3.2.6",
-    "node-uuid": "~1.4.0",
-    "jungles-functions": "~1.0.0"
+    "express": "~3.3.4",
+    "async": "~0.2.9",
+    "rimraf": "~2.2.2"
   }
 }

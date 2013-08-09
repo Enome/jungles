@@ -1,0 +1,16 @@
+{
+  "name": "angular-enter-directive",
+  "repo": "enome-components/angular-enter-directive",
+  "description": "Add ng-enter directive",
+  "version": "1.0.0",
+  "keywords": [
+    "angular",
+    "directive",
+    "enter"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}

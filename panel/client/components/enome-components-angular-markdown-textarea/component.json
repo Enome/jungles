@@ -1,0 +1,21 @@
+{
+  "name": "angular-markdown-textarea",
+  "repo": "enome-components/angular-markdown-textarea",
+  "description": "textarea and angular-markdown-editor combined",
+  "version": "1.0.1",
+  "keywords": [],
+  "dependencies": {
+    "timoxley/font-awesome": "*",
+    "enome-components/angular-markdown-editor": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js",
+    "template.js"
+  ],
+  "styles": [
+    "angular-markdown-textarea.css"
+  ]
+}

@@ -1,0 +1,26 @@
+{
+  "name": "angular-arrangeable-array",
+  "repo": "enome-components/angular-arrangeable-array",
+  "description": "Edit the order and remove items from an array.",
+  "version": "1.1.2",
+  "keywords": [
+    "angular",
+    "array",
+    "drag and drop",
+    "edit"
+  ],
+  "dependencies": {
+    "timoxley/font-awesome": "*",
+    "enome-components/webfont": "*"
+  },
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js",
+    "template.js"
+  ],
+  "styles": [
+    "angular-arrangeable-array.css"
+  ]
+}

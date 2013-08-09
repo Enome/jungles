@@ -1,0 +1,9 @@
+{
+  "name": "normalize-css",
+  "version": "2.1.2",
+  "styles": [
+    "normalize.css"
+  ],
+  "author": "Nicolas Gallagher",
+  "repo": "https://raw.github.com/necolas/normalize.css"
+}

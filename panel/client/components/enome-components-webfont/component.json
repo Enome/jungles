@@ -1,0 +1,17 @@
+{
+  "name": "webfont",
+  "repo": "enome-components/webfont",
+  "description": "Typekit's Web Font Loader",
+  "version": "1.4.8",
+  "keywords": [
+    "typekit",
+    "web",
+    "font",
+    "loader"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}

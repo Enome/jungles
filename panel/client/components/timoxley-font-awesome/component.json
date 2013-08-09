@@ -1,0 +1,18 @@
+{
+  "name": "font-awesome",
+  "repo": "timoxley/font-awesome",
+  "description": "Full suite of pictographic icons",
+  "version": "3.2.1",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "styles": [
+    "css/font-awesome.css"
+  ],
+  "fonts": [
+    "font/fontawesome-webfont.eot",
+    "font/fontawesome-webfont.svg",
+    "font/fontawesome-webfont.ttf",
+    "font/fontawesome-webfont.woff"
+  ]
+}

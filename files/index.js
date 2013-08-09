@@ -1,38 +1,21 @@
-var fs = require('fs');
-var uuid = require('node-uuid');
-var express = require('express');
-var functions = require('jungles-functions');
+module.exports = function (dir) {
 
-var files = function (dir) {
+  var express = require('express');
+  var middleware = require('./middleware');
 
   var app = express();
-
   app.use(express.bodyParser());
 
-  app.post('/:filename', function (req, res) {
+  require('./directories')(app, dir);
+  require('./files')(app, dir);
 
-    var data_url = req.body.file;
-    var base64_data = data_url.replace(/^[^,]+/, '');
-    var filename = req.params.filename;
-    var buffer = new Buffer(base64_data, 'base64');
-    var file_name = uuid.v4() + filename;
+  // Default
 
-    fs.writeFile(dir + '/' + file_name, buffer, function (err) {
-      res.send({ file: file_name });
-    });
-
-  });
-
-  app.get('/:filename', function (req, res) {
-    if (typeof req.query.download !== 'undefined') {
-      res.header('Content-Disposition', 'attachment; filename=' + functions.getFilename(req.params.filename));
-    }
-
-    res.sendfile(dir + '/' + req.params.filename);
-  });
+  app.get('/:path(*)',
+          middleware.getPaths(dir),
+          middleware.validatePaths,
+          middleware.serveFile);
 
   return app;
 
 };
-
-module.exports = files;

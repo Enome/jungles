@@ -1,0 +1,51 @@
+.arrangeable-array {
+  overflow: hidden;
+  margin-top: -5px;
+}
+.arrangeable-array .row {
+  position: relative;
+  background: #fff;
+  border-bottom: 1px solid #e8e8e8;
+  border-top: 1px solid #e8e8e8;
+  cursor: move;
+  width: 100%;
+  margin-top: 5px;
+  height: 30px;
+}
+.arrangeable-array .row.expand {
+  margin-top: 42px;
+}
+.arrangeable-array .row.last {
+  cursor: default;
+  height: 5px;
+  border: 0 none;
+  padding: 0;
+}
+.arrangeable-array [class^="icon-"],
+.arrangeable-array [class*=" icon-"] {
+  font-size: 14px;
+  color: #787878;
+}
+.arrangeable-array .col1,
+.arrangeable-array .col2 {
+  position: absolute;
+  top: 4px;
+}
+.arrangeable-array .col1 {
+  top: 5px;
+  left: 10px;
+  right: 50px;
+}
+.arrangeable-array .col2 {
+  right: 0;
+  width: 35px;
+  border-left: 1px solid #e3e3e3;
+  text-align: center;
+}
+.arrangeable-array button {
+  cursor: pointer;
+  padding: 0;
+  background: none;
+  border: 0 none;
+  font-size: 14px;
+}

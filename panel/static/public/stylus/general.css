@@ -296,13 +296,13 @@ header span:last-child a:hover {
 .capitalize {
   text-transform: capitalize;
 }
-i[class*='icon-'] {
-  font-size: 14px;
-}
 .table {
   background: #fff;
   width: 100%;
   color: #787878;
+}
+.table i[class*='icon-'] {
+  font-size: 14px;
 }
 .table tr:last-child td {
   border-bottom: 0 none;
@@ -391,20 +391,15 @@ form fieldset {
   padding: 0;
   border: 0;
   outline: 0;
-  border: 0;
   background: #fff;
-  position: relative;
-  padding: 65px 20px 20px;
-  overflow: hidden;
+  padding: 20px;
 }
-form legend {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box;
+form > h2,
+form > div > h2 {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
   background: #6ed2dd;
   color: #fff;
   height: 30px;
@@ -415,7 +410,8 @@ form legend {
   font-size: 14px;
   line-height: 30px;
 }
-form legend i {
+form > h2 i,
+form > div > h2 i {
   margin-right: 5px;
 }
 form label {
@@ -441,24 +437,6 @@ form input[type=button],
 form input[type=submit] {
   width: auto;
 }
-form button,
-form input[type=button],
-form input[type=submit],
-form .button {
-  font-size: 12px;
-  text-transform: uppercase;
-  background: #6ed2dd;
-  color: #fff;
-  border: 0 none;
-  padding: 6px 25px;
-}
-form button:disabled,
-form input[type=button]:disabled,
-form input[type=submit]:disabled,
-form .button:disabled {
-  background: #787878;
-  color: #fff;
-}
 form table {
   margin-bottom: 12px;
   width: 100%;
@@ -470,6 +448,24 @@ form table th {
 }
 form .actions {
   padding: 10px 0 30px;
+}
+form .actions button,
+form .actions input[type=button],
+form .actions input[type=submit],
+form .actions .button {
+  font-size: 12px;
+  text-transform: uppercase;
+  background: #6ed2dd;
+  color: #fff;
+  border: 0 none;
+  padding: 6px 25px;
+}
+form .actions button:disabled,
+form .actions input[type=button]:disabled,
+form .actions input[type=submit]:disabled,
+form .actions .button:disabled {
+  background: #787878;
+  color: #fff;
 }
 table.alerts th {
   background: #e74c3c;

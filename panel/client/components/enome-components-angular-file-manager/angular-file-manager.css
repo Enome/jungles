@@ -1,0 +1,137 @@
+.file-manager {
+  background: #f7f7f7;
+  font-family: 'Roboto Condensed';
+  font-weight: 300;
+  color: #787878;
+}
+.file-manager header {
+  background: #2b3d50;
+  color: #fff;
+  padding: 15px 20px;
+}
+.file-manager header button {
+  font-size: 16px;
+  color: #fff;
+  text-transform: uppercase;
+  padding: 0;
+  margin: 0;
+  background: none;
+  border: 0 none;
+  font-weight: 300;
+}
+.file-manager header button:hover {
+  color: #6ed2dd;
+}
+.file-manager h2 {
+  background: #6ed2dd;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 300;
+  text-transform: uppercase;
+  padding: 5px 15px;
+  margin: 0;
+  word-spacing: 6px;
+}
+.file-manager h2 [class^="icon-"],
+.file-manager h2 [class*=" icon-"] {
+  color: #fff;
+}
+.file-manager .files {
+  position: relative;
+  overflow: hidden;
+}
+.file-manager .row {
+  position: relative;
+  background: #fff;
+  border-bottom: 1px solid #f7f7f7;
+  min-height: 45px;
+}
+.file-manager .droparea {
+  margin: 10px;
+  line-height: 100px;
+  font-size: 1.75em;
+  text-transform: uppercase;
+  color: #c0c0c0;
+  border: 3px dashed #e3e3e3;
+  text-align: center;
+  padding: 10px;
+  background: #fff;
+}
+.file-manager .droparea.over {
+  background: #f5f5f5;
+}
+.file-manager [class^="icon-"],
+.file-manager [class*=" icon-"] {
+  font-size: 14px;
+  color: #787878;
+}
+.file-manager .col1,
+.file-manager .col2,
+.file-manager .col3 {
+  position: absolute;
+  top: 10px;
+}
+.file-manager .col1 {
+  border-right: 1px solid #e3e3e3;
+  width: 55px;
+  text-align: center;
+  left: 0;
+}
+.file-manager .col2 {
+  position: absolute;
+  top: 7px;
+  left: 65px;
+  right: 75px;
+}
+.file-manager .col3 {
+  position: absolute;
+  right: 0;
+  border-left: 1px solid #e3e3e3;
+  width: 55px;
+  text-align: center;
+}
+.file-manager input {
+  color: #787878;
+  border: 1px solid #e3e3e3;
+}
+.file-manager input.inline {
+  font-weight: 300;
+  padding: 3px 5px;
+  width: 100%;
+  -moz-box-shadow: none;
+}
+.file-manager input:invalid {
+  box-shadow: none;
+}
+.file-manager input[readonly] {
+  border: 0 none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  background: none;
+}
+.file-manager input[readonly]:hover {
+  text-decoration: underline;
+  color: #6ed2dd;
+  cursor: pointer;
+}
+.file-manager button {
+  background: none;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  padding: 0 7px;
+  text-align: center;
+}
+.file-manager .directory_create {
+  padding: 12px;
+  padding-bottom: 0;
+}
+.file-manager .directory_create input {
+  width: 100%;
+  padding: 5px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -ms-border-sizing: border-box;
+}
