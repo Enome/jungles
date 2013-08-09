@@ -1,7 +1,0 @@
-{
-  "name": "jungles-panel",
-  "paths": [ "../" ],
-  "local": ["client"],
-  "scripts": ["main.js"],
-  "main": "main.js"
-}
