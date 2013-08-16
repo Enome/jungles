@@ -8,15 +8,9 @@
     "cms"
   ],
   "dependencies": {
-    "stylus": "~0.30.1",
     "jade": "~0.27.6",
-    "underscore": "~1.4.2",
     "async": "~0.1.22",
-    "nib": "~0.9.1",
-    "oar": "~1.0.0",
-    "jungles-functions": "~1.1.0",
-    "express": "~3.2.6",
-    "component-wrapper": "~1.0.1"
+    "express": "~3.2.6"
   },
   "devDependencies": {
     "browserify": "~1.16.1"

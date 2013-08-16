@@ -12,5 +12,8 @@
   "main": "index.js",
   "scripts": [
     "index.js"
-  ]
+  ],
+  "dependencies": {
+    "enome-components/angular-safe-apply": "*"
+  }
 }

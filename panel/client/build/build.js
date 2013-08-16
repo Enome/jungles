@@ -1333,7 +1333,6 @@ if (typeof module !== 'undefined') {\n\
 }());\n\
 //@ sourceURL=component-marked/lib/marked.js"
 ));
-
 require.register("enome-components-webfont/index.js", Function("exports, require, module",
 "/*\n\
  * Copyright 2013 Small Batch, Inc.\n\
@@ -1858,19 +1857,21 @@ function filterHidden(entries) {\n\
 //@ sourceURL=component-normalized-upload/index.js"
 ));
 require.register("enome-components-angular-enter-directive/index.js", Function("exports, require, module",
-"var module = window.angular.module('ngEnter', []);\n\
+"var mod = window.angular.module('ngEnter', []);\n\
 \n\
-module.directive('ngEnter', function () {\n\
+mod.directive('ngEnter', function ($parse, safeApply) {\n\
 \n\
   return function (scope, element, attrs) {\n\
 \n\
     element.bind('keydown', function (event) {\n\
 \n\
+      var fn = $parse(attrs['ngEnter']);\n\
+\n\
       if (event.which === 13) {\n\
-        scope.$apply(function () {\n\
-          scope.$eval(attrs.ngEnter);\n\
+\n\
+        safeApply(scope, function () {\n\
+          fn(scope, { $event : event });\n\
         });\n\
-        event.preventDefault();\n\
 \n\
       }\n\
 \n\
@@ -1879,34 +1880,133 @@ module.directive('ngEnter', function () {\n\
   };\n\
 \n\
 });\n\
+\n\
+module.exports = 'ngEnter';\n\
 //@ sourceURL=enome-components-angular-enter-directive/index.js"
+));
+require.register("enome-components-angular-droparea/index.js", Function("exports, require, module",
+"var mod = window.angular.module('droparea', []);\n\
+var normalize = require('normalized-upload');\n\
+\n\
+mod.directive('droparea', function ($document) {\n\
+\n\
+  return {\n\
+\n\
+    restrict: 'E',\n\
+    template: '<div class=\"droparea\">Drop</div>',\n\
+    replace: true,\n\
+    scope: { files: '=' },\n\
+    link: function ($scope, el, attrs) {\n\
+\n\
+      var drags = 0;\n\
+\n\
+      el.css('display', 'none');\n\
+\n\
+      window.addEventListener('dragenter', function (e) {\n\
+        drags += 1;\n\
+        el.css('display', 'block');\n\
+      });\n\
+\n\
+      window.addEventListener('dragleave', function (e) {\n\
+        drags -= 1;\n\
+        if (drags === 0) {\n\
+          el.css('display', 'none');\n\
+        }\n\
+      });\n\
+\n\
+      el[0].addEventListener('dragenter', function (e) {\n\
+        el.addClass('over');\n\
+        e.preventDefault();\n\
+        return false;\n\
+      });\n\
+\n\
+      el[0].addEventListener('dragover', function (e) {\n\
+        e.preventDefault();\n\
+        return false;\n\
+      });\n\
+\n\
+      el[0].addEventListener('dragleave', function (e) {\n\
+        el.removeClass('over');\n\
+      });\n\
+\n\
+      el[0].addEventListener('drop', function (e) {\n\
+        drags = 0;\n\
+\n\
+        $scope.files.length = 0;\n\
+        normalize(e, function (e) {\n\
+          $scope.$apply(function () {\n\
+            $scope.files.push.apply($scope.files, e.items);\n\
+          });\n\
+        });\n\
+\n\
+        el.css('display', 'none');\n\
+        el.removeClass('over');\n\
+        e.stopPropagation();\n\
+        e.preventDefault();\n\
+        return false;\n\
+      });\n\
+\n\
+\n\
+    }\n\
+\n\
+  };\n\
+\n\
+});\n\
+\n\
+module.exports = 'droparea';\n\
+//@ sourceURL=enome-components-angular-droparea/index.js"
+));
+require.register("enome-components-angular-safe-apply/index.js", Function("exports, require, module",
+"var mod = window.angular.module('safeApply', []);\n\
+\n\
+mod.factory('safeApply', [ function ($rootScope) {\n\
+  return function ($scope, fn) {\n\
+    var phase = $scope.$root.$$phase;\n\
+    if (phase === '$apply' || phase === '$digest') {\n\
+      if (fn) {\n\
+        $scope.$eval(fn);\n\
+      }\n\
+    } else {\n\
+      if (fn) {\n\
+        $scope.$apply(fn);\n\
+      } else {\n\
+        $scope.$apply();\n\
+      }\n\
+    }\n\
+  }\n\
+}]);\n\
+\n\
+module.exports = 'safeApply';\n\
+//@ sourceURL=enome-components-angular-safe-apply/index.js"
 ));
 require.register("enome-components-angular-file-manager/index.js", Function("exports, require, module",
 "require('webfont');\n\
-require('angular-enter-directive');\n\
 \n\
-require('./js/breadcrumbs');\n\
-require('./js/extra-events');\n\
-require('./js/droparea');\n\
-require('./js/directories');\n\
-require('./js/files');\n\
+var mod = window.angular.module('file-manager', [\n\
+  require('angular-safe-apply'),\n\
+  require('angular-enter-directive'),\n\
+  require('angular-droparea'),\n\
+  require('./js/breadcrumbs'),\n\
+  require('./js/extra-events'),\n\
+  require('./js/directories'),\n\
+  require('./js/files')\n\
+]);\n\
 \n\
-var module = window.angular.module('file-manager',\n\
-  ['ngEnter', 'breadcrumbs', 'extra-events', 'droparea', 'directories', 'files']);\n\
-\n\
-module.run(function ($templateCache) {\n\
-  window.WebFont.load({ google: { families: ['Roboto Condensed:300,400,700'] } });\n\
+mod.run(function ($templateCache) {\n\
+  window.WebFont.load({ google: { families: ['Roboto Condensed:300'] } });\n\
 });\n\
 \n\
-module.directive('fileManager', function () {\n\
+mod.directive('fileManager', function () {\n\
   return {\n\
     restrict: 'E',\n\
     template: require('./template'),\n\
-    scope: {\n\
-      url: '=',\n\
-      selected: '=selected'\n\
-    },\n\
+    replace: true,\n\
+    scope: { url: '=', selected: '=selected' },\n\
     controller: function ($scope, $timeout) {\n\
+\n\
+      if (typeof $scope.selected === 'undefined') {\n\
+        $scope.selected = [];\n\
+      }\n\
 \n\
       $scope.path = '/';\n\
 \n\
@@ -1965,13 +2065,21 @@ module.directive('fileManager', function () {\n\
         i.readonly = 'readonly';\n\
       };\n\
 \n\
+      $scope.unfocus = function (e) {\n\
+        e.target.blur();\n\
+      };\n\
+\n\
     }\n\
+\n\
   };\n\
+\n\
 });\n\
+\n\
+module.exports = 'file-manager';\n\
 //@ sourceURL=enome-components-angular-file-manager/index.js"
 ));
 require.register("enome-components-angular-file-manager/js/breadcrumbs.js", Function("exports, require, module",
-"var module = window.angular.module('breadcrumbs', []);\n\
+"var mod = window.angular.module('breadcrumbs', []);\n\
 \n\
 var pathToNavigation = function (path) {\n\
 \n\
@@ -2002,7 +2110,7 @@ var pathToNavigation = function (path) {\n\
 \n\
 };\n\
 \n\
-module.directive('breadCrumbs', function () {\n\
+mod.directive('breadCrumbs', function () {\n\
   return {\n\
     restrict: 'E',\n\
     template: '<span ng-repeat=\"part in path_navigation\"> / <button ng-click=\"navigate(part.path)\" title=\"{{part.name}}\">{{ part.name }}</button></span>',\n\
@@ -2024,121 +2132,48 @@ module.directive('breadCrumbs', function () {\n\
   };\n\
 \n\
 });\n\
+\n\
+module.exports = 'breadcrumbs';\n\
 //@ sourceURL=enome-components-angular-file-manager/js/breadcrumbs.js"
 ));
 require.register("enome-components-angular-file-manager/js/extra-events.js", Function("exports, require, module",
-"var module = window.angular.module('extra-events', []);\n\
+"var mod = window.angular.module('extra-events', []);\n\
 \n\
-module.directive([ 'focus', 'blur', 'keyup', 'keydown', 'keypress' ].reduce(function (container, name) {\n\
+mod.directive([ 'focus', 'blur', 'keyup', 'keydown', 'keypress' ].reduce(function (container, name) {\n\
 \n\
   var directiveName = 'ng' + name[0].toUpperCase() + name.substr(1);\n\
 \n\
-  container[directiveName] = ['$parse', function ($parse) {\n\
+  container[directiveName] = ['$parse', 'safeApply', function ($parse, safeApply) {\n\
+\n\
     return function (scope, element, attr) {\n\
+\n\
       var fn = $parse(attr[directiveName]);\n\
+\n\
       element.bind(name, function (event) {\n\
 \n\
-        if (scope.$$phase) {\n\
-          return;\n\
-        }\n\
-\n\
-        scope.$apply(function () {\n\
+        safeApply(scope, function () {\n\
           fn(scope, { $event : event });\n\
         });\n\
+\n\
+        event.stopPropagation();\n\
+\n\
       });\n\
+\n\
     };\n\
-  } ];\n\
+\n\
+  }];\n\
 \n\
   return container;\n\
+\n\
 }, {}));\n\
+\n\
+module.exports = 'extra-events';\n\
 //@ sourceURL=enome-components-angular-file-manager/js/extra-events.js"
 ));
-require.register("enome-components-angular-file-manager/js/droparea.js", Function("exports, require, module",
-"var normalize = require('normalized-upload');\n\
-var module = window.angular.module('droparea', []);\n\
-\n\
-module.directive('droparea', function ($document) {\n\
-\n\
-  return {\n\
-\n\
-    restrict: 'E',\n\
-    template: '<div>Drop</div>',\n\
-    replace: true,\n\
-    scope: { files: '=' },\n\
-    link: function ($scope, el, attrs) {\n\
-\n\
-      var drags = 0;\n\
-\n\
-      el.css('display', 'none');\n\
-\n\
-      window.addEventListener('dragenter', function (e) {\n\
-        drags += 1;\n\
-        el.css('display', 'block');\n\
-\n\
-        e.stopPropagation();\n\
-        e.preventDefault();\n\
-        return false;\n\
-      });\n\
-\n\
-      window.addEventListener('dragleave', function (e) {\n\
-        drags -= 1;\n\
-        if (drags === 0) {\n\
-          el.css('display', 'none');\n\
-        }\n\
-\n\
-        e.stopPropagation();\n\
-        e.preventDefault();\n\
-        return false;\n\
-      });\n\
-\n\
-      window.addEventListener('dragover', function (e) {\n\
-        if (e.target !== el[0]) {\n\
-          e.dataTransfer.effectAllowed = 'none';\n\
-          e.dataTransfer.dropEffect = 'none';\n\
-        }\n\
-\n\
-        e.stopPropagation();\n\
-        e.preventDefault();\n\
-\n\
-        return false;\n\
-      });\n\
-\n\
-      el[0].addEventListener('drop', function (e) {\n\
-        drags = 0;\n\
-\n\
-        $scope.files.length = 0;\n\
-        normalize(e, function (e) {\n\
-          $scope.$apply(function () {\n\
-            $scope.files.push.apply($scope.files, e.items);\n\
-          });\n\
-        });\n\
-\n\
-        el.css('display', 'none');\n\
-        el.removeClass('over');\n\
-        e.stopPropagation();\n\
-        e.preventDefault();\n\
-        return false;\n\
-      });\n\
-\n\
-      el[0].addEventListener('dragenter', function (e) {\n\
-        el.addClass('over');\n\
-      });\n\
-\n\
-      el[0].addEventListener('dragleave', function (e) {\n\
-        el.removeClass('over');\n\
-      });\n\
-\n\
-    }\n\
-\n\
-  };\n\
-\n\
-});\n\
-//@ sourceURL=enome-components-angular-file-manager/js/droparea.js"
-));
 require.register("enome-components-angular-file-manager/js/directories.js", Function("exports, require, module",
-"var module = window.angular.module('directories', []);\n\
+"var mod = window.angular.module('directories', []);\n\
 \n\
-module.controller('DirectoriesCtrl', function ($scope, $http) {\n\
+mod.controller('DirectoriesCtrl', function ($scope, $http) {\n\
 \n\
   $scope.directories = [];\n\
 \n\
@@ -2159,7 +2194,7 @@ module.controller('DirectoriesCtrl', function ($scope, $http) {\n\
 \n\
   });\n\
 \n\
-  $scope.create = function () {\n\
+  $scope.create = function (e) {\n\
 \n\
     if (!$scope.directory_name) {\n\
       return;\n\
@@ -2190,12 +2225,13 @@ module.controller('DirectoriesCtrl', function ($scope, $http) {\n\
       alert('Server error');\n\
     });\n\
 \n\
+    e.preventDefault();\n\
 \n\
   };\n\
 \n\
 });\n\
 \n\
-module.controller('DirectoryCtrl', function ($scope, $http, $timeout) {\n\
+mod.controller('DirectoryCtrl', function ($scope, $http, $timeout) {\n\
 \n\
   $scope.directory.readonly = 'readonly';\n\
 \n\
@@ -2280,13 +2316,15 @@ module.controller('DirectoryCtrl', function ($scope, $http, $timeout) {\n\
   };\n\
 \n\
 });\n\
+\n\
+module.exports = 'directories';\n\
 //@ sourceURL=enome-components-angular-file-manager/js/directories.js"
 ));
 require.register("enome-components-angular-file-manager/js/files.js", Function("exports, require, module",
-"var module = window.angular.module('files', []);\n\
+"var mod = window.angular.module('files', []);\n\
 var Upload = require('upload');\n\
 \n\
-module.controller('FilesCtrl', function ($scope, $http) {\n\
+mod.controller('FilesCtrl', function ($scope, $http) {\n\
 \n\
   $scope.uploaded_files = [];\n\
   $scope.files = [];\n\
@@ -2362,7 +2400,7 @@ module.controller('FilesCtrl', function ($scope, $http) {\n\
 \n\
 });\n\
 \n\
-module.controller('FileCtrl', function ($scope, $http, $timeout) {\n\
+mod.controller('FileCtrl', function ($scope, $http, $timeout) {\n\
 \n\
   $scope.file.readonly = 'readonly';\n\
 \n\
@@ -2447,6 +2485,8 @@ module.controller('FileCtrl', function ($scope, $http, $timeout) {\n\
   };\n\
 \n\
 });\n\
+\n\
+module.exports = 'files';\n\
 //@ sourceURL=enome-components-angular-file-manager/js/files.js"
 ));
 require.register("enome-components-angular-file-manager/template.js", Function("exports, require, module",
@@ -2459,8 +2499,8 @@ require.register("enome-components-angular-file-manager/template.js", Function("
 \\n\
     <h2><i class=\\'icon-folder-close-alt\\'></i> Directories</h2>\\n\
 \\n\
-    <div class=\\'row directory_create\\' >\\n\
-      <input type=\\'text\\' placeholder=\\'New directory name\\' ng-model=\\'directory_name\\' ng-enter=\\'create()\\'/>\\n\
+    <div class=\\'row directory_create\\'>\\n\
+      <input type=\\'text\\' placeholder=\\'New directory name\\' ng-model=\\'directory_name\\' ng-enter=\\'create($event)\\'/>\\n\
     </div>\\n\
 \\n\
     <div class=\\'row\\' ng-controller=\\'DirectoryCtrl\\' ng-repeat=\\'directory in directories\\'>\\n\
@@ -2476,6 +2516,7 @@ require.register("enome-components-angular-file-manager/template.js", Function("
                ng-blur=\\'update(directory)\\' \\n\
                ng-readonly=\\'directory.readonly\\' \\n\
                ng-dblclick=\\'visit(directory)\\' \\n\
+               ng-enter=\\'unfocus($event)\\'\\n\
                ng-click=\\'enableRead(directory)\\'/>\\n\
   \\n\
       </div>\\n\
@@ -2484,9 +2525,11 @@ require.register("enome-components-angular-file-manager/template.js", Function("
         <button ng-click=\\'remove(directory);\\'><i class=\\'icon-trash\\'></i></button>\\n\
       </div>\\n\
 \\n\
+    </div>\\n\
+\\n\
   </div>\\n\
 \\n\
-  <div class=\\'files\\' ng-controller=\\'FilesCtrl\\'>\\n\
+  <div ng-controller=\\'FilesCtrl\\' class=\\'files\\'>\\n\
 \\n\
     <h2><i class=\\'icon-file-text-alt\\'></i> Files</h2>\\n\
 \\n\
@@ -2499,7 +2542,14 @@ require.register("enome-components-angular-file-manager/template.js", Function("
       </div>\\n\
 \\n\
       <div class=\\'col2\\'>\\n\
-        <input class=\\'inline\\' type=\\'text\\' ng-model=\\'file.name\\' ng-focus=\\'storeName(file)\\' ng-blur=\\'update(file)\\' ng-readonly=\\'file.readonly\\' ng-click=\\'enableRead(file)\\' ng-dblclick=\\'preview(file)\\' />\\n\
+        <input class=\\'inline\\' type=\\'text\\' \\n\
+               ng-model=\\'file.name\\' \\n\
+               ng-focus=\\'storeName(file)\\'\\n\
+               ng-blur=\\'update(file)\\'\\n\
+               ng-readonly=\\'file.readonly\\'\\n\
+               ng-enter=\\'unfocus($event)\\'\\n\
+               ng-click=\\'enableRead(file)\\'\\n\
+               ng-dblclick=\\'preview(file)\\' />\\n\
       </div>\\n\
 \\n\
       <div class=\\'col3\\' ng-show=\\'file.uploading\\'>{{file.progress}}%</div>\\n\
@@ -2516,11 +2566,12 @@ require.register("enome-components-angular-file-manager/template.js", Function("
 ));
 require.register("enome-components-angular-markdown-editor/index.js", Function("exports, require, module",
 "require('webfont');\n\
-require('angular-file-manager');\n\
 \n\
-var module = window.angular.module('markdown-editor', ['file-manager']);\n\
+var mod = window.angular.module('markdown-editor', [\n\
+  require('angular-file-manager')\n\
+]);\n\
 \n\
-module.run(['$templateCache', function ($templateCache) {\n\
+mod.run(['$templateCache', function ($templateCache) {\n\
   window.WebFont.load({ google: { families: ['Open Sans:300,400,700', 'Droid Serif:400'] } });\n\
 }]);\n\
 \n\
@@ -2529,11 +2580,13 @@ var controllers = require('./src/controllers');\n\
 var filters = require('./src/filters');\n\
 var factories = require('./src/factories');\n\
 \n\
-module.directive('markdownEditor', directives.markdownEditor);\n\
-module.controller('MarkdownEditorCtrl', controllers.MarkdownEditorCtrl);\n\
-module.filter('markdown', filters.markdown);\n\
-module.factory('stringBuilder', factories.stringBuilder);\n\
-module.factory('selection', factories.selection);\n\
+mod.directive('markdownEditor', directives.markdownEditor);\n\
+mod.controller('MarkdownEditorCtrl', controllers.MarkdownEditorCtrl);\n\
+mod.filter('markdown', filters.markdown);\n\
+mod.factory('stringBuilder', factories.stringBuilder);\n\
+mod.factory('selection', factories.selection);\n\
+\n\
+module.exports = 'markdown-editor';\n\
 //@ sourceURL=enome-components-angular-markdown-editor/index.js"
 ));
 require.register("enome-components-angular-markdown-editor/template.js", Function("exports, require, module",
@@ -2590,7 +2643,7 @@ require.register("enome-components-angular-markdown-editor/src/controllers.js", 
       var data = stringBuilder($scope.data, $scope.selection.start, $scope.selection.end);\n\
 \n\
       $scope.selected_files.forEach(function (file) {\n\
-        data.add('![' + window.escape(file.split('/').pop()) + '](' + $scope.fileserver + window.escape(file) + ')');\n\
+        data.add('![' + file.split('/').pop() + '](' + $scope.fileserver + window.escape(file) + ')');\n\
       });\n\
 \n\
       $scope.data = data.build();\n\
@@ -2604,7 +2657,7 @@ require.register("enome-components-angular-markdown-editor/src/controllers.js", 
       var data = stringBuilder($scope.data, $scope.selection.start, $scope.selection.end);\n\
 \n\
       $scope.selected_files.forEach(function (file) {\n\
-        data.add('[' + window.escape(file.split('/').pop()) + '](' + $scope.fileserver + window.escape(file) + ')');\n\
+        data.add('[' + file.split('/').pop() + '](' + $scope.fileserver + window.escape(file) + ')');\n\
       });\n\
 \n\
       $scope.data = data.build();\n\
@@ -2632,6 +2685,10 @@ require.register("enome-components-angular-markdown-editor/src/directives.js", F
       replace: true,\n\
       scope: { data: '=', fileserver: '=' },\n\
       link: function (scope, element, attr) {\n\
+\n\
+        if (typeof scope.data === 'undefined') {\n\
+          scope.data = '';\n\
+        }\n\
 \n\
         var textarea = element.find('textarea');\n\
 \n\
@@ -2754,11 +2811,11 @@ module.exports = factories;\n\
 //@ sourceURL=enome-components-angular-markdown-editor/src/factories.js"
 ));
 require.register("enome-components-angular-markdown-textarea/index.js", Function("exports, require, module",
-"require('angular-markdown-editor');\n\
+"var mod = window.angular.module('markdown-textarea', [\n\
+  require('angular-markdown-editor')\n\
+]);\n\
 \n\
-var module = window.angular.module('markdown-textarea', ['markdown-editor']);\n\
-\n\
-module.directive('markdownTextarea', function () {\n\
+mod.directive('markdownTextarea', function () {\n\
 \n\
   return {\n\
     restrict: 'E',\n\
@@ -2766,7 +2823,6 @@ module.directive('markdownTextarea', function () {\n\
     replace: true,\n\
     scope: { data: '=', fileserver: '=' },\n\
     link: function (scope, el, attr) {\n\
-\n\
       scope.$watch('show_editor', function (v) {\n\
         if (v) {\n\
           window.document.body.style.overflow = 'hidden';\n\
@@ -2787,6 +2843,8 @@ module.directive('markdownTextarea', function () {\n\
   };\n\
 \n\
 });\n\
+\n\
+module.exports = 'markdown-textarea';\n\
 //@ sourceURL=enome-components-angular-markdown-textarea/index.js"
 ));
 require.register("enome-components-angular-markdown-textarea/template.js", Function("exports, require, module",
@@ -2868,7 +2926,7 @@ mod.directive('arrangeableArray', function ($document) {\n\
         if (dragging_row) {\n\
           dragging_row.style.width = dragging_row.offsetWidth + 'px';\n\
           dragging_row.offsetY = e.pageY - dragging_row.offsetTop; // FF doesn't support offsetY\n\
-          dragging_row.parentNode.style.height = dragging_row.parentNode.offsetHeight + 'px';\n\
+          root.css('height', dragging_row.parentNode.offsetHeight + 'px');\n\
           \n\
           e.preventDefault();\n\
           return false;\n\
@@ -2906,8 +2964,7 @@ mod.directive('arrangeableArray', function ($document) {\n\
 \n\
           // Reset\n\
 \n\
-          dragging_row.parentNode.parentNode.style.height = 'inherit';\n\
-\n\
+          root.css('height', 'inherit');\n\
           dragging_row = drop_row = null;\n\
           resetExpand();\n\
 \n\
@@ -2958,6 +3015,8 @@ mod.directive('arrangeableArray', function ($document) {\n\
   };\n\
 \n\
 });\n\
+\n\
+module.exports = 'arrangeable-array';\n\
 //@ sourceURL=enome-components-angular-arrangeable-array/index.js"
 ));
 require.register("enome-components-angular-arrangeable-array/template.js", Function("exports, require, module",
@@ -2975,6 +3034,53 @@ require.register("enome-components-angular-arrangeable-array/template.js", Funct
 </div>\\n\
 ';//@ sourceURL=enome-components-angular-arrangeable-array/template.js"
 ));
+require.register("enome-components-angular-arrangeable-files/index.js", Function("exports, require, module",
+"var mod = window.angular.module('arrangeable-files', [ require('angular-file-manager'), require('angular-arrangeable-array') ]);\n\
+\n\
+mod.directive('arrangeableFiles', function () {\n\
+\n\
+  return {\n\
+    restrict: 'E',\n\
+    scope: { selected: '=', fileserver: '=' },\n\
+    template: require('./template'),\n\
+    link: function (scope) {\n\
+      scope.$watch('full_screen', function (v) {\n\
+        if (v) {\n\
+          window.document.body.style.overflow = 'hidden';\n\
+          return;\n\
+        }\n\
+\n\
+        window.document.body.style.overflow = 'inherit';\n\
+      });\n\
+    },\n\
+    controller: function ($scope) { $scope.full_screen = false; }\n\
+  };\n\
+\n\
+});\n\
+\n\
+module.exports = 'arrangeable-files';\n\
+//@ sourceURL=enome-components-angular-arrangeable-files/index.js"
+));
+require.register("enome-components-angular-arrangeable-files/template.js", Function("exports, require, module",
+"module.exports = '<div class=\\'arrangeable-files\\'>\\n\
+\\n\
+  <div class=\\'default\\' ng-show=\\'!full_screen\\'>\\n\
+    <div class=\\'header\\'>\\n\
+      <button ng-click=\\'full_screen = !full_screen\\'>Select files</button>\\n\
+    </div>\\n\
+\\n\
+    <arrangeable-array array=\\'selected\\'></arrangeable-array>\\n\
+  </div>\\n\
+\\n\
+  <div class=\\'overlay\\' ng-show=\\'full_screen\\'>\\n\
+    <file-manager selected=\\'selected\\' url=\\'fileserver\\'></file-manager>\\n\
+    <button ng-click=\\'full_screen = !full_screen\\'>Close</button>\\n\
+  </div>\\n\
+\\n\
+</div>\\n\
+';//@ sourceURL=enome-components-angular-arrangeable-files/template.js"
+));
+
 require.register("enome-oar/index.js", Function("exports, require, module",
 "var oar = function (base) {\n\
 \n\
@@ -5344,15 +5450,18 @@ module.exports = popups;\n\
 //@ sourceURL=jungles-panel-core/popups/index.js"
 ));
 require.register("jungles-panel/index.js", Function("exports, require, module",
-"require('angular-markdown-textarea');\n\
-require('angular-arrangeable-array');\n\
+"var jungles = window.angular.module('jungles', [\n\
+  require('angular-markdown-textarea'),\n\
+  require('angular-arrangeable-files')\n\
+]);\n\
 \n\
-var jungles = window.angular.module('jungles', ['markdown-textarea', 'arrangeable-array']);\n\
 window.jungles = jungles;\n\
 \n\
 require('jungles-panel-core')(jungles);\n\
 //@ sourceURL=jungles-panel/index.js"
 ));
+
+
 
 
 
@@ -5386,7 +5495,6 @@ require.alias("enome-components-webfont/index.js", "enome-components-webfont/ind
 require.alias("enome-components-angular-file-manager/index.js", "enome-components-angular-markdown-editor/deps/angular-file-manager/index.js");
 require.alias("enome-components-angular-file-manager/js/breadcrumbs.js", "enome-components-angular-markdown-editor/deps/angular-file-manager/js/breadcrumbs.js");
 require.alias("enome-components-angular-file-manager/js/extra-events.js", "enome-components-angular-markdown-editor/deps/angular-file-manager/js/extra-events.js");
-require.alias("enome-components-angular-file-manager/js/droparea.js", "enome-components-angular-markdown-editor/deps/angular-file-manager/js/droparea.js");
 require.alias("enome-components-angular-file-manager/js/directories.js", "enome-components-angular-markdown-editor/deps/angular-file-manager/js/directories.js");
 require.alias("enome-components-angular-file-manager/js/files.js", "enome-components-angular-markdown-editor/deps/angular-file-manager/js/files.js");
 require.alias("enome-components-angular-file-manager/template.js", "enome-components-angular-markdown-editor/deps/angular-file-manager/template.js");
@@ -5405,19 +5513,67 @@ require.alias("component-normalized-upload/index.js", "enome-components-angular-
 require.alias("component-normalized-upload/index.js", "component-normalized-upload/index.js");
 require.alias("enome-components-angular-enter-directive/index.js", "enome-components-angular-file-manager/deps/angular-enter-directive/index.js");
 require.alias("enome-components-angular-enter-directive/index.js", "enome-components-angular-file-manager/deps/angular-enter-directive/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-enter-directive/deps/angular-safe-apply/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-enter-directive/deps/angular-safe-apply/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-safe-apply/index.js");
 require.alias("enome-components-angular-enter-directive/index.js", "enome-components-angular-enter-directive/index.js");
+require.alias("enome-components-angular-droparea/index.js", "enome-components-angular-file-manager/deps/angular-droparea/index.js");
+require.alias("component-normalized-upload/index.js", "enome-components-angular-droparea/deps/normalized-upload/index.js");
+require.alias("component-normalized-upload/index.js", "enome-components-angular-droparea/deps/normalized-upload/index.js");
+require.alias("component-normalized-upload/index.js", "component-normalized-upload/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-file-manager/deps/angular-safe-apply/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-file-manager/deps/angular-safe-apply/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-safe-apply/index.js");
 require.alias("enome-components-angular-file-manager/index.js", "enome-components-angular-file-manager/index.js");
 require.alias("enome-components-angular-markdown-editor/index.js", "enome-components-angular-markdown-editor/index.js");
 require.alias("enome-components-angular-markdown-textarea/index.js", "enome-components-angular-markdown-textarea/index.js");
-require.alias("enome-components-angular-arrangeable-array/index.js", "jungles-panel/deps/angular-arrangeable-array/index.js");
-require.alias("enome-components-angular-arrangeable-array/template.js", "jungles-panel/deps/angular-arrangeable-array/template.js");
-require.alias("enome-components-angular-arrangeable-array/index.js", "jungles-panel/deps/angular-arrangeable-array/index.js");
-require.alias("enome-components-angular-arrangeable-array/index.js", "angular-arrangeable-array/index.js");
+require.alias("enome-components-angular-arrangeable-files/index.js", "jungles-panel/deps/angular-arrangeable-files/index.js");
+require.alias("enome-components-angular-arrangeable-files/template.js", "jungles-panel/deps/angular-arrangeable-files/template.js");
+require.alias("enome-components-angular-arrangeable-files/index.js", "jungles-panel/deps/angular-arrangeable-files/index.js");
+require.alias("enome-components-angular-arrangeable-files/index.js", "angular-arrangeable-files/index.js");
+require.alias("enome-components-angular-arrangeable-array/index.js", "enome-components-angular-arrangeable-files/deps/angular-arrangeable-array/index.js");
+require.alias("enome-components-angular-arrangeable-array/template.js", "enome-components-angular-arrangeable-files/deps/angular-arrangeable-array/template.js");
+require.alias("enome-components-angular-arrangeable-array/index.js", "enome-components-angular-arrangeable-files/deps/angular-arrangeable-array/index.js");
 
 require.alias("enome-components-webfont/index.js", "enome-components-angular-arrangeable-array/deps/webfont/index.js");
 require.alias("enome-components-webfont/index.js", "enome-components-angular-arrangeable-array/deps/webfont/index.js");
 require.alias("enome-components-webfont/index.js", "enome-components-webfont/index.js");
 require.alias("enome-components-angular-arrangeable-array/index.js", "enome-components-angular-arrangeable-array/index.js");
+require.alias("enome-components-angular-file-manager/index.js", "enome-components-angular-arrangeable-files/deps/angular-file-manager/index.js");
+require.alias("enome-components-angular-file-manager/js/breadcrumbs.js", "enome-components-angular-arrangeable-files/deps/angular-file-manager/js/breadcrumbs.js");
+require.alias("enome-components-angular-file-manager/js/extra-events.js", "enome-components-angular-arrangeable-files/deps/angular-file-manager/js/extra-events.js");
+require.alias("enome-components-angular-file-manager/js/directories.js", "enome-components-angular-arrangeable-files/deps/angular-file-manager/js/directories.js");
+require.alias("enome-components-angular-file-manager/js/files.js", "enome-components-angular-arrangeable-files/deps/angular-file-manager/js/files.js");
+require.alias("enome-components-angular-file-manager/template.js", "enome-components-angular-arrangeable-files/deps/angular-file-manager/template.js");
+require.alias("enome-components-angular-file-manager/index.js", "enome-components-angular-arrangeable-files/deps/angular-file-manager/index.js");
+
+
+require.alias("enome-components-webfont/index.js", "enome-components-angular-file-manager/deps/webfont/index.js");
+require.alias("enome-components-webfont/index.js", "enome-components-angular-file-manager/deps/webfont/index.js");
+require.alias("enome-components-webfont/index.js", "enome-components-webfont/index.js");
+require.alias("component-upload/index.js", "enome-components-angular-file-manager/deps/upload/index.js");
+require.alias("component-emitter/index.js", "component-upload/deps/emitter/index.js");
+require.alias("component-indexof/index.js", "component-emitter/deps/indexof/index.js");
+
+require.alias("component-normalized-upload/index.js", "enome-components-angular-file-manager/deps/normalized-upload/index.js");
+require.alias("component-normalized-upload/index.js", "enome-components-angular-file-manager/deps/normalized-upload/index.js");
+require.alias("component-normalized-upload/index.js", "component-normalized-upload/index.js");
+require.alias("enome-components-angular-enter-directive/index.js", "enome-components-angular-file-manager/deps/angular-enter-directive/index.js");
+require.alias("enome-components-angular-enter-directive/index.js", "enome-components-angular-file-manager/deps/angular-enter-directive/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-enter-directive/deps/angular-safe-apply/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-enter-directive/deps/angular-safe-apply/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-safe-apply/index.js");
+require.alias("enome-components-angular-enter-directive/index.js", "enome-components-angular-enter-directive/index.js");
+require.alias("enome-components-angular-droparea/index.js", "enome-components-angular-file-manager/deps/angular-droparea/index.js");
+require.alias("component-normalized-upload/index.js", "enome-components-angular-droparea/deps/normalized-upload/index.js");
+require.alias("component-normalized-upload/index.js", "enome-components-angular-droparea/deps/normalized-upload/index.js");
+require.alias("component-normalized-upload/index.js", "component-normalized-upload/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-file-manager/deps/angular-safe-apply/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-file-manager/deps/angular-safe-apply/index.js");
+require.alias("enome-components-angular-safe-apply/index.js", "enome-components-angular-safe-apply/index.js");
+require.alias("enome-components-angular-file-manager/index.js", "enome-components-angular-file-manager/index.js");
+require.alias("enome-components-angular-arrangeable-files/index.js", "enome-components-angular-arrangeable-files/index.js");
+
 require.alias("jungles-panel-core/index.js", "jungles-panel/deps/jungles-panel-core/index.js");
 require.alias("jungles-panel-core/init/index.js", "jungles-panel/deps/jungles-panel-core/init/index.js");
 require.alias("jungles-panel-core/general/controllers.js", "jungles-panel/deps/jungles-panel-core/general/controllers.js");

@@ -69,7 +69,7 @@
 .file-manager .col2,
 .file-manager .col3 {
   position: absolute;
-  top: 10px;
+  top: 12px;
 }
 .file-manager .col1 {
   border-right: 1px solid #e3e3e3;
@@ -79,7 +79,7 @@
 }
 .file-manager .col2 {
   position: absolute;
-  top: 7px;
+  top: 8px;
   left: 65px;
   right: 75px;
 }
@@ -93,6 +93,9 @@
 .file-manager input {
   color: #787878;
   border: 1px solid #e3e3e3;
+  font-size: 16px;
+  font-family: 'Roboto Condensed';
+  font-weight: 300;
 }
 .file-manager input.inline {
   font-weight: 300;

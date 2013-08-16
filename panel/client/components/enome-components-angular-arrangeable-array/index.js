@@ -62,7 +62,7 @@ mod.directive('arrangeableArray', function ($document) {
         if (dragging_row) {
           dragging_row.style.width = dragging_row.offsetWidth + 'px';
           dragging_row.offsetY = e.pageY - dragging_row.offsetTop; // FF doesn't support offsetY
-          dragging_row.parentNode.style.height = dragging_row.parentNode.offsetHeight + 'px';
+          root.css('height', dragging_row.parentNode.offsetHeight + 'px');
           
           e.preventDefault();
           return false;
@@ -100,8 +100,7 @@ mod.directive('arrangeableArray', function ($document) {
 
           // Reset
 
-          dragging_row.parentNode.parentNode.style.height = 'inherit';
-
+          root.css('height', 'inherit');
           dragging_row = drop_row = null;
           resetExpand();
 
@@ -152,3 +151,5 @@ mod.directive('arrangeableArray', function ($document) {
   };
 
 });
+
+module.exports = 'arrangeable-array';

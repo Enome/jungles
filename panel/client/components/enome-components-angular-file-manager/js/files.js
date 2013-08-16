@@ -1,7 +1,7 @@
-var module = window.angular.module('files', []);
+var mod = window.angular.module('files', []);
 var Upload = require('upload');
 
-module.controller('FilesCtrl', function ($scope, $http) {
+mod.controller('FilesCtrl', function ($scope, $http) {
 
   $scope.uploaded_files = [];
   $scope.files = [];
@@ -77,7 +77,7 @@ module.controller('FilesCtrl', function ($scope, $http) {
 
 });
 
-module.controller('FileCtrl', function ($scope, $http, $timeout) {
+mod.controller('FileCtrl', function ($scope, $http, $timeout) {
 
   $scope.file.readonly = 'readonly';
 
@@ -162,3 +162,5 @@ module.controller('FileCtrl', function ($scope, $http, $timeout) {
   };
 
 });
+
+module.exports = 'files';

@@ -10,6 +10,10 @@ var directives = {
       scope: { data: '=', fileserver: '=' },
       link: function (scope, element, attr) {
 
+        if (typeof scope.data === 'undefined') {
+          scope.data = '';
+        }
+
         var textarea = element.find('textarea');
 
         textarea.bind('blur', function (e) {

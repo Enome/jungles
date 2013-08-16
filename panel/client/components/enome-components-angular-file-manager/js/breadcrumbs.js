@@ -1,4 +1,4 @@
-var module = window.angular.module('breadcrumbs', []);
+var mod = window.angular.module('breadcrumbs', []);
 
 var pathToNavigation = function (path) {
 
@@ -29,7 +29,7 @@ var pathToNavigation = function (path) {
 
 };
 
-module.directive('breadCrumbs', function () {
+mod.directive('breadCrumbs', function () {
   return {
     restrict: 'E',
     template: '<span ng-repeat="part in path_navigation"> / <button ng-click="navigate(part.path)" title="{{part.name}}">{{ part.name }}</button></span>',
@@ -51,3 +51,5 @@ module.directive('breadCrumbs', function () {
   };
 
 });
+
+module.exports = 'breadcrumbs';

@@ -1,0 +1,43 @@
+.arrangeable-files {
+  padding: 10px 10px 0;
+  border: 1px solid #e8e8e8;
+  margin-bottom: 10px;
+}
+
+.arrangeable-files .default .header {
+  margin-bottom: 4px;
+}
+
+.arrangeable-files .default .header button {
+  font-size: 12px;
+  text-transform: uppercase;
+  background: #6ed2dd;
+  color: #fff;
+  border: 0 none;
+  padding: 3px 15px;
+}
+
+.arrangeable-files .default .row {
+  background: white;
+}
+
+.arrangeable-files .overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 20px;
+  background: #F2FAFA;
+  overflow: auto;
+}
+
+.arrangeable-files .overlay > button {
+  margin-top: 20px;
+  font-size: 12px;
+  text-transform: uppercase;
+  background: #6ed2dd;
+  color: #fff;
+  border: 0 none;
+  padding: 6px 25px;
+}

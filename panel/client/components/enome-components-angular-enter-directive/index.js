@@ -1,16 +1,18 @@
-var module = window.angular.module('ngEnter', []);
+var mod = window.angular.module('ngEnter', []);
 
-module.directive('ngEnter', function () {
+mod.directive('ngEnter', function ($parse, safeApply) {
 
   return function (scope, element, attrs) {
 
     element.bind('keydown', function (event) {
 
+      var fn = $parse(attrs['ngEnter']);
+
       if (event.which === 13) {
-        scope.$apply(function () {
-          scope.$eval(attrs.ngEnter);
+
+        safeApply(scope, function () {
+          fn(scope, { $event : event });
         });
-        event.preventDefault();
 
       }
 
@@ -19,3 +21,5 @@ module.directive('ngEnter', function () {
   };
 
 });
+
+module.exports = 'ngEnter';

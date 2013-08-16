@@ -26,7 +26,7 @@ var controllers = {
       var data = stringBuilder($scope.data, $scope.selection.start, $scope.selection.end);
 
       $scope.selected_files.forEach(function (file) {
-        data.add('![' + window.escape(file.split('/').pop()) + '](' + $scope.fileserver + window.escape(file) + ')');
+        data.add('![' + file.split('/').pop() + '](' + $scope.fileserver + window.escape(file) + ')');
       });
 
       $scope.data = data.build();
@@ -40,7 +40,7 @@ var controllers = {
       var data = stringBuilder($scope.data, $scope.selection.start, $scope.selection.end);
 
       $scope.selected_files.forEach(function (file) {
-        data.add('[' + window.escape(file.split('/').pop()) + '](' + $scope.fileserver + window.escape(file) + ')');
+        data.add('[' + file.split('/').pop() + '](' + $scope.fileserver + window.escape(file) + ')');
       });
 
       $scope.data = data.build();

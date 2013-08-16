@@ -1,0 +1,14 @@
+.droparea {
+  margin: 10px;
+  line-height: 100px;
+  font-size: 1.75em;
+  text-transform: uppercase;
+  color: #c0c0c0;
+  border: 3px dashed #e3e3e3;
+  text-align: center;
+  padding: 10px;
+  background: #fff;
+}
+.droparea.over {
+  background: #f5f5f5;
+}

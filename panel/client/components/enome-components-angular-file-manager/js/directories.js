@@ -1,6 +1,6 @@
-var module = window.angular.module('directories', []);
+var mod = window.angular.module('directories', []);
 
-module.controller('DirectoriesCtrl', function ($scope, $http) {
+mod.controller('DirectoriesCtrl', function ($scope, $http) {
 
   $scope.directories = [];
 
@@ -21,7 +21,7 @@ module.controller('DirectoriesCtrl', function ($scope, $http) {
 
   });
 
-  $scope.create = function () {
+  $scope.create = function (e) {
 
     if (!$scope.directory_name) {
       return;
@@ -52,12 +52,13 @@ module.controller('DirectoriesCtrl', function ($scope, $http) {
       alert('Server error');
     });
 
+    e.preventDefault();
 
   };
 
 });
 
-module.controller('DirectoryCtrl', function ($scope, $http, $timeout) {
+mod.controller('DirectoryCtrl', function ($scope, $http, $timeout) {
 
   $scope.directory.readonly = 'readonly';
 
@@ -142,3 +143,5 @@ module.controller('DirectoryCtrl', function ($scope, $http, $timeout) {
   };
 
 });
+
+module.exports = 'directories';

@@ -1,8 +1,8 @@
-require('angular-markdown-editor');
+var mod = window.angular.module('markdown-textarea', [
+  require('angular-markdown-editor')
+]);
 
-var module = window.angular.module('markdown-textarea', ['markdown-editor']);
-
-module.directive('markdownTextarea', function () {
+mod.directive('markdownTextarea', function () {
 
   return {
     restrict: 'E',
@@ -10,7 +10,6 @@ module.directive('markdownTextarea', function () {
     replace: true,
     scope: { data: '=', fileserver: '=' },
     link: function (scope, el, attr) {
-
       scope.$watch('show_editor', function (v) {
         if (v) {
           window.document.body.style.overflow = 'hidden';
@@ -31,3 +30,5 @@ module.directive('markdownTextarea', function () {
   };
 
 });
+
+module.exports = 'markdown-textarea';

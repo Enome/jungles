@@ -1,12 +1,12 @@
+var mod = window.angular.module('droparea', []);
 var normalize = require('normalized-upload');
-var module = window.angular.module('droparea', []);
 
-module.directive('droparea', function ($document) {
+mod.directive('droparea', function ($document) {
 
   return {
 
     restrict: 'E',
-    template: '<div>Drop</div>',
+    template: '<div class="droparea">Drop</div>',
     replace: true,
     scope: { files: '=' },
     link: function ($scope, el, attrs) {
@@ -18,10 +18,6 @@ module.directive('droparea', function ($document) {
       window.addEventListener('dragenter', function (e) {
         drags += 1;
         el.css('display', 'block');
-
-        e.stopPropagation();
-        e.preventDefault();
-        return false;
       });
 
       window.addEventListener('dragleave', function (e) {
@@ -29,22 +25,21 @@ module.directive('droparea', function ($document) {
         if (drags === 0) {
           el.css('display', 'none');
         }
+      });
 
-        e.stopPropagation();
+      el[0].addEventListener('dragenter', function (e) {
+        el.addClass('over');
         e.preventDefault();
         return false;
       });
 
-      window.addEventListener('dragover', function (e) {
-        if (e.target !== el[0]) {
-          e.dataTransfer.effectAllowed = 'none';
-          e.dataTransfer.dropEffect = 'none';
-        }
-
-        e.stopPropagation();
+      el[0].addEventListener('dragover', function (e) {
         e.preventDefault();
-
         return false;
+      });
+
+      el[0].addEventListener('dragleave', function (e) {
+        el.removeClass('over');
       });
 
       el[0].addEventListener('drop', function (e) {
@@ -64,16 +59,11 @@ module.directive('droparea', function ($document) {
         return false;
       });
 
-      el[0].addEventListener('dragenter', function (e) {
-        el.addClass('over');
-      });
-
-      el[0].addEventListener('dragleave', function (e) {
-        el.removeClass('over');
-      });
 
     }
 
   };
 
 });
+
+module.exports = 'droparea';

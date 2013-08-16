@@ -1,0 +1,14 @@
+{
+  "name": "angular-safe-apply",
+  "repo": "enome-components/angular-safe-apply",
+  "description": "",
+  "version": "1.0.0",
+  "keywords": [],
+  "dependencies": {},
+  "development": {},
+  "license": "MIT",
+  "main": "index.js",
+  "scripts": [
+    "index.js"
+  ]
+}

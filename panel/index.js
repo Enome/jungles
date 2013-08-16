@@ -1,6 +1,4 @@
 var express = require('express');
-var stylus = require('stylus');
-var nib = require('nib');
 
 module.exports = function (rest) {
 
@@ -20,8 +18,8 @@ module.exports = function (rest) {
 
   // Middleware
 
+  app.use(express.favicon(__dirname + '/favicon.ico'));
   app.use('/partials', express.static(__dirname + '/client/locals/jungles-panel-core/partials'));
-  console.log(__dirname + '/client/build');
   app.use(express.static(__dirname + '/client/build'));
 
   // Routes

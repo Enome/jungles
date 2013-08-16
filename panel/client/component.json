@@ -12,6 +12,7 @@
   "main": "index.js",
   "dependencies": {
     "enome-components/angular-markdown-textarea": "*",
-    "enome-components/angular-arrangeable-array": "*"
+    "enome-components/angular-arrangeable-files": "*",
+    "necolas/normalize.css": "*"
   }
 }
