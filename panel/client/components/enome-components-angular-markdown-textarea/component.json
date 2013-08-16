@@ -2,7 +2,7 @@
   "name": "angular-markdown-textarea",
   "repo": "enome-components/angular-markdown-textarea",
   "description": "textarea and angular-markdown-editor combined",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "keywords": [],
   "dependencies": {
     "timoxley/font-awesome": "*",

@@ -2,7 +2,7 @@
   "name": "angular-markdown-editor",
   "repo": "enome-components/angular-markdown-editor",
   "description": "Markdown editor directive for Angular.js with angular-file-manager",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "keywords": [
     "angular",
     "markdown",

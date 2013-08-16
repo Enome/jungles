@@ -5,8 +5,10 @@
   <form name='popup_form' novalidate>
     <label>New name</label>
     <input type='text' ng-model='new_name' required/>
-    <button type='submit' ng-click='rename()' ng-disabled='validate(popup_form.$invalid, new_name)'>Rename</button>
-    <button type='button' ng-click='close()'>Skip</button>
+    <div class='actions'>
+      <button type='submit' ng-click='rename()' ng-disabled='validate(popup_form.$invalid, new_name)'>Rename</button>
+      <button type='button' ng-click='close()'>Skip</button>
+    </div>
   </form>
 
 </div>

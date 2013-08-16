@@ -2593,7 +2593,7 @@ require.register("enome-components-angular-markdown-editor/template.js", Functio
 "module.exports = '<div class=\\'markdowneditor\\'>\\n\
 \\n\
   <div class=\\'actionbar\\'>\\n\
-    <button ng-click=\\'toggleFileManager()\\' title=\\'Insert images and files\\'>Insert file</button>\\n\
+    <button type=\\'button\\' ng-click=\\'toggleFileManager()\\' title=\\'Insert images and files\\'>Insert file</button>\\n\
   </div>\\n\
 \\n\
   <div class=\\'insert\\'>\\n\
@@ -2605,9 +2605,9 @@ require.register("enome-components-angular-markdown-editor/template.js", Functio
   <div ng-show=\\'show_file_manager\\' class=\\'file-manager-overlay\\'>\\n\
     <file-manager url=\\'fileserver\\' selected=\\'selected_files\\'></file-manager>\\n\
     <div class=\\'actions\\'>\\n\
-      <button ng-click=\\'insertImage()\\' ng-disabled=\\'!selected_files.length\\'>Insert As Image</button>\\n\
-      <button ng-click=\\'insertLink()\\' ng-disabled=\\'!selected_files.length\\'>Insert As Link</button>\\n\
-      <button ng-click=\\'toggleFileManager()\\'>Cancel</button>\\n\
+      <button type=\\'button\\' ng-click=\\'insertImage()\\' ng-disabled=\\'!selected_files.length\\'>Insert As Image</button>\\n\
+      <button type=\\'button\\' ng-click=\\'insertLink()\\' ng-disabled=\\'!selected_files.length\\'>Insert As Link</button>\\n\
+      <button type=\\'button\\' ng-click=\\'toggleFileManager()\\'>Cancel</button>\\n\
     </div>\\n\
   </div>\\n\
 \\n\
@@ -2850,12 +2850,12 @@ module.exports = 'markdown-textarea';\n\
 require.register("enome-components-angular-markdown-textarea/template.js", Function("exports, require, module",
 "module.exports = '<div class=\\'markdown-textarea\\'>\\n\
   <div class=\\'textarea-container\\'>\\n\
-    <button ng-click=\\'toggle()\\' title=\\'Show fullscreen editor\\'><i class=\\'icon-resize-full\\'></i></button>\\n\
+    <button type=\\'button\\' ng-click=\\'toggle()\\' title=\\'Show fullscreen editor\\'><i class=\\'icon-resize-full\\'></i></button>\\n\
     <textarea ng-model=\\'data\\'></textarea>\\n\
   \\n\
   </div>\\n\
   <div class=\\'overlay\\' ng-show=\\'show_editor\\'>\\n\
-    <button ng-click=\\'toggle()\\' title=\\'Hide fullscreen editor\\'><i class=\\'icon-resize-small\\'></i></button>\\n\
+    <button type=\\'button\\' ng-click=\\'toggle()\\' title=\\'Hide fullscreen editor\\'><i class=\\'icon-resize-small\\'></i></button>\\n\
     <markdown-editor data=\\'data\\' fileserver=\\'fileserver\\' />\\n\
   </div>\\n\
 </div>\\n\
@@ -3025,7 +3025,7 @@ require.register("enome-components-angular-arrangeable-array/template.js", Funct
   <div class=\\'row\\' ng-repeat=\\'item in array\\' data-index=\\'{{$index}}\\'>\\n\
     <div class=\\'col1\\'>{{item}}</div>\\n\
     <div class=\\'col2\\'>\\n\
-      <button ng-click=\\'remove(item)\\'><i class=\\'icon-remove\\'></i></button>\\n\
+      <button type=\\'button\\' ng-click=\\'remove(item)\\'><i class=\\'icon-remove\\'></i></button>\\n\
     </div>\\n\
   </div>\\n\
 \\n\
@@ -3066,7 +3066,7 @@ require.register("enome-components-angular-arrangeable-files/template.js", Funct
 \\n\
   <div class=\\'default\\' ng-show=\\'!full_screen\\'>\\n\
     <div class=\\'header\\'>\\n\
-      <button ng-click=\\'full_screen = !full_screen\\'>Select files</button>\\n\
+      <button type=\\'button\\' ng-click=\\'full_screen = !full_screen\\'>Select files</button>\\n\
     </div>\\n\
 \\n\
     <arrangeable-array array=\\'selected\\'></arrangeable-array>\\n\
@@ -3074,7 +3074,7 @@ require.register("enome-components-angular-arrangeable-files/template.js", Funct
 \\n\
   <div class=\\'overlay\\' ng-show=\\'full_screen\\'>\\n\
     <file-manager selected=\\'selected\\' url=\\'fileserver\\'></file-manager>\\n\
-    <button ng-click=\\'full_screen = !full_screen\\'>Close</button>\\n\
+    <button type=\\'button\\' ng-click=\\'full_screen = !full_screen\\'>Close</button>\\n\
   </div>\\n\
 \\n\
 </div>\\n\
