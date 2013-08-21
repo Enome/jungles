@@ -2,7 +2,7 @@
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles",
   "description": "Jungles Content Management System",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "keywords": [
     "jungles",
     "cms"
@@ -22,8 +22,8 @@
     "jungles-errors": "~2.0.0",
     "jungles-helpers-frontend": "~2.0.0",
     "jungles-rest": "~3.0.0",
-    "jungles-panel": "~4.0.0",
-    "jungles-files": "~1.4.0"
+    "jungles-panel": "~5.0.0",
+    "jungles-files": "~2.0.0"
   },
   "devDependencies": {}
 }
