@@ -2,7 +2,7 @@
   "name": "angular-enter-directive",
   "repo": "enome-components/angular-enter-directive",
   "description": "Add ng-enter directive",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "keywords": [
     "angular",
     "directive",

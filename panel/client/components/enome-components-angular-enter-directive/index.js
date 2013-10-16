@@ -1,4 +1,4 @@
-var mod = window.angular.module('ngEnter', []);
+var mod = window.angular.module('ngEnter', [ require('angular-safe-apply') ]);
 
 mod.directive('ngEnter', function ($parse, safeApply) {
 

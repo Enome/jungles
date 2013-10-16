@@ -36,4 +36,6 @@ var oar = function (base) {
 
 };
 
-module.exports = oar;
+if (module) {
+  module.exports = oar;
+}

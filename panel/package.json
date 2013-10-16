@@ -2,7 +2,7 @@
   "author": "Geert Pasteels <geert.pasteels@gmail.com>",
   "name": "jungles-panel",
   "description": "Admin panel for Jungles",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "keywords": [
     "jungles",
     "cms"
@@ -12,7 +12,5 @@
     "async": "~0.1.22",
     "express": "~3.2.6"
   },
-  "devDependencies": {
-    "browserify": "~1.16.1"
-  }
+  "devDependencies": {}
 }

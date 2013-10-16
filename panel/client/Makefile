@@ -1,5 +1,5 @@
 build: components index.js stylus
-	@component build --dev -v
+	@component build -c
 
 components: component.json
 	@component install --dev
