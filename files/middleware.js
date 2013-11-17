@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require('fs.extra');
 var path = require('path');
 var async = require('async');
 var rimraf = require('rimraf');
@@ -146,7 +146,7 @@ var middleware = {
 
     var path = res.locals.absolute_path + '/' + req.files.file.name;
 
-    fs.rename(req.files.file.path, path, function (err, response) {
+    fs.move(req.files.file.path, path, function (err, response) {
       res.send(err, 200);
     });
 
@@ -170,7 +170,7 @@ var middleware = {
 
   updateDirectory: function (req, res, next) {
 
-    fs.rename(res.locals.absolute_path + '/' + req.body.old_name, res.locals.absolute_path + '/' + req.body.name, function (err) {
+    fs.move(res.locals.absolute_path + '/' + req.body.old_name, res.locals.absolute_path + '/' + req.body.name, function (err) {
       next(err);
     });
 
