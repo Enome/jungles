@@ -9,7 +9,7 @@
   ],
   "dependencies": {
     "kwery": "~1.2.0",
-    "marked": "~0.2.8",
+    "marked": "~0.7.0",
     "jungles-functions": "~1.0.0"
   }
 }
